@@ -58,9 +58,6 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7E8C9728C60C403C9D6BEC7433F31583 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B20903B9337048DA890F43ECB0ACE450 }}
 
-     - name: List files in publish directory
-        run: ls -R ./publish
-
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
