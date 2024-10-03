@@ -64,5 +64,5 @@ jobs:
         with:
           app-name: 'freshxapi'
           slot-name: 'Production'
-          package: ./publish
+          package: .
 
