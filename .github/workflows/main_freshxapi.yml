@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy ASP.Net Core app to Azure Web App - freshxapi
 
 on:
@@ -9,32 +12,26 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        env:
-          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
-        run: |
-          dotnet build --configuration Release
-          echo "Using Encryption Password and Salt from GitHub Secrets"
+        run: dotnet build --configuration Release
 
-      - name: Publish app
-        env:
-          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
-        run: dotnet publish -c Release -o ./publish
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ./publish
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: windows-latest
@@ -44,19 +41,19 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
       id-token: write #This is required for requesting the JWT
+
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-          path: ./publish
       
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A7CDC497B92B488A948DAC84CFB581DF }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_55079DD80B2849329A38C439D1148BD6 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A309FACDB6944010B4950B65E71C030E }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_FBD96884B89944E09B3D896F0E45CC5B }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7E8C9728C60C403C9D6BEC7433F31583 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B20903B9337048DA890F43ECB0ACE450 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -64,4 +61,5 @@ jobs:
         with:
           app-name: 'freshxapi'
           slot-name: 'Production'
-          package: ./publish
+          package: .
+          
