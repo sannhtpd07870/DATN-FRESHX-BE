@@ -12,7 +12,7 @@ using Azure.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 // Đọc password và salt từ biến môi trườn g
-string password = Environment.GetEnvironmentVariable("  ENCRYPTION_PASSWORD")
+string password = Environment.GetEnvironmentVariable("ENCRYPTION_PASSWORD")
     ?? builder.Configuration["EncryptionSettings:Password"]
     ?? "DefaultPassword";
 string saltString = Environment.GetEnvironmentVariable("ENCRYPTION_SALT")
@@ -26,6 +26,7 @@ if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
 }
 
 byte[] salt = Encoding.UTF8.GetBytes(saltString);
+
 
 builder.Configuration.AddConfiguration(
     new ConfigurationBuilder()

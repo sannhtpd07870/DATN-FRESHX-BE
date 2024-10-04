@@ -49,7 +49,7 @@ public class EncryptedConfigurationProvider : ConfigurationProvider
                 {
                     string decryptedValue = EncryptionHelper.Decrypt(value, key);
                     Data[prefix] = decryptedValue;
-                    Console.WriteLine($"Giá trị cho {prefix}: {decryptedValue}");
+                    Console.WriteLine($"Giai ma thanh cong");
                 }
                 break;
             default:
