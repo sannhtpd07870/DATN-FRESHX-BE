@@ -8,7 +8,9 @@ using Freshx_API.Services;
 using Freshx_API.Mappers;
 using System.Text;
 using Azure.Identity;
-
+using DotNetEnv;
+// Tải biến môi trường từ tệp .env
+Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Đọc password và salt từ biến môi trườn g
@@ -20,10 +22,6 @@ string saltString = Environment.GetEnvironmentVariable("ENCRYPTION_SALT")
     ?? "DefaultSalt";
 //kết thúc biến môi trường
 
-
-Console.WriteLine($"Password: {password}");
-Console.WriteLine($"salt: {saltString}");
-var client = builder.Build();
 if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
 {
     throw new InvalidOperationException("ENCRYPTION_PASSWORD hoặc ENCRYPTION_SALT không được cấu hình");

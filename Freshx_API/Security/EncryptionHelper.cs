@@ -20,6 +20,12 @@ namespace Freshx_API.Helpers
         {
             try
             {
+                // Kiểm tra xem chuỗi có phải là Base64 hợp lệ không
+                if (string.IsNullOrEmpty(cipherText) || !IsBase64String(cipherText))
+                {
+                    throw new FormatException("Chuỗi không phải là Base64 hợp lệ.");
+                }
+
                 cipherText = cipherText.Replace("\\u002B", "+").Replace("\\u003D", "=");
                 var fullCipher = Convert.FromBase64String(cipherText);
                 var iv = new byte[16];
@@ -47,6 +53,16 @@ namespace Freshx_API.Helpers
                 Console.WriteLine($"Lỗi giải mã: {ex.Message}");
                 return cipherText; // Trả về chuỗi gốc nếu không thể giải mã
             }
+        }
+
+        // Phương thức kiểm tra chuỗi Base64
+        private static bool IsBase64String(string s)
+        {
+            if (string.IsNullOrEmpty(s) || s.Length % 4 != 0)
+                return false;
+
+            // Kiểm tra các ký tự hợp lệ
+            return s.All(c => "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".Contains(c));
         }
     }
 }
