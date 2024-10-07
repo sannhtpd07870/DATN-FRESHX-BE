@@ -20,6 +20,10 @@ string saltString = Environment.GetEnvironmentVariable("ENCRYPTION_SALT")
     ?? "DefaultSalt";
 //kết thúc biến môi trường
 
+
+Console.WriteLine($"Password: {password}");
+Console.WriteLine($"salt: {saltString}");
+var client = builder.Build();
 if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
 {
     throw new InvalidOperationException("ENCRYPTION_PASSWORD hoặc ENCRYPTION_SALT không được cấu hình");
@@ -27,8 +31,6 @@ if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
 
 byte[] salt = Encoding.UTF8.GetBytes(saltString);
 
-Console.WriteLine($"Password: {password}");
-Console.WriteLine($"salt: {salt}"); 
 
 builder.Configuration.AddConfiguration(
     new ConfigurationBuilder()
