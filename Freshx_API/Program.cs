@@ -27,6 +27,8 @@ if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
 
 byte[] salt = Encoding.UTF8.GetBytes(saltString);
 
+Console.WriteLine($"Password: {password}");
+Console.WriteLine($"salt: {salt}"); 
 
 builder.Configuration.AddConfiguration(
     new ConfigurationBuilder()
