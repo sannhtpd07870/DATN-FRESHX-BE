@@ -22,7 +22,15 @@ public class EncryptedConfigurationProvider : ConfigurationProvider
       
         var config = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
         
-        ProcessElement(config, "", key);
+        if (config != null)
+        {
+            ProcessElement(config, "", key);
+        }
+        else
+        {
+            // Handle the null case, e.g., throw an exception or log an error
+            throw new ArgumentNullException(nameof(config), "Config cannot be null.");
+        }
     }
 
     private void ProcessElement(JsonElement element, string prefix, byte[] key)
@@ -44,7 +52,7 @@ public class EncryptedConfigurationProvider : ConfigurationProvider
                 }
                 break;
             case JsonValueKind.String:
-                string value = element.GetString();
+                string? value = element.GetString(); // Thay đổi để cho phép giá trị null
                 if (!string.IsNullOrEmpty(value))
                 {
                     string decryptedValue = EncryptionHelper.Decrypt(value, key);

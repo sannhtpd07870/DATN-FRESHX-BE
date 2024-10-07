@@ -57,7 +57,7 @@ namespace Freshx_API.Repository
             await _dbContext.SaveChangesAsync();
 
             // Xóa file từ blob storage nếu cần
-            if(await _blobService.FileExistsAsync(file.fileName))
+            if(file.fileName != null && await _blobService.FileExistsAsync(file.fileName))
             {
                 await _blobService.DeleteFileAsync(file.fileName);
             }
@@ -65,13 +65,14 @@ namespace Freshx_API.Repository
             return true;
         }
 
-        public async Task<Savefile?> UpdateFile(int id, FileDto fileDto)
+        public async Task<Savefile> UpdateFile(int id, FileDto fileDto) // Thay đổi từ Savefile? thành Savefile
         {
             var existingFile = await _dbContext.Savefiles.FindAsync(id);
             if (existingFile == null)
-                return null;
 
-            var urlFile = existingFile.urlFile;
+                throw new KeyNotFoundException($"Không tìm thấy file với ID {id}.");
+
+            var urlFile = existingFile.urlFile ?? throw new InvalidOperationException("urlFile không thể null");
 
             if (fileDto.file != null)
             {
@@ -81,7 +82,7 @@ namespace Freshx_API.Repository
                 }
 
                 // Xóa file cũ từ blob storage nếu cần
-                if(await _blobService.FileExistsAsync(existingFile.fileName))
+                if(existingFile.fileName != null && await _blobService.FileExistsAsync(existingFile.fileName))
                 {
                     await _blobService.DeleteFileAsync(existingFile.fileName);
                 }

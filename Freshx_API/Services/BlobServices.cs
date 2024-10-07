@@ -14,8 +14,8 @@ namespace Freshx_API.Services
 
         public BlobServices(IConfiguration configuration)
         {
-            _blobServiceClient = new BlobServiceClient(configuration["AzureBlobStorage:ConnectionString"]);
-            _containerName = configuration["AzureBlobStorage:ContainerName"];
+            _blobServiceClient = new BlobServiceClient(configuration["AzureBlobStorage:ConnectionString"] ?? throw new ArgumentNullException("ConnectionString is null"));
+            _containerName = configuration["AzureBlobStorage:ContainerName"] ?? throw new ArgumentNullException("ContainerName is null");
         }
 
 
