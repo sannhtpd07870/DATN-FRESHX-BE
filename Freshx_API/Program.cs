@@ -22,7 +22,6 @@ string saltString = Environment.GetEnvironmentVariable("ENCRYPTION_SALT")
     ?? "DefaultSalt";
 //kết thúc biến môi trường
 
-
 if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
 {
     throw new InvalidOperationException("ENCRYPTION_PASSWORD hoặc ENCRYPTION_SALT không được cấu hình");
