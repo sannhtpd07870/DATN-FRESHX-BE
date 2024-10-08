@@ -21,16 +21,16 @@ jobs:
         
       - name: Build with dotnet
         env:
-          ENCRYPTION_PASSWORD: ${{secrets.ENCRYPTION_PASSWORD}}
-          ENCRYPTION_SALT: ${{secrets.ENCRYPTION_SALT}}
+          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
+          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
         run: |
           dotnet build --configuration Release
           echo "Using Encryption Password and Salt from GitHub Secrets"
 
       - name: Publish app
         env:
-          ENCRYPTION_PASSWORD: ${{secrets.ENCRYPTION_PASSWORD}}
-          ENCRYPTION_SALT: ${{secrets.ENCRYPTION_SALT}}
+          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
+          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
         run: dotnet publish -c Release -o ./publish
 
       - name: Upload artifact for deployment job
