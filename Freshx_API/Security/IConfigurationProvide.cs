@@ -52,7 +52,7 @@ public class EncryptedConfigurationProvider : ConfigurationProvider
                 }
                 break;
             case JsonValueKind.String:
-                string? value = element.GetString(); // Thay đổi để cho phép giá trị null
+                string? value = element.GetString(); // cho phép giá trị null
                 if (!string.IsNullOrEmpty(value))
                 {
                     string decryptedValue = EncryptionHelper.Decrypt(value, key);

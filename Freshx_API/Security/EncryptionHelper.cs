@@ -62,7 +62,7 @@ namespace Freshx_API.Helpers
                 return false;
 
             // Kiểm tra các ký tự hợp lệ
-            return s.All(c => "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=".Contains(c));
+            return s.All(c => "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=:;%*".Contains(c));
         }
     }
 }
