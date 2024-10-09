@@ -16,24 +16,13 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      # - name: Restore NuGet packages
-      #   run: dotnet restore
-        
-      # - name: Run the application
-      #   env:
-      #     ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-      #     ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
-      #   run: |
-      #     dotnet run --project ./Freshx_API/Freshx_API.csproj
-      #       sleep 120
-      #       pkill -f 'dotnet'
-
       - name: 'Create env file'
         run: |
           touch .env
-          echo ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }} >> .env
-          echo ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }} >> .env
+          echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> .env
+          echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> .env
           cat .env
+
       - name: Build with dotnet
         env:
           ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
@@ -41,18 +30,12 @@ jobs:
         run: |  
           dotnet build --configuration Release
           dotnet publish -c Release -o ./publish
-      # echo "Using Encryption Password and Salt from GitHub Secrets"
-      # echo "$env:ENCRYPTION_PASSWORD" "$env:ENCRYPTION_SALT"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-         env:
-          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
           name: .net-app
           path: ./publish
-         
 
   deploy:
     runs-on: windows-latest
@@ -68,6 +51,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
