@@ -16,8 +16,8 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Restore NuGet packages
-        run: dotnet restore
+      # - name: Restore NuGet packages
+      #   run: dotnet restore
         
       - name: Build with dotnet
         env:
@@ -26,9 +26,8 @@ jobs:
         run: |  
           dotnet build --configuration Release
           echo "Using Encryption Password and Salt from GitHub Secrets"
-          echo "Encryption Password length: ${#ENCRYPTION_PASSWORD}"
-          echo "Encryption Salt length: ${#ENCRYPTION_SALT}"
-      
+          echo "Encryption Password length: ${env:ENCRYPTION_PASSWORD.Length}"
+          echo "Encryption Salt length: ${env:ENCRYPTION_SALT.Length}"
 
       - name: Publish app
         env:
