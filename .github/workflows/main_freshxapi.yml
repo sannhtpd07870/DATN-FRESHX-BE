@@ -18,7 +18,7 @@ jobs:
 
       # - name: Restore NuGet packages
       #   run: dotnet restore
-        
+          
       # - name: Run the application
       #   env:
       #     ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
