@@ -30,6 +30,8 @@ jobs:
         run: |  
           dotnet build --configuration Release
           dotnet publish -c Release -o ./publish
+          # Copy .env file to the publish directory
+          cp .env ./publish/
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -44,7 +46,7 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write #This is required for requesting the JWT
+      id-token: write
 
     steps:
       - name: Download artifact from build job
@@ -66,3 +68,8 @@ jobs:
           app-name: 'freshxapi'
           slot-name: 'Production'
           package: .
+
+      - name: Start application
+        run: |
+          # Ensure the application reads from the .env file
+          dotnet ./publish/Freshx_API.dll --urls "http://*:5000"
