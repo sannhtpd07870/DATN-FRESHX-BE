@@ -21,7 +21,7 @@ string saltString = Environment.GetEnvironmentVariable("ENCRYPTION_SALT");
 //?? builder.Configuration["EncryptionSettings:Salt"]
 //?? "DefaultSalt";
 //kết thúc biến môi trường
-
+    
 // Kiểm tra nếu không lấy được biến môi trường và dừng quá trình build
 if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
 {
