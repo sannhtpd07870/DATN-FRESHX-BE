@@ -34,14 +34,10 @@ jobs:
           ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
         run: |  
           dotnet build --project ./Freshx_API/Freshx_API.csproj
-          echo "Using Encryption Password and Salt from GitHub Secrets"
-          echo "$env:ENCRYPTION_PASSWORD" "$env:ENCRYPTION_SALT"
+          dotnet publish -c Release -o ./publish
 
-      - name: Publish app
-        env:
-          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
-        run: dotnet publish -c Release -o ./publish
+      # echo "Using Encryption Password and Salt from GitHub Secrets"
+      # echo "$env:ENCRYPTION_PASSWORD" "$env:ENCRYPTION_SALT"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
