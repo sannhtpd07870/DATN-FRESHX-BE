@@ -23,11 +23,10 @@ jobs:
         env:
           ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
           ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
-        run: |
-          echo "Encryption Password: $ENCRYPTION_PASSWORD"
-          echo "Encryption Salt: $ENCRYPTION_SALT"
+        run: |  
           dotnet build --configuration Release
           echo "Using Encryption Password and Salt from GitHub Secrets"
+          echo "ENCRYPTION_PASSWORD: $ENCRYPTION_PASSWORD"
       
 
       - name: Publish app
