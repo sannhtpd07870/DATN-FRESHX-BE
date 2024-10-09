@@ -14,13 +14,18 @@ Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Đọc password và salt từ biến môi trườn g
-string password = Environment.GetEnvironmentVariable("ENCRYPTION_PASSWORD")
-    ?? builder.Configuration["EncryptionSettings:Password"]
-    ?? "DefaultPassword";
-string saltString = Environment.GetEnvironmentVariable("ENCRYPTION_SALT")
-    ?? builder.Configuration["EncryptionSettings:Salt"]
-    ?? "DefaultSalt";
-//kết thúc biến môi trường
+string password = Environment.GetEnvironmentVariable("ENCRYPTION_PASSWORD");
+string saltString = Environment.GetEnvironmentVariable("ENCRYPTION_SALT");
+
+// Kiểm tra nếu không lấy được biến môi trường
+if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
+{
+    Console.WriteLine("Không thể lấy được ENCRYPTION_PASSWORD hoặc ENCRYPTION_SALT từ biến môi trường.");
+    throw new InvalidOperationException("Quá trình dừng lại vì thiếu biến môi trường.");
+}
+
+Console.WriteLine($"Password: {password}");
+Console.WriteLine($"Salt: {saltString}");
 
 
 Console.WriteLine($"Password"+ "" + password);
