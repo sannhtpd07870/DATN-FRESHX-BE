@@ -19,14 +19,14 @@ jobs:
       # - name: Restore NuGet packages
       #   run: dotnet restore
         
-      - name: Run the application
-        env:
-          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
-        run: |
-          dotnet run --project ./Freshx_API/Freshx_API.csproj
-            sleep 120
-            pkill -f 'dotnet'
+      # - name: Run the application
+      #   env:
+      #     ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
+      #     ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
+      #   run: |
+      #     dotnet run --project ./Freshx_API/Freshx_API.csproj
+      #       sleep 120
+      #       pkill -f 'dotnet'
 
       - name: Build with dotnet
         env:
