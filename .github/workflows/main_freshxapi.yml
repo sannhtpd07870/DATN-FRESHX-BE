@@ -53,9 +53,7 @@ jobs:
         with:
           name: .net-app
           path: ./publish
-          env:
-            ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-            ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
+         
 
   deploy:
     runs-on: windows-latest
