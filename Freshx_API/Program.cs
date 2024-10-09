@@ -23,17 +23,8 @@ if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
     Console.WriteLine("Không thể lấy được ENCRYPTION_PASSWORD hoặc ENCRYPTION_SALT từ biến môi trường.");
     throw new InvalidOperationException("Quá trình dừng lại vì thiếu biến môi trường.");
 }
-
-Console.WriteLine($"Password: {password}");
-Console.WriteLine($"Salt: {saltString}");
-
-
 Console.WriteLine($"Password"+ "" + password);
 Console.WriteLine($"salt"+ "" + saltString);
-if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
-{
-    throw new InvalidOperationException("ENCRYPTION_PASSWORD hoặc ENCRYPTION_SALT không được cấu hình");
-}
 
 byte[] salt = Encoding.UTF8.GetBytes(saltString);
 
