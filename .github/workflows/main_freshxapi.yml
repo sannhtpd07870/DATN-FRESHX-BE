@@ -26,7 +26,8 @@ jobs:
         run: |  
           dotnet build --configuration Release
           echo "Using Encryption Password and Salt from GitHub Secrets"
-          echo "ENCRYPTION_PASSWORD: $ENCRYPTION_PASSWORD"
+          echo "Encryption Password length: ${#ENCRYPTION_PASSWORD}"
+          echo "Encryption Salt length: ${#ENCRYPTION_SALT}"
       
 
       - name: Publish app
