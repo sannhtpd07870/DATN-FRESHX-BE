@@ -53,6 +53,9 @@ jobs:
         with:
           name: .net-app
           path: ./publish
+          env:
+            ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
+            ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
 
   deploy:
     runs-on: windows-latest
@@ -68,7 +71,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-      
+        env:
+            ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
+            ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
       - name: Login to Azure
         uses: azure/login@v2
         with:
