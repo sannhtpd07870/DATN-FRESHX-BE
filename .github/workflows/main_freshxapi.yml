@@ -39,10 +39,6 @@ jobs:
           ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
           ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
         run: |  
-          touch .env
-          echo ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }} >> .env
-          echo ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }} >> .env
-          cat .env
           dotnet build --configuration Release
           dotnet publish -c Release -o ./publish
       # echo "Using Encryption Password and Salt from GitHub Secrets"
@@ -51,6 +47,9 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
+         env:
+          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
+          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
           name: .net-app
           path: ./publish
          
@@ -69,9 +68,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: .net-app
-        env:
-            ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-            ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
       - name: Login to Azure
         uses: azure/login@v2
         with:
