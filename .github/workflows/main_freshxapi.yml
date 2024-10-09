@@ -19,12 +19,19 @@ jobs:
       # - name: Restore NuGet packages
       #   run: dotnet restore
         
+      - name: Run the application
+        env:
+          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
+          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
+        run: |
+          dotnet run --project ./Freshx_API/Freshx_API.csproj
+
       - name: Build with dotnet
         env:
           ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
           ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
         run: |  
-          dotnet build --configuration Release
+          dotnet build --project ./Freshx_API/Freshx_API.csproj
           echo "Using Encryption Password and Salt from GitHub Secrets"
           echo "$env:ENCRYPTION_PASSWORD" "$env:ENCRYPTION_SALT"
 
