@@ -53,38 +53,38 @@ jobs:
         run: |
           dir ./publish
 
-  # deploy
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   environment:
-  #     name: 'Production'
-  #     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-  #   permissions:
-  #     id-token: write #This is required for requesting the JWT
+  deploy
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write #This is required for requesting the JWT
 
-  #   steps:
-  #     - name: Download artifact from build job
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: .net-app
-  #         path: ./publish
-  #         if-no-files-found: warn
-  #         compression-level: 6
-  #         overwrite: false
-  #         include-hidden-files: true  # Bật tải xuống file ẩn như .env
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+          path: ./publish
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: true  # Bật tải xuống file ẩn như .env
 
-  #     - name: Login to Azure
-  #       uses: azure/login@v2
-  #       with:
-  #         client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_EEF0B67F41F9433B94241D5F57D3CD2A }}
-  #         tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_45D19416E22C4DF7BA0C362726240AAF }}
-  #         subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_804885B6CFE64AB789C965CFFF0C74DD }}
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_EEF0B67F41F9433B94241D5F57D3CD2A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_45D19416E22C4DF7BA0C362726240AAF }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_804885B6CFE64AB789C965CFFF0C74DD }}
 
-  #     - name: Deploy to Azure Web App
-  #       id: deploy-to-webapp
-  #       uses: azure/webapps-deploy@v3
-  #       with:
-  #         app-name: 'freshxapi'
-  #         slot-name: 'Production'
-  #         package: .
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'freshxapi'
+          slot-name: 'Production'
+          package: .
