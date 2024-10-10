@@ -60,12 +60,13 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
       - name: Create .env file
         run: |
           echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> .env
           echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> .env
+          
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
         env:
           ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
           ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
