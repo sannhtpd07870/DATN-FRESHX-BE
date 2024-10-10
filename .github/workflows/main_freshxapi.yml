@@ -41,6 +41,11 @@ jobs:
           echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> ./publish/.env
           echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> ./publish/.env
          
+      # Kiểm tra xem file .env có tồn tại trong thư mục publish không
+      - name: Verify .env file
+        run: |
+          dir ./publish
+          type ./publish/.env
 
         # Deploy to Azure Web App
       - name: Upload artifact for deployment job
