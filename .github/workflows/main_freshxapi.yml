@@ -16,12 +16,13 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: 'Create env file'
-        run: |
-          touch .env
-          echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> .env
-          echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> .env
-          cat .env
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v2.0
+        with:
+          envkey_DEBUG: false
+          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
+          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
+          file_name: .env
 
       - name: Build with dotnet
         env:
@@ -30,7 +31,6 @@ jobs:
         run: |  
           dotnet build --configuration Release
           dotnet publish -c Release -o ./publish
-          # Copy .env file to the publish directory
           cp .env ./publish/
 
       - name: Upload artifact for deployment job
@@ -71,5 +71,8 @@ jobs:
 
       - name: Start application
         run: |
-          # Ensure the application reads from the .env file
-          dotnet ./publish/Freshx_API.dll --urls "http://*:5000"
+          cd ./publish
+          # Make sure the .env file is available and readable
+          cat .env
+          # Run the application with .env variables
+          dotnet Freshx_API.dll --urls "http://*:5000"
