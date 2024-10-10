@@ -14,10 +14,10 @@ Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Đọc password và salt từ biến môi trườn g
-string password = Environment.GetEnvironmentVariable("ENCRYPTION_PASSWORD");
+string password = Environment.GetEnvironmentVariable("ENCRYPTION_PASSWORD")
 ?? builder.Configuration["EncryptionSettings:Password"]
 ?? "DefaultPassword";
-string saltString = Environment.GetEnvironmentVariable("ENCRYPTION_SALT");
+string saltString = Environment.GetEnvironmentVariable("ENCRYPTION_SALT")
 ?? builder.Configuration["EncryptionSettings:Salt"]
 ?? "DefaultSalt";
 //kết thúc biến môi trường
