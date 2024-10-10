@@ -34,8 +34,8 @@ jobs:
             # Tạo file .env trong thư mục publish
       - name: Create .env file
         run: |
-          echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> ${{env.DOTNET_ROOT}}/publish/.env
-          echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> ${{env.DOTNET_ROOT}}/publish/.env
+          echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> ./publish/.env
+          echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> ./publish/.env
 
 
       - name: Upload artifact for deployment job
