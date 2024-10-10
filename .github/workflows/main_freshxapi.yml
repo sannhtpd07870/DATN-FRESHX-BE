@@ -1,3 +1,6 @@
+# Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
+# More GitHub Actions for Azure: https://github.com/Azure/actions
+
 name: Build and deploy ASP.Net Core app to Azure Web App - freshxapi
 
 on:
@@ -9,50 +12,26 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.x'
 
-      # Install dependencies
-      - name: Install dependencies
-        run: dotnet restore
-
-
       - name: Build with dotnet
-        run: |  
-          dotnet build --configuration Release
-      
-         # Publish project to folder
-      - name: Publish project
-        run: dotnet publish -c Release -o ./publish
+        run: dotnet build --configuration Release
 
-      # Tạo file .env trong thư mục publish
-      - name: Create .env file
-        run: |
-          echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> ./publish/.env
-          echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> ./publish/.env
-         
-      # Kiểm tra xem file .env có tồn tại trong thư mục publish không
-      - name: Verify .env file
-        run: |
-          dir ./publish
+      - name: dotnet publish
+        run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
-        # Deploy to Azure Web App
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
-        env:
-          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
         with:
           name: .net-app
-          path: ./publish
-          if-no-files-found: warn
-          compression-level: 6
-          overwrite: false
-          include-hidden-files: true  # Bật upload file ẩn như .env
+          path: ${{env.DOTNET_ROOT}}/myapp
 
   deploy:
     runs-on: windows-latest
@@ -61,28 +40,20 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write
-    steps:
-      - name: Create .env file
-        run: |
-          echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> .env
-          echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> .env
+      id-token: write #This is required for requesting the JWT
 
+    steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
-        env:
-          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
         with:
           name: .net-app
-          path: ./publish
-          
+      
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_FBD96884B89944E09B3D896F0E45CC5B }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_7E8C9728C60C403C9D6BEC7433F31583 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B20903B9337048DA890F43ECB0ACE450 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_66BAB843D6E24E99A7934132BCA2112A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4850701E6B29451C971C9DD569C78893 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_45D212DBA9B142D3B709A40190FA8DC1 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -91,3 +62,4 @@ jobs:
           app-name: 'freshxapi'
           slot-name: 'Production'
           package: .
+          
