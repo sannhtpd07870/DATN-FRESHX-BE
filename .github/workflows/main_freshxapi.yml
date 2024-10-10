@@ -22,29 +22,24 @@ jobs:
 
 
       - name: Build with dotnet
-        env:
-          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
         run: |  
           dotnet build --configuration Release
       
          # Publish project to folder
       - name: Publish project
-        env:
-          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
         run: dotnet publish -c Release -o ./publish
-      # Kiểm tra xem file .env có tồn tại trong thư mục publish không
-      - name: Verify .env file
+
+           # Tạo file .env trong thư mục publish
+      - name: Create .env file
         run: |
-          dir ./publish
+          echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> ./publish/.env
+          echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> ./publish/.env
+
+
 
         # Deploy to Azure Web App
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
-        env:
-          ENCRYPTION_PASSWORD: ${{ secrets.ENCRYPTION_PASSWORD }}
-          ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
         with:
           name: .net-app
           path: ./publish
@@ -53,6 +48,11 @@ jobs:
           overwrite: false
           include-hidden-files: true  # Bật upload file ẩn như .env
 
+      # Kiểm tra xem file .env có tồn tại trong thư mục publish không
+      - name: Verify .env file
+        run: |
+          dir ./publish
+          
   deploy:
     runs-on: windows-latest
     needs: build
