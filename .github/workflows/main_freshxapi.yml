@@ -49,7 +49,10 @@ jobs:
         with:
           name: .net-app
           path: ./publish
-
+          if-no-files-found: warn
+          compression-level: 6
+          overwrite: false
+          include-hidden-files: true  # Bật upload file ẩn như .env
 
   deploy:
     runs-on: windows-latest
@@ -64,7 +67,7 @@ jobs:
         run: |
           echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> .env
           echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> .env
-          
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         env:
