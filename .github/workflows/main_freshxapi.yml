@@ -38,8 +38,8 @@ jobs:
       # Tạo file .env trong thư mục publish
       - name: Create .env file
         run: |
-          echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> ./publish/.env
-          echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> ./publish/.env
+          echo ENCRYPTION_PASSWORD=${{ secrets.ENCRYPTION_PASSWORD }} >> ./net-app/.env
+          echo ENCRYPTION_SALT=${{ secrets.ENCRYPTION_SALT }} >> ./net-app/.env
          
 
         # Deploy to Azure Web App
