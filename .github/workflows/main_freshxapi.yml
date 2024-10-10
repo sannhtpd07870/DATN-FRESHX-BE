@@ -48,10 +48,10 @@ jobs:
         with:
           name: .net-app
           path: ./publish
-          if-no-files-found: warn
-          compression-level: 6
-          overwrite: false
-          include-hidden-files: true  # Bật upload file ẩn như .env
+          # if-no-files-found: warn
+          # compression-level: 6
+          # overwrite: false
+          # include-hidden-files: true  # Bật upload file ẩn như .env
 
   deploy:
     runs-on: windows-latest
