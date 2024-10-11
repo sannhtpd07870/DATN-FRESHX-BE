@@ -49,3 +49,5 @@ $RECYCLE.BIN/
 # Azure Blob Storage
 appsettings.Development.json
 
+#github
+.github/
