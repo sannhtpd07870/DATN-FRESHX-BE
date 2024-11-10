@@ -84,7 +84,6 @@ var connectionString = builder.Configuration["ConnectionStrings:DBFreshx"];
 var jwtKey = builder.Configuration["Jwt:Key"];
 var blobConnectionString = builder.Configuration["AzureBlobStorage:ConnectionString"];
 var containerName = builder.Configuration["AzureBlobStorage:ContainerName"];
-
 // Add services to the container.
 builder.Services.AddDbContext<FreshxDBContext>(options =>{
     options.UseSqlServer(connectionString);
