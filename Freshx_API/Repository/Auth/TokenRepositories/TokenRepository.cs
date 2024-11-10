@@ -20,7 +20,7 @@ namespace Freshx_API.Repository.Auth.TokenRepositories
         {
             _configuration = configuration;
             _userManager = userManager;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         }
 
         public async Task<TokenInfo> IssueAccessToken(AppUser app)
