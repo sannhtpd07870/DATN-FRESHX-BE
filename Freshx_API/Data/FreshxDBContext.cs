@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Freshx_API.Models;
 
-public partial class FreshxDBContext : DbContext
+public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,string>
 {
     public FreshxDBContext(DbContextOptions<FreshxDBContext> options)
         : base(options)
