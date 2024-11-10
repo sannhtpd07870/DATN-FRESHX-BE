@@ -176,8 +176,12 @@ builder.Services.AddAuthentication(options =>
             return Task.CompletedTask;
         },
 
-        OnAuthenticationFailed = async context =>
+        OnAuthenticationFailed = context =>
         {
+            if (context.Response.HasStarted)
+            {
+                return Task.CompletedTask;
+            }
             context.NoResult();
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             context.Response.ContentType = "application/json";
@@ -202,12 +206,16 @@ builder.Services.AddAuthentication(options =>
                 Timestamp = DateTime.UtcNow
             };
 
-            await context.Response.WriteAsJsonAsync(response);
+            return context.Response.WriteAsJsonAsync(response);  // Added return
         },
 
-        OnChallenge = async context =>
+        OnChallenge = context =>
         {
             context.HandleResponse();
+            if (context.Response.HasStarted)
+            {
+                return Task.CompletedTask;
+            }
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             context.Response.ContentType = "application/json";
 
@@ -230,11 +238,15 @@ builder.Services.AddAuthentication(options =>
                 Timestamp = DateTime.UtcNow
             };
 
-            await context.Response.WriteAsJsonAsync(response);
+            return context.Response.WriteAsJsonAsync(response);  // Added return
         },
 
-        OnForbidden = async context =>
+        OnForbidden = context =>
         {
+            if (context.Response.HasStarted)
+            {
+                return Task.CompletedTask;
+            }
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
             context.Response.ContentType = "application/json";
 
@@ -248,7 +260,7 @@ builder.Services.AddAuthentication(options =>
                 Timestamp = DateTime.UtcNow
             };
 
-            await context.Response.WriteAsJsonAsync(response);
+            return context.Response.WriteAsJsonAsync(response);  // Added return
         }
     };
 });
