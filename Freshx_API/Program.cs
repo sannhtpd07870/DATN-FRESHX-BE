@@ -9,10 +9,53 @@ using Freshx_API.Mappers;
 using System.Text;
 using Azure.Identity;
 using DotNetEnv;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using Freshx_API.Repository.Auth.RoleRepositories;
+using Freshx_API.Repository.Auth.AccountRepositories;
+using Freshx_API.Dtos.CommonDtos;
+using Microsoft.AspNetCore.Mvc;
+using Freshx_API.Interfaces.Auth;
+using Microsoft.Identity.Client;
+using Freshx_API.Repository.Auth.TokenRepositories;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
-
+//cấu hình Swagger phục vụ cho việc kiểm tra api với authorize
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "API DATN", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
+//Tránh lỗi StackOverflowException khi serialize
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+{
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+});
 // Đọc password và salt từ biến môi trườn g
 string password = Environment.GetEnvironmentVariable("ENCRYPTION_PASSWORD")
 ?? builder.Configuration["EncryptionSettings:Password"]
@@ -41,13 +84,175 @@ var connectionString = builder.Configuration["ConnectionStrings:DBFreshx"];
 var jwtKey = builder.Configuration["Jwt:Key"];
 var blobConnectionString = builder.Configuration["AzureBlobStorage:ConnectionString"];
 var containerName = builder.Configuration["AzureBlobStorage:ContainerName"];
-
 // Add services to the container.
 builder.Services.AddDbContext<FreshxDBContext>(options =>{
     options.UseSqlServer(connectionString);
         });
-    
-builder.Services.AddControllers();
+//configure Identity Service
+builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequiredLength = 6;
+    // Thiet lap khoa tài kho?n
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1); // Thoi gian khóa
+    options.Lockout.MaxFailedAccessAttempts = 5; // So lan sai mat khau toi da
+    options.Lockout.AllowedForNewUsers = true; // Cho phép khóa tài khoan moi
+})
+.AddEntityFrameworkStores<FreshxDBContext>()
+.AddDefaultTokenProviders();
+builder.Services.AddIdentityCore<AppUser>()
+    .AddTokenProvider<DataProtectorTokenProvider<AppUser>>(TokenOptions.DefaultProvider);
+//
+builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(e => e.Value?.Errors.Count > 0)
+            .Select(e => new ValidationError
+            {
+                Field = e.Key,
+                Message = e.Value?.Errors.First().ErrorMessage ?? "Invalid input value"
+            })
+            .ToList();
+
+        var response = new ApiResponse<List<ValidationError>>
+        {
+            Status = false,
+            Path = context.HttpContext.Request.Path,
+            Message = "Validation failed",
+            StatusCode = StatusCodes.Status400BadRequest,
+            Data = errors,
+            Timestamp = DateTime.UtcNow
+        };
+
+        /*return new BadRequestObjectResult(response);*/
+        return new ObjectResult(response)
+        {
+            StatusCode = StatusCodes.Status400BadRequest
+        };
+    };
+}); ;
+// Configure JWT authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+        ),
+        RoleClaimType = ClaimTypes.Role
+    };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnTokenValidated = context =>
+        {
+            var tokenValidUntil = context.SecurityToken.ValidTo;
+            if (DateTime.UtcNow > tokenValidUntil)
+            {
+                context.Fail("Token has expired");
+            }
+
+            var userClaims = context.Principal.Claims;
+            if (!userClaims.Any())
+            {
+                context.Fail("Token contains no claims");
+            }
+
+            return Task.CompletedTask;
+        },
+
+        OnAuthenticationFailed = async context =>
+        {
+            context.NoResult();
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+
+            string errorMessage = context.Exception switch
+            {
+                SecurityTokenExpiredException _ => "Token has expired",
+                SecurityTokenInvalidSignatureException _ => "Invalid token signature",
+                SecurityTokenInvalidLifetimeException _ => "Token lifetime is invalid",
+                SecurityTokenNotYetValidException _ => "Token is not valid yet",
+                SecurityTokenMalformedException _ => "Malformed token",
+                _ => "Invalid token"
+            };
+
+            var response = new ApiResponse<object>
+            {
+                Status = false,
+                Path = context.Request.Path,
+                Message = errorMessage,
+                StatusCode = StatusCodes.Status401Unauthorized,
+                Data = null,
+                Timestamp = DateTime.UtcNow
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        },
+
+        OnChallenge = async context =>
+        {
+            context.HandleResponse();
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+
+            string message = string.IsNullOrEmpty(context.Error)
+                ? "Unauthorized access"
+                : context.Error switch
+                {
+                    "invalid_token" => "The token is invalid",
+                    "invalid_grant" => "The authorization grant is invalid",
+                    _ => $"Authorization failed: {context.Error}"
+                };
+
+            var response = new ApiResponse<object>
+            {
+                Status = false,
+                Path = context.Request.Path,
+                Message = message,
+                StatusCode = StatusCodes.Status401Unauthorized,
+                Data = null,
+                Timestamp = DateTime.UtcNow
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        },
+
+        OnForbidden = async context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            context.Response.ContentType = "application/json";
+
+            var response = new ApiResponse<object>
+            {
+                Status = false,
+                Path = context.Request.Path,
+                Message = "You don't have permission to access this resource",
+                StatusCode = StatusCodes.Status403Forbidden,
+                Data = null,
+                Timestamp = DateTime.UtcNow
+            };
+
+            await context.Response.WriteAsJsonAsync(response);
+        }
+    };
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -58,10 +263,17 @@ var mapperConfig = new MapperConfiguration(mc =>
     // Thêm các profile của bạn ở đây
     // mc.AddProfile(new YourAutoMapperProfile());
 });
-
+// Custom route lowercase
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+    options.LowercaseQueryStrings = true; // Tùy chọn: lowercase cả query string
+});
 builder.Services.AddScoped<BlobServices>();
 builder.Services.AddScoped<IFilesRepository, FileRepository>();
-
+builder.Services.AddScoped<IRoleRepository,RoleRepository>();
+builder.Services.AddScoped<IAccountRepository,AccountRepository>();
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -88,8 +300,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+//xac thuc truoc khi phan quyen
 app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
