@@ -8,6 +8,5 @@
         public int StatusCode { get; set; }
         public T? Data { get; set; }
         public DateTime Timestamp { get; set; }
-        public object Details { get; set; }
     }
 }
