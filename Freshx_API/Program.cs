@@ -81,10 +81,9 @@ builder.Configuration.AddConfiguration(
         .Build());
 
 var connectionString = builder.Configuration["ConnectionStrings:DBFreshx"];
-var jwtKey = builder.Configuration["JWT:Key"];
+var jwtKey = builder.Configuration["Jwt:Key"];
 var blobConnectionString = builder.Configuration["AzureBlobStorage:ConnectionString"];
 var containerName = builder.Configuration["AzureBlobStorage:ContainerName"];
-
 // Add services to the container.
 builder.Services.AddDbContext<FreshxDBContext>(options =>{
     options.UseSqlServer(connectionString);
@@ -97,7 +96,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 6;
-    // Thi?t l?p khóa tài kho?n
+    // Thiet lap khoa tài kho?n
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1); // Thoi gian khóa
     options.Lockout.MaxFailedAccessAttempts = 5; // So lan sai mat khau toi da
     options.Lockout.AllowedForNewUsers = true; // Cho phép khóa tài khoan moi
@@ -153,7 +152,7 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
-            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"])
+            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
         ),
         RoleClaimType = ClaimTypes.Role
     };
@@ -177,8 +176,12 @@ builder.Services.AddAuthentication(options =>
             return Task.CompletedTask;
         },
 
-        OnAuthenticationFailed = async context =>
+        OnAuthenticationFailed = context =>
         {
+            if (context.Response.HasStarted)
+            {
+                return Task.CompletedTask;
+            }
             context.NoResult();
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             context.Response.ContentType = "application/json";
@@ -203,12 +206,16 @@ builder.Services.AddAuthentication(options =>
                 Timestamp = DateTime.UtcNow
             };
 
-            await context.Response.WriteAsJsonAsync(response);
+            return context.Response.WriteAsJsonAsync(response);  // Added return
         },
 
-        OnChallenge = async context =>
+        OnChallenge = context =>
         {
             context.HandleResponse();
+            if (context.Response.HasStarted)
+            {
+                return Task.CompletedTask;
+            }
             context.Response.StatusCode = StatusCodes.Status401Unauthorized;
             context.Response.ContentType = "application/json";
 
@@ -231,11 +238,15 @@ builder.Services.AddAuthentication(options =>
                 Timestamp = DateTime.UtcNow
             };
 
-            await context.Response.WriteAsJsonAsync(response);
+            return context.Response.WriteAsJsonAsync(response);  // Added return
         },
 
-        OnForbidden = async context =>
+        OnForbidden = context =>
         {
+            if (context.Response.HasStarted)
+            {
+                return Task.CompletedTask;
+            }
             context.Response.StatusCode = StatusCodes.Status403Forbidden;
             context.Response.ContentType = "application/json";
 
@@ -249,7 +260,7 @@ builder.Services.AddAuthentication(options =>
                 Timestamp = DateTime.UtcNow
             };
 
-            await context.Response.WriteAsJsonAsync(response);
+            return context.Response.WriteAsJsonAsync(response);  // Added return
         }
     };
 });
@@ -264,7 +275,12 @@ var mapperConfig = new MapperConfiguration(mc =>
     // Thêm các profile của bạn ở đây
     // mc.AddProfile(new YourAutoMapperProfile());
 });
-
+// Custom route lowercase
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+    options.LowercaseQueryStrings = true; // Tùy chọn: lowercase cả query string
+});
 builder.Services.AddScoped<BlobServices>();
 builder.Services.AddScoped<IFilesRepository, FileRepository>();
 builder.Services.AddScoped<IRoleRepository,RoleRepository>();

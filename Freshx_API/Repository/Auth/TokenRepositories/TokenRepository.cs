@@ -20,7 +20,7 @@ namespace Freshx_API.Repository.Auth.TokenRepositories
         {
             _configuration = configuration;
             _userManager = userManager;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
         }
 
         public async Task<TokenInfo> IssueAccessToken(AppUser app)
@@ -45,12 +45,12 @@ namespace Freshx_API.Repository.Auth.TokenRepositories
             {
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
-            var expireAt = DateTime.UtcNow.AddMinutes(1);
+            var expireAt = DateTime.UtcNow.AddHours(1);
             var token = new JwtSecurityToken(
             //  issuer: _configuration["Jwt:Issuer"],
             //  audience: _configuration["Jwt:Audience"],
               claims: claims,
-              expires: DateTime.UtcNow.AddMinutes(1),
+              expires: DateTime.UtcNow.AddHours(1),
               signingCredentials: credentials
               );
             return new TokenInfo
