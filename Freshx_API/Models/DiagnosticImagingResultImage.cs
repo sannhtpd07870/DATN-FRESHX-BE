@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class DiagnosticImagingResultImage
 {
+    [Key]
     public int DiagnosticImagingResultImageId { get; set; }
 
     public int? DiagnosticImagingResultId { get; set; }

@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Document
 {
+    [Key]
     public int DocumentId { get; set; } // ID tài liệu
 
     public string DocumentCode { get; set; } = null!; // Mã tài liệu
@@ -163,7 +166,7 @@ public partial class Document
 
     public virtual Doctor? Doctor { get; set; } // Bác sĩ
 
-    public virtual ICollection<DocumentDetail> DocumentDetails { get; set; } = new List<DocumentDetail>(); // Danh sách chi tiết tài liệu
+    //public virtual ICollection<DocumentDetail> DocumentDetails { get; set; } = new List<DocumentDetail>(); // Danh sách chi tiết tài liệu
 
     public virtual DocumentPurpose? DocumentPurpose { get; set; } // Mục đích tài liệu
 
@@ -173,7 +176,7 @@ public partial class Document
 
     public virtual Employee? Inspector { get; set; } // Người kiểm tra
 
-    public virtual ICollection<Document> InverseRelatedDocument { get; set; } = new List<Document>(); // Danh sách tài liệu liên quan ngược
+    //public virtual ICollection<Document> InverseRelatedDocument { get; set; } = new List<Document>(); // Danh sách tài liệu liên quan ngược
 
     public virtual Pharmacy? IssuingPharmacy { get; set; } // Nhà thuốc phát hành
 

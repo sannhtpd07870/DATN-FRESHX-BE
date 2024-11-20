@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class UnitOfMeasure
 {
@@ -27,9 +27,9 @@ public partial class UnitOfMeasure
 
     public int? UpdatedBy { get; set; } // Người cập nhật
 
-    public virtual ICollection<DocumentDetail> DocumentDetailOriginalUnitOfMeasures { get; set; } = new List<DocumentDetail>(); // Danh sách chi tiết tài liệu đơn vị đo lường gốc
+    //public virtual ICollection<DocumentDetail> DocumentDetailOriginalUnitOfMeasures { get; set; } = new List<DocumentDetail>(); // Danh sách chi tiết tài liệu đơn vị đo lường gốc
 
-    public virtual ICollection<DocumentDetail> DocumentDetailUnitOfMeasures { get; set; } = new List<DocumentDetail>(); // Danh sách chi tiết tài liệu đơn vị đo lường
+    //public virtual ICollection<DocumentDetail> DocumentDetailUnitOfMeasures { get; set; } = new List<DocumentDetail>(); // Danh sách chi tiết tài liệu đơn vị đo lường
 
-    public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>(); // Danh sách danh mục thuốc liên quan
+    //public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>(); // Danh sách danh mục thuốc liên quan
 }

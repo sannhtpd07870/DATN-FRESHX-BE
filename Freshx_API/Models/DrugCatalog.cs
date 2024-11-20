@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class DrugCatalog
 {
@@ -79,18 +79,18 @@ public partial class DrugCatalog
 
     public virtual Pharmacy? DepartmentPharmacy { get; set; } // Nhà thuốc phòng ban
 
-    public virtual ICollection<DocumentDetail> DocumentDetails { get; set; } = new List<DocumentDetail>(); // Danh sách chi tiết tài liệu
+    //public virtual ICollection<DocumentDetail> DocumentDetails { get; set; } = new List<DocumentDetail>(); // Danh sách chi tiết tài liệu
 
-    public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>(); // Danh sách đặt thuốc
+    //public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>(); // Danh sách đặt thuốc
 
     public virtual DrugType? DrugType { get; set; } // Loại thuốc
 
     public virtual Pharmacy? ManagementPharmacy { get; set; } // Nhà thuốc quản lý
     public virtual Supplier? Manufacturer { get; set; }
 
-    public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
+    //public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 
-    public virtual ICollection<TemplatePrescriptionDrugMapping> TemplatePrescriptionDrugMappings { get; set; } = new List<TemplatePrescriptionDrugMapping>();
+    //public virtual ICollection<TemplatePrescriptionDrugMapping> TemplatePrescriptionDrugMappings { get; set; } = new List<TemplatePrescriptionDrugMapping>();
 
     public virtual UnitOfMeasure? UnitOfMeasure { get; set; }
 }

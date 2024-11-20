@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class TemplatePrescription
 {
@@ -23,5 +23,5 @@ public partial class TemplatePrescription
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
 
-    public virtual ICollection<TemplatePrescriptionDrugMapping> TemplatePrescriptionDrugMappings { get; set; } = new List<TemplatePrescriptionDrugMapping>(); // Danh sách ánh xạ thuốc trong mẫu đơn
+    //public virtual ICollection<TemplatePrescriptionDrugMapping> TemplatePrescriptionDrugMappings { get; set; } = new List<TemplatePrescriptionDrugMapping>(); // Danh sách ánh xạ thuốc trong mẫu đơn
 }

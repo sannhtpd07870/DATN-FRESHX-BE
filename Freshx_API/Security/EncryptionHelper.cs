@@ -50,7 +50,6 @@ namespace Freshx_API.Helpers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Lỗi giải mã: {ex.Message}");
                 return cipherText; // Trả về chuỗi gốc nếu không thể giải mã
             }
         }

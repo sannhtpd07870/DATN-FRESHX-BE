@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Dictionary
 {
+    [Key]
     public int DictionaryId { get; set; } // ID từ điển
 
     public string? Code { get; set; } // Mã từ điển

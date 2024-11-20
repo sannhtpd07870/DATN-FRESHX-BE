@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class DiseaseGroup
 {
+    [Key]
     public int DiseaseGroupId { get; set; }
 
     public string? Code { get; set; }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class UserAction
 {
+    [Key]
     public int UserActionId { get; set; }
 
     public int? LoginSessionId { get; set; }

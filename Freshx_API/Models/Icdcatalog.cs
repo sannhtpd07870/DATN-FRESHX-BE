@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
-public partial class Icdcatalog
+public partial class ICDCatalog
 {
-    public int IcdcatalogId { get; set; } // ID danh mục ICD
+    public int ICDCatalogId { get; set; } // ID danh mục ICD
 
     public string? Code { get; set; } // Mã danh mục ICD
 
@@ -17,7 +17,7 @@ public partial class Icdcatalog
 
     public string? Level { get; set; } // Cấp độ danh mục ICD
 
-    public int? IcdcatalogGroupId { get; set; } // ID nhóm danh mục ICD
+    public int?  ICDCatalogGroupId { get; set; } // ID nhóm danh mục ICD
 
     public string? Subgroup { get; set; } // Nhóm phụ
 
@@ -39,11 +39,11 @@ public partial class Icdcatalog
 
     public int? LegacyCode { get; set; } // Mã kế thừa
 
-    public virtual ICollection<DoctorsCommonIcd> DoctorsCommonIcds { get; set; } = new List<DoctorsCommonIcd>(); // Danh sách ICD phổ biến của bác sĩ
+    //public virtual ICollection<DoctorsCommonIcd> DoctorsCommonIcds { get; set; } = new List<DoctorsCommonIcd>(); // Danh sách ICD phổ biến của bác sĩ
 
-    public virtual Icdcatalog? IcdcatalogGroup { get; set; } // Nhóm danh mục ICD
+    public virtual  ICDCatalog?  ICDCatalogGroup { get; set; } // Nhóm danh mục ICD
 
-    public virtual ICollection<Icdcatalog> InverseIcdcatalogGroup { get; set; } = new List<Icdcatalog>(); // Danh sách nhóm danh mục ICD ngược
+    //public virtual ICollection< ICDCatalog> Inverse ICDCatalogGroup { get; set; } = new List< ICDCatalog>(); // Danh sách nhóm danh mục ICD ngược
 
-    public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>(); // Danh sách hóa đơn liên quan
+    //public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>(); // Danh sách hóa đơn liên quan
 }

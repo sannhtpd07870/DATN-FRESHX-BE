@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class ZaloUser
 {
+    [Key]
     public int? RowNumber { get; set; } // Số thứ tự hàng
 
     public string? Avatar { get; set; } // Đường dẫn đến ảnh đại diện

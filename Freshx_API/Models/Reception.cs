@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Reception
 {
@@ -45,21 +45,21 @@ public partial class Reception
 
     public string? ReasonForVisit { get; set; }
 
-    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+    //public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
     public virtual Doctor? AssignedDoctor { get; set; }
 
-    public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>();
+    //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>();
 
-    public virtual ICollection<ExaminationConfirmation> ExaminationConfirmations { get; set; } = new List<ExaminationConfirmation>();
+    //public virtual ICollection<ExaminationConfirmation> ExaminationConfirmations { get; set; } = new List<ExaminationConfirmation>();
 
-    public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
+    //public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
 
-    public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>();
+    //public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>();
 
-    public virtual ICollection<LabTestFile> LabTestFiles { get; set; } = new List<LabTestFile>();
+    //public virtual ICollection<LabTestFile> LabTestFiles { get; set; } = new List<LabTestFile>();
 
-    public virtual ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; } = new List<MedicalServiceRequest>();
+    //public virtual ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; } = new List<MedicalServiceRequest>();
 
     public virtual Patient? Patient { get; set; }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class DocumentPurpose
 {
@@ -11,5 +11,5 @@ public partial class DocumentPurpose
 
     public string? Name { get; set; } // Tên mục đích tài liệu
 
-    public virtual ICollection<Document> Documents { get; set; } = new List<Document>(); // Danh sách tài liệu liên quan
+    //public virtual ICollection<Document> Documents { get; set; } = new List<Document>(); // Danh sách tài liệu liên quan
 }

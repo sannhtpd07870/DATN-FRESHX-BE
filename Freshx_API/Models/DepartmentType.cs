@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class DepartmentType
 {
+    [Key]
     public int DepartmentTypeId { get; set; } // ID loại phòng ban
 
     public string? Code { get; set; } // Mã loại phòng ban
@@ -23,5 +25,4 @@ public partial class DepartmentType
 
     public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
 
-    public virtual ICollection<Department> Departments { get; set; } = new List<Department>(); // Danh sách phòng ban liên quan
 }
