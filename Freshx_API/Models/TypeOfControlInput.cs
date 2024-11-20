@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class TypeOfControlInput
 {
@@ -11,5 +11,5 @@ public partial class TypeOfControlInput
 
     public string? Name { get; set; } // Tên loại đầu vào kiểm soát
 
-    public virtual ICollection<ReportParameter> ReportParameters { get; set; } = new List<ReportParameter>(); // Danh sách tham số báo cáo
+    //public virtual ICollection<ReportParameter> ReportParameters { get; set; } = new List<ReportParameter>(); // Danh sách tham số báo cáo
 }

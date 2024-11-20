@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class DiagnosisDictionary
 {
+    [Key]
     public int DiagnosisDictionaryId { get; set; } // ID của từ điển chẩn đoán
 
     public string? Code { get; set; } // Mã chẩn đoán

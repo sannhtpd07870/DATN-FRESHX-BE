@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class ConclusionDictionary
 {
+    [Key]
     public int ConclusionDictionaryId { get; set; } // ID từ điển kết luận
 
     public string? Code { get; set; } // Mã từ điển kết luận

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class UserPharmacy
 {
+    [Key]
     public int UserPharmacyId { get; set; } // ID nhà thuốc người dùng
 
     public int? UserId { get; set; } // ID người dùng

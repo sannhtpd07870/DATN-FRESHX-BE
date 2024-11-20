@@ -1,10 +1,13 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Doctor
 {
+    [Key]
     public int DoctorId { get; set; } // ID bác sĩ
 
     public string? Name { get; set; } // Tên bác sĩ
@@ -21,15 +24,15 @@ public partial class Doctor
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
 
-    public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
+    //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
 
-    public virtual ICollection<DoctorsCommonIcd> DoctorsCommonIcds { get; set; } = new List<DoctorsCommonIcd>(); // Danh sách ICD phổ biến của bác sĩ
+    //public virtual ICollection<DoctorsCommonIcd> DoctorsCommonIcds { get; set; } = new List<DoctorsCommonIcd>(); // Danh sách ICD phổ biến của bác sĩ
 
-    public virtual ICollection<Document> DocumentDoctors { get; set; } = new List<Document>(); // Danh sách tài liệu của bác sĩ
+    //public virtual ICollection<Document> DocumentDoctors { get; set; } = new List<Document>(); // Danh sách tài liệu của bác sĩ
 
-    public virtual ICollection<Document> DocumentReferralDoctors { get; set; } = new List<Document>(); // Danh sách tài liệu của bác sĩ giới thiệu
+    //public virtual ICollection<Document> DocumentReferralDoctors { get; set; } = new List<Document>(); // Danh sách tài liệu của bác sĩ giới thiệu
 
-    public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>(); // Danh sách kết quả xét nghiệm
+    //public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>(); // Danh sách kết quả xét nghiệm
 
-    public virtual ICollection<Reception> Receptions { get; set; } = new List<Reception>(); // Danh sách tiếp nhận
+    //public virtual ICollection<Reception> Receptions { get; set; } = new List<Reception>(); // Danh sách tiếp nhận
 }

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Patient
 {
+    [Key]
     public int PatientId { get; set; } // ID bệnh nhân
 
     public string? MedicalRecordNumber { get; set; } // Số hồ sơ bệnh án
@@ -51,25 +53,25 @@ public partial class Patient
 
     public string? CompanyName { get; set; } // Tên công ty của bệnh nhân
 
-    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>(); // Danh sách cuộc hẹn
+    //public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>(); // Danh sách cuộc hẹn
 
-    public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
+    //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
 
     public virtual AdministrativeUnit? District { get; set; } // Đơn vị hành chính quận/huyện
 
-    public virtual ICollection<EinvoiceFile> EinvoiceFiles { get; set; } = new List<EinvoiceFile>(); // Danh sách tệp hóa đơn điện tử
+    //public virtual ICollection<EinvoiceFile> EinvoiceFiles { get; set; } = new List<EinvoiceFile>(); // Danh sách tệp hóa đơn điện tử
 
-    public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>(); // Danh sách hóa đơn
+    //public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>(); // Danh sách hóa đơn
 
-    public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>(); // Danh sách kết quả xét nghiệm
+    //public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>(); // Danh sách kết quả xét nghiệm
 
-    public virtual ICollection<LabTestFile> LabTestFiles { get; set; } = new List<LabTestFile>(); // Danh sách tệp xét nghiệm
+    //public virtual ICollection<LabTestFile> LabTestFiles { get; set; } = new List<LabTestFile>(); // Danh sách tệp xét nghiệm
 
-    public virtual ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; } = new List<MedicalServiceRequest>(); // Danh sách yêu cầu dịch vụ y tế
+    //public virtual ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; } = new List<MedicalServiceRequest>(); // Danh sách yêu cầu dịch vụ y tế
 
     public virtual AdministrativeUnit? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
 
-    public virtual ICollection<Reception> Receptions { get; set; } = new List<Reception>(); // Danh sách tiếp nhận
+    //public virtual ICollection<Reception> Receptions { get; set; } = new List<Reception>(); // Danh sách tiếp nhận
 
     public virtual AdministrativeUnit? Ward { get; set; } // Đơn vị hành chính phường/xã
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Hospital
 {
@@ -35,5 +35,5 @@ public partial class Hospital
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
 
-    public virtual ICollection<User> Users { get; set; } = new List<User>(); // Danh sách người dùng liên quan
+    //public virtual ICollection<User> Users { get; set; } = new List<User>(); // Danh sách người dùng liên quan
 }

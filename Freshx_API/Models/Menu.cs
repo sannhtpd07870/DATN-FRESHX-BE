@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Menu
 {
@@ -25,9 +25,9 @@ public partial class Menu
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
 
-    public virtual ICollection<Menu> InverseParentMenu { get; set; } = new List<Menu>(); // Danh sách menu con
+    //public virtual ICollection<Menu> InverseParentMenu { get; set; } = new List<Menu>(); // Danh sách menu con
 
-    public virtual ICollection<MenuPermission> MenuPermissions { get; set; } = new List<MenuPermission>(); // Danh sách quyền truy cập menu
+    //public virtual ICollection<MenuPermission> MenuPermissions { get; set; } = new List<MenuPermission>(); // Danh sách quyền truy cập menu
 
     public virtual Menu? ParentMenu { get; set; } // Menu cha
 }

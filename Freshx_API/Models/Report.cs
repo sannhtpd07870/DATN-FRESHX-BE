@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Report
 {
@@ -27,7 +27,7 @@ public partial class Report
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
 
-    public virtual ICollection<ReportParameter> ReportParameters { get; set; } = new List<ReportParameter>(); // Danh sách tham số báo cáo
+    //public virtual ICollection<ReportParameter> ReportParameters { get; set; } = new List<ReportParameter>(); // Danh sách tham số báo cáo
 
-    public virtual ICollection<ReportPermission> ReportPermissions { get; set; } = new List<ReportPermission>(); // Danh sách quyền truy cập báo cáo
+    //public virtual ICollection<ReportPermission> ReportPermissions { get; set; } = new List<ReportPermission>(); // Danh sách quyền truy cập báo cáo
 }

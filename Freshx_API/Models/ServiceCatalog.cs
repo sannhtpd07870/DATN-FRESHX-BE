@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class ServiceCatalog
 {
@@ -39,17 +39,19 @@ public partial class ServiceCatalog
 
     public int? PriceTypeId { get; set; } // ID loại giá
 
-    public virtual ICollection<ConclusionDictionary> ConclusionDictionaries { get; set; } = new List<ConclusionDictionary>(); // Danh sách từ điển kết luận
+    //public virtual ICollection<ConclusionDictionary> ConclusionDictionaries { get; set; } = new List<ConclusionDictionary>(); // Danh sách từ điển kết luận
 
-    public virtual ICollection<ServiceCatalog> InverseParentService { get; set; } = new List<ServiceCatalog>(); // Danh sách dịch vụ con
+    //public virtual ICollection<ServiceCatalog> InverseParentService { get; set; } = new List<ServiceCatalog>(); // Danh sách dịch vụ con
 
-    public virtual ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; } = new List<MedicalServiceRequest>(); // Danh sách yêu cầu dịch vụ y tế
+    //public virtual ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; } = new List<MedicalServiceRequest>(); // Danh sách yêu cầu dịch vụ y tế
 
     public virtual ServiceCatalog? ParentService { get; set; } // Dịch vụ cha
 
     public virtual ServiceGroup? ServiceGroup { get; set; } // Nhóm dịch vụ
 
+    public ICollection<ServiceCatalog> ChildServices { get; set; }
+    public PriceType PriceType { get; set; }
     public virtual ICollection<ServiceStandardValue> ServiceStandardValues { get; set; } = new List<ServiceStandardValue>(); // Danh sách giá trị tiêu chuẩn dịch vụ
 
-    public virtual ICollection<UserAction> UserActions { get; set; } = new List<UserAction>(); // Danh sách hành động của người dùng
+    //public virtual ICollection<UserAction> UserActions { get; set; } = new List<UserAction>(); // Danh sách hành động của người dùng
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class EmailContent
 {
@@ -15,7 +15,7 @@ public partial class EmailContent
 
     public int? SenderId { get; set; } // ID người gửi
 
-    public virtual ICollection<EmailContentImage> EmailContentImages { get; set; } = new List<EmailContentImage>(); // Danh sách hình ảnh trong nội dung email
+    //public virtual ICollection<EmailContentImage> EmailContentImages { get; set; } = new List<EmailContentImage>(); // Danh sách hình ảnh trong nội dung email
 
     public virtual Employee? Sender { get; set; } // Người gửi email
 }
