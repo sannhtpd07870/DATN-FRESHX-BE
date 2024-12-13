@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Freshx_API.Models;
 
 namespace Freshx_API.Models;
 

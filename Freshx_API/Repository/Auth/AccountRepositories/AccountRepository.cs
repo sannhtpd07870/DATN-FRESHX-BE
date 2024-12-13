@@ -26,6 +26,7 @@ namespace Freshx_API.Repository.Auth.AccountRepositories
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
+
             //phuong thuc tao tai khoan mac dinh trong asp.netcore identity voi UseName la duy nhat neu trung lap se tao tai khoan khong thanh cong
             //vi co che modelBinding nen email va mat khau da duoc kiem tra tinh hop le truoc
             var result = await _userManager.CreateAsync(appUser, registerDto.Password);

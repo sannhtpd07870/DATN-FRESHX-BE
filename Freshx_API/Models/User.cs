@@ -14,7 +14,7 @@ public partial class User
 
     public string? UserName { get; set; } // Tên người dùng
 
-    public string? Password { get; set; } // Mật khẩu người dùng
+    public string? Email { get; set; } // Mật khẩu người dùng
 
     public int? HospitalId { get; set; } // ID bệnh viện
 
