@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Freshx_API.Models;
 
 namespace Freshx_API.Models;
 

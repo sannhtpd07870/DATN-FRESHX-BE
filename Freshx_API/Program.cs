@@ -288,6 +288,10 @@ builder.Services.AddScoped<IAccountRepository,AccountRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
+builder.Services.AddScoped<IDrugCatalogService, DrugCatalogService>();
+builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
+builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
