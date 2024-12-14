@@ -57,7 +57,7 @@ public partial class Patient
 
     //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
 
-    public virtual AdministrativeUnit? District { get; set; } // Đơn vị hành chính quận/huyện
+    public virtual District? District { get; set; } // Đơn vị hành chính quận/huyện
 
     //public virtual ICollection<EinvoiceFile> EinvoiceFiles { get; set; } = new List<EinvoiceFile>(); // Danh sách tệp hóa đơn điện tử
 
@@ -69,9 +69,9 @@ public partial class Patient
 
     //public virtual ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; } = new List<MedicalServiceRequest>(); // Danh sách yêu cầu dịch vụ y tế
 
-    public virtual AdministrativeUnit? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
+    public virtual Province? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
 
     //public virtual ICollection<Reception> Receptions { get; set; } = new List<Reception>(); // Danh sách tiếp nhận
 
-    public virtual AdministrativeUnit? Ward { get; set; } // Đơn vị hành chính phường/xã
+    public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
 }
