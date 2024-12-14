@@ -6,8 +6,9 @@ namespace Freshx_API.Models
     public partial class Savefile
     {
         [Key]
-        public int? id { get; set; }
-        public string? urlFile { get; set; }
-        public string? fileName { get; set; }
+        public int Id { get; set; }
+        public string? FileName { get; set; }
+        public string? FilePath { get; set; }
+        public DateTime UploadDate { get; set; }
     }
 }
