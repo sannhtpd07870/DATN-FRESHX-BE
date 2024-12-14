@@ -17,11 +17,13 @@ namespace Freshx_API.Services
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public DrugCatalogService(FreshxDBContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        private readonly string _devicePath;
+        public DrugCatalogService(FreshxDBContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             _context = context;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _devicePath = _devicePath = configuration["FileSettings:DevicePath"] ?? "C:\\DefaultPath";
         }
 
         public async Task<ApiResponse<DrugCatalogDto>> GetDrugCatalogById(int id)
