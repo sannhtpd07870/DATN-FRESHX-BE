@@ -88,5 +88,33 @@ namespace Freshx_API.Repository.Auth.TokenRepositories
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.ExpiredTime > DateTime.UtcNow);
             return user?.UserName;
         }
+
+        // Phương thức lấy ID người dùng từ token
+        public string GetUserIdFromToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                // Xác thực và giải mã token
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = _key,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero // Không chênh lệch thời gian khi xác thực
+                }, out SecurityToken validatedToken);
+
+                // Lấy claim "App_Id" hoặc "sub" từ token
+                var userId = principal.FindFirst("App_Id")?.Value ?? principal.FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+                return userId;
+            }
+            catch
+            {
+                // Nếu token không hợp lệ hoặc không thể giải mã, trả về null hoặc có thể ném lỗi tùy theo yêu cầu
+                return null;
+            }
+        }
     }
 }
