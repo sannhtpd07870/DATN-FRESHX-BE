@@ -294,12 +294,9 @@ builder.Services.AddScoped<IDrugCatalogService, DrugCatalogService>();
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 
-<<<<<<< HEAD
 // Đăng ký Repository và Service với Dependency Injection
 builder.Services.AddScoped<IDepartmentTypeRepository, DepartmentTypeRepository>();
 builder.Services.AddScoped<DepartmentTypeService>();
-=======
->>>>>>> origin/develop
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
