@@ -1,7 +1,8 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Freshx_API.Dtos;
 using Freshx_API.Dtos.Auth.Account;
 using Freshx_API.Dtos.Auth.Role;
+using Freshx_API.Dtos.DepartmenTypeDtos;
 using Freshx_API.Dtos.Drugs;
 using Freshx_API.Models;
 using Microsoft.AspNetCore.Identity;
@@ -22,6 +23,12 @@ namespace Freshx_API.Mappers
             CreateMap<DrugType, DrugTypeDto>();
             CreateMap<DrugTypeCreateDto, DrugType>();
             CreateMap<DrugTypeUpdateDto, DrugType>();
+
+            // Mapping từ Model sang DTO
+            CreateMap<DepartmentType, DepartmentTypeDto>();
+
+            // Mapping từ DTO sang Model khi tạo hoặc cập nhật
+            CreateMap<DepartmentTypeCreateUpdateDto, DepartmentType>();
         }
     }
 }
