@@ -84,6 +84,7 @@ var connectionString = builder.Configuration["ConnectionStrings:DBFreshx"];
 var jwtKey = builder.Configuration["Jwt:Key"];
 var blobConnectionString = builder.Configuration["AzureBlobStorage:ConnectionString"];
 var containerName = builder.Configuration["AzureBlobStorage:ContainerName"];
+Console.WriteLine("jkds" + builder.Configuration["FileSettings:DevicePath"]);
 // Add services to the container.
 builder.Services.AddDbContext<FreshxDBContext>(options =>{
     options.UseSqlServer(connectionString);
@@ -281,8 +282,8 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true; // Tùy chọn: lowercase cả query string
 });
-builder.Services.AddScoped<BlobServices>();
-builder.Services.AddScoped<IFilesRepository, FileRepository>();
+builder.Services.AddScoped<IFileService, FileService>();
+
 builder.Services.AddScoped<IRoleRepository,RoleRepository>();
 builder.Services.AddScoped<IAccountRepository,AccountRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
@@ -293,8 +294,18 @@ builder.Services.AddScoped<IDrugCatalogService, DrugCatalogService>();
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 
+// Đăng ký Repository và Service với Dependency Injection
+builder.Services.AddScoped<IDepartmentTypeRepository, DepartmentTypeRepository>();
+builder.Services.AddScoped<DepartmentTypeService>();
+
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
+
+// Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
+builder.Services.AddHttpContextAccessor();
+
+
+
 
 var app = builder.Build();
 

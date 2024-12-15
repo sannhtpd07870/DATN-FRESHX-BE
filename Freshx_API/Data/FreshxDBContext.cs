@@ -36,7 +36,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     //public DbSet<PriceType> PriceTypes { get; set; }
     //public DbSet<TypeOfControlInput> TypeOfControlInputs { get; set; }
 
-    public DbSet<AdministrativeUnit> AdministrativeUnits { get; set; }
+   
     public DbSet<Appointment> Appointments { get; set; }
     public DbSet<AppUser> AppUsers { get; set; }  // Or perhaps a more descriptive name like "ApplicationUsers"
     public DbSet<ConclusionDictionary> ConclusionDictionaries { get; set; }
@@ -97,6 +97,9 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<UserActionByMedicalRecord> UserActionByMedicalRecords { get; set; }
     public DbSet<UserDepartment> UserDepartments { get; set; }
     public DbSet<UserPharmacy> UserPharmacies { get; set; }
+    public DbSet<District> Districts { get; set; }
+    public DbSet<Province> Provinces { get; set; }
+    public DbSet<Ward> Wards { get; set; }
     public DbSet<ZaloUser> ZaloUsers { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

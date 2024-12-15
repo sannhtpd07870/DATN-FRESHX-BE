@@ -16,9 +16,12 @@ public class DrugTypeService : IDrugTypeService
         _mapper = mapper;
     }
 
-    public async Task<List<DrugTypeDto?>> GetDrugTypeAsync()
+    public async Task<List<DrugTypeDto?>> GetDrugTypeAsync(string? searchKeyword,
+      DateTime? CreatetDate,
+      DateTime? UpdatedDate,
+      int? status)
     {
-        var drugType = await _drugTypeRepository.GetDrugTypeAsync();
+        var drugType = await _drugTypeRepository.GetDrugTypeAsync(searchKeyword, CreatetDate, UpdatedDate, status);
         return drugType == null ? null : _mapper.Map<List<DrugTypeDto>>(drugType);
     }
     public async Task<DrugTypeDto?> GetDrugTypeByIdAsync(int id)
@@ -45,7 +48,15 @@ public class DrugTypeService : IDrugTypeService
         var updatedDrugType = await _drugTypeRepository.UpdateDrugTypeAsync(drugType);
         return _mapper.Map<DrugTypeDto>(updatedDrugType);
     }
-
+    public async Task<bool> SoftDeleteDrugTypeAsync(int id)
+    {
+        var drugType = await _drugTypeRepository.GetDrugTypeByIdAsync(id);
+        if (drugType == null)
+        {
+            return false;
+        }
+        return await _drugTypeRepository.SoftDeleteDrugTypeAsync(id);
+    }
     public async Task<bool> DeleteDrugTypeAsync(int id)
     {
         var drugType = await _drugTypeRepository.GetDrugTypeByIdAsync(id);
