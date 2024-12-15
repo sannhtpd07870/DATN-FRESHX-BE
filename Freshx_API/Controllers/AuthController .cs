@@ -33,6 +33,18 @@ namespace Freshx_API.Controllers
 
             return Ok(new { UserId = userId });
         }
+
+        [HttpGet("me")]
+        public IActionResult GetUserId()
+        {
+            var userId = _tokenRepository.GetUserIdFromToken();
+            if (userId == null)
+            {
+                return Unauthorized("Token không hợp lệ hoặc đã hết hạn.");
+            }
+
+            return Ok(new { UserId = userId });
+        }
     }
 
     public class TokenRequest

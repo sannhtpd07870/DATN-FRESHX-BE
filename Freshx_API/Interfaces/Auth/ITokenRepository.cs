@@ -12,6 +12,7 @@ namespace Freshx_API.Interfaces.Auth
 
         // Phương thức mới: Lấy ID người dùng từ token
         public string? GetUserIdFromToken(string token);
+        public string? GetUserIdFromToken();
 
     }
 }
