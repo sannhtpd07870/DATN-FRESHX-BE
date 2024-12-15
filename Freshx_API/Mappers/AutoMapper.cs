@@ -26,6 +26,7 @@ namespace Freshx_API.Mappers
 
             // Mapping từ Model sang DTO
             CreateMap<DepartmentType, DepartmentTypeDto>();
+            CreateMap<DepartmentType, DepartmentTypeDetailDto>();
 
             // Mapping từ DTO sang Model khi tạo hoặc cập nhật
             CreateMap<DepartmentTypeCreateUpdateDto, DepartmentType>();

@@ -16,14 +16,25 @@ namespace Freshx_API.Controllers
         }
 
         // API GET: Lấy danh sách phòng ban
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
             var result = await _service.GetAllAsync();
-            if (result == null || result.ToArray().Length <= 0)
+            if (result == null || !result.Any())
                 return NotFound("Chưa có dữ liệu nào.");
             return Ok(result);
         }
+
+        // API GET: Lấy danh sách chi tiết phòng ban
+        [HttpGet("detail")]
+        public async Task<IActionResult> GetDetailAll()
+        {
+            var result = await _service.GetAllDetailAsync();
+            if (result == null || !result.Any())
+                return NotFound("Chưa có dữ liệu nào.");
+            return Ok(result);
+        }
+
 
         // API GET: Lấy thông tin phòng ban theo ID
         [HttpGet("{id}")]

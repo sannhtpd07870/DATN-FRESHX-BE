@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Freshx_API.Dtos.DepartmenTypeDtos;
 using Freshx_API.Interfaces;
+using Freshx_API.Interfaces.Auth;
 using Freshx_API.Models;
 
 namespace Freshx_API.Services
@@ -9,11 +10,13 @@ namespace Freshx_API.Services
     {
         private readonly IDepartmentTypeRepository _repository;
         private readonly IMapper _mapper;
+        private readonly ITokenRepository _tokenRepository;
 
-        public DepartmentTypeService(IDepartmentTypeRepository repository, IMapper mapper)
+        public DepartmentTypeService(IDepartmentTypeRepository repository, IMapper mapper, ITokenRepository tokenRepository)
         {
             _repository = repository;
             _mapper = mapper;
+            _tokenRepository = tokenRepository;
         }
 
         // Lấy danh sách phòng ban
@@ -25,6 +28,14 @@ namespace Freshx_API.Services
             return _mapper.Map<IEnumerable<DepartmentTypeDto>>(entities);
         }
 
+        // Lấy danh sách phòng ban
+        public async Task<IEnumerable<DepartmentTypeDetailDto>> GetAllDetailAsync()
+        {
+            var entities = await _repository.GetAllAsync();
+
+            // AutoMapper tự động chuyển đổi từ Model sang DTO
+            return _mapper.Map<IEnumerable<DepartmentTypeDetailDto>>(entities);
+        }
         // Lấy phòng ban theo ID
         public async Task<DepartmentTypeDto?> GetByIdAsync(int id)
         {
@@ -43,6 +54,7 @@ namespace Freshx_API.Services
             // Thiết lập các giá trị mặc định
             entity.IsDeleted = 0;
             entity.CreatedDate = DateTime.UtcNow;
+            entity.CreatedBy = _tokenRepository.GetUserIdFromToken();
 
             var createdEntity = await _repository.CreateAsync(entity);
 
@@ -61,6 +73,7 @@ namespace Freshx_API.Services
             _mapper.Map(dto, existingEntity);
 
             existingEntity.UpdatedDate = DateTime.UtcNow;
+            existingEntity.UpdatedBy = _tokenRepository.GetUserIdFromToken();
 
             await _repository.UpdateAsync(existingEntity);
         }

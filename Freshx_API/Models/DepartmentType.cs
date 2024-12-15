@@ -17,11 +17,11 @@ public partial class DepartmentType
 
     public int? IsDeleted { get; set; } // Trạng thái xóa mềm (0: chưa xóa, 1: đã xóa)
 
-    public int? CreatedBy { get; set; } // ID người tạo
+    public string? CreatedBy { get; set; } // ID người tạo
 
     public DateTime? CreatedDate { get; set; } // Thời gian tạo
 
-    public int? UpdatedBy { get; set; } // ID người cập nhật
+    public string? UpdatedBy { get; set; } // ID người cập nhật
 
     public DateTime? UpdatedDate { get; set; } // Thời gian cập nhật
 
