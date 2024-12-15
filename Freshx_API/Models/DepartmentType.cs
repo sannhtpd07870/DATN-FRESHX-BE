@@ -22,7 +22,7 @@ public partial class DepartmentType
     public DateTime? CreatedDate { get; set; } // Thời gian tạo
 
     public string? UpdatedBy { get; set; } // ID người cập nhật
-
+        
     public DateTime? UpdatedDate { get; set; } // Thời gian cập nhật
 
 }
