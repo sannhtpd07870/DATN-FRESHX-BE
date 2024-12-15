@@ -25,3 +25,4 @@ public partial class DrugType
 
  //   public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>(); // Danh sách danh mục thuốc liên quan
 }
+    

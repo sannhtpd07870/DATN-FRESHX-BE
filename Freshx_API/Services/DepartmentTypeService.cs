@@ -20,18 +20,24 @@ namespace Freshx_API.Services
         }
 
         // Lấy danh sách phòng ban
-        public async Task<IEnumerable<DepartmentTypeDto>> GetAllAsync()
+        public async Task<IEnumerable<DepartmentTypeDto>> GetAllAsync(string? searchKeyword,
+        DateTime? CreatetDate,
+      DateTime? UpdatedDate,
+      int? status)
         {
-            var entities = await _repository.GetAllAsync();
+            var entities = await _repository.GetAllAsync(searchKeyword, CreatetDate, UpdatedDate, status);
 
             // AutoMapper tự động chuyển đổi từ Model sang DTO
             return _mapper.Map<IEnumerable<DepartmentTypeDto>>(entities);
         }
 
         // Lấy danh sách phòng ban
-        public async Task<IEnumerable<DepartmentTypeDetailDto>> GetAllDetailAsync()
+        public async Task<IEnumerable<DepartmentTypeDetailDto>> GetAllDetailAsync(string? searchKeyword,
+       DateTime? CreatetDate,
+    DateTime? UpdatedDate,
+      int? status)
         {
-            var entities = await _repository.GetAllAsync();
+            var entities = await _repository.GetAllAsync(searchKeyword, CreatetDate, UpdatedDate, status);
 
             // AutoMapper tự động chuyển đổi từ Model sang DTO
             return _mapper.Map<IEnumerable<DepartmentTypeDetailDto>>(entities);
