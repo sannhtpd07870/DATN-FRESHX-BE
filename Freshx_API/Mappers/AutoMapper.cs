@@ -3,6 +3,7 @@ using Freshx_API.Dtos;
 using Freshx_API.Dtos.Auth.Account;
 using Freshx_API.Dtos.Auth.Role;
 using Freshx_API.Dtos.DepartmenTypeDtos;
+using Freshx_API.Dtos.Doctor;
 using Freshx_API.Dtos.Drugs;
 using Freshx_API.Models;
 using Microsoft.AspNetCore.Identity;
@@ -30,6 +31,13 @@ namespace Freshx_API.Mappers
 
             // Mapping từ DTO sang Model khi tạo hoặc cập nhật
             CreateMap<DepartmentTypeCreateUpdateDto, DepartmentType>();
+
+
+            // Doctor Mappings
+            CreateMap<Doctor, DoctorDto>();
+            CreateMap<Doctor, DoctorDetailDto>();
+            CreateMap<DoctorCreateUpdateDto, Doctor>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

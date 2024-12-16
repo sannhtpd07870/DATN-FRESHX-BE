@@ -298,6 +298,10 @@ builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 builder.Services.AddScoped<IDepartmentTypeRepository, DepartmentTypeRepository>();
 builder.Services.AddScoped<DepartmentTypeService>();
 
+
+// Đăng ký Repository và Service với Doctor Injection
+builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+builder.Services.AddScoped<DoctorService>();
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
