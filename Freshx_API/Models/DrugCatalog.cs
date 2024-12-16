@@ -73,7 +73,7 @@ public partial class DrugCatalog
 
     public int? ManagementPharmacyId { get; set; } // ID nhà thuốc quản lý
 
-    public int? DepartmentPharmacyId { get; set; } // ID nhà thuốc phòng ban
+      public int? DepartmentPharmacyId { get; set; } // ID nhà thuốc phòng ban
 
     public virtual Country? Country { get; set; } // Quốc gia của thuốc
 

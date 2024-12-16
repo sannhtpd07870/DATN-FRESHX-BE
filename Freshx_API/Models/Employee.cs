@@ -43,29 +43,9 @@ public partial class Employee
 
   //  public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
 
-    public virtual AdministrativeUnit? District { get; set; } // Đơn vị hành chính quận/huyện
+    public virtual District? District { get; set; } // Đơn vị hành chính quận/huyện
 
-    //public virtual ICollection<Document> DocumentApprovers { get; set; } = new List<Document>(); // Danh sách tài liệu phê duyệt
+    public virtual Province? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
 
-    //public virtual ICollection<Document> DocumentChiefAccountants { get; set; } = new List<Document>(); // Danh sách tài liệu kế toán trưởng
-
-    //public virtual ICollection<Document> DocumentDeliverers { get; set; } = new List<Document>(); // Danh sách tài liệu người giao
-
-    //public virtual ICollection<Document> DocumentInputters { get; set; } = new List<Document>(); // Danh sách tài liệu người nhập
-
-    //public virtual ICollection<Document> DocumentInspectors { get; set; } = new List<Document>(); // Danh sách tài liệu người kiểm tra
-
-    //public virtual ICollection<Document> DocumentReceivers { get; set; } = new List<Document>(); // Danh sách tài liệu người nhận
-
-    //public virtual ICollection<Document> DocumentTreasurers { get; set; } = new List<Document>(); // Danh sách tài liệu thủ quỹ
-
-    //public virtual ICollection<EmailContent> EmailContents { get; set; } = new List<EmailContent>(); // Danh sách nội dung email
-
-    //public virtual ICollection<MedicalServiceRequest> MedicalServiceRequestAssignedBies { get; set; } = new List<MedicalServiceRequest>(); // Danh sách yêu cầu dịch vụ y tế được giao
-
-    //public virtual ICollection<MedicalServiceRequest> MedicalServiceRequestSampleCollectors { get; set; } = new List<MedicalServiceRequest>(); // Danh sách yêu cầu dịch vụ y tế thu mẫu
-
-    public virtual AdministrativeUnit? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
-
-    public virtual AdministrativeUnit? Ward { get; set; } // Đơn vị hành chính phường/xã
+    public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
 }

@@ -20,8 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using Freshx_API.Interfaces.Auth;
 using Microsoft.Identity.Client;
 using Freshx_API.Repository.Auth.TokenRepositories;
-using Freshx_API.Interfaces.DocumentPurposeRepository;
-using Freshx_API.Repositories;
+using Freshx_API.Services.CommonServices;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -86,6 +85,7 @@ var connectionString = builder.Configuration["ConnectionStrings:DBFreshx"];
 var jwtKey = builder.Configuration["Jwt:Key"];
 var blobConnectionString = builder.Configuration["AzureBlobStorage:ConnectionString"];
 var containerName = builder.Configuration["AzureBlobStorage:ContainerName"];
+Console.WriteLine("jkds" + builder.Configuration["FileSettings:DevicePath"]);
 // Add services to the container.
 builder.Services.AddDbContext<FreshxDBContext>(options =>{
     options.UseSqlServer(connectionString);
@@ -283,11 +283,12 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true; // Tùy chọn: lowercase cả query string
 });
-builder.Services.AddScoped<BlobServices>();
-builder.Services.AddScoped<IFilesRepository, FileRepository>();
+builder.Services.AddScoped<IFileService, FileService>();
+
 builder.Services.AddScoped<IRoleRepository,RoleRepository>();
 builder.Services.AddScoped<IAccountRepository,AccountRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<IEmailService,EmailService>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
@@ -299,8 +300,38 @@ builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
 builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
 builder.Services.AddScoped<IPharmacyService,PharmacyService>();
 
+
+// Đăng ký Repository và Service với Dependency Injection
+builder.Services.AddScoped<IDepartmentTypeRepository, DepartmentTypeRepository>();
+builder.Services.AddScoped<DepartmentTypeService>();
+
+
+
+// Đăng ký Repository và Service với Doctor Injection
+builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
+builder.Services.AddScoped<DoctorService>();
+
+// Đăng ký Repository và Service với Dependency Injection
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<DepartmentService>();
+
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IInventoryTypeRepository, InventoryTypeRepository>();
+builder.Services.AddScoped<InventoryTypeService>();
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
+builder.Services.AddScoped<PharmacyService>();
+
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
+
+// Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
+builder.Services.AddHttpContextAccessor();
+
+
+
 
 var app = builder.Build();
 

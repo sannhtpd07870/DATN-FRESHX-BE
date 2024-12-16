@@ -1,7 +1,9 @@
-﻿using Freshx_API.Dtos.Auth.Account;
+﻿    using Freshx_API.Dtos.Auth.Account;
 using Freshx_API.Interfaces.Auth;
 using Freshx_API.Models;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Freshx_API.Repository.Auth.AccountRepositories
 {
@@ -34,7 +36,7 @@ namespace Freshx_API.Repository.Auth.AccountRepositories
             {
                 return null;
             }
-            await _userManager.AddToRoleAsync(appUser,"Normal User");          
+            await _userManager.AddToRoleAsync(appUser,"user");          
             return appUser;
         }
         public async Task<LoginResponse> LoginAccount(LoginRequest loginRequest)
@@ -117,6 +119,11 @@ namespace Freshx_API.Repository.Auth.AccountRepositories
                 Succeeded = false,
                 Message = $"Email or password false. {attemptsLeft} remaining"
             };
+        }
+        public async Task<bool> EmailExist(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user != null;
         }
 
     }

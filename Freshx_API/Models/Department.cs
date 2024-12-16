@@ -20,11 +20,11 @@ public partial class Department
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
 
-    public int? CreatedBy { get; set; } // Người tạo
+    public string? CreatedBy { get; set; } // Người tạo
 
     public DateTime? CreatedDate { get; set; } // Ngày tạo
 
-    public int? UpdatedBy { get; set; } // Người cập nhật
+    public string? UpdatedBy { get; set; } // Người cập nhật
 
     public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
 

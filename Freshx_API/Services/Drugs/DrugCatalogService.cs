@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 using Freshx_API.Dtos.CommonDtos;
+using Freshx_API.Interfaces;
 
 namespace Freshx_API.Services
 {
@@ -16,12 +17,13 @@ namespace Freshx_API.Services
         private readonly FreshxDBContext _context;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
-        public DrugCatalogService(FreshxDBContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+        private readonly IDrugCatalogRepository _drugcatalogRepository;
+        public DrugCatalogService(FreshxDBContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IDrugCatalogRepository drugcatalogRepository)
         {
             _context = context;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _drugcatalogRepository = drugcatalogRepository;
         }
 
         public async Task<ApiResponse<DrugCatalogDto>> GetDrugCatalogById(int id)
@@ -40,7 +42,7 @@ namespace Freshx_API.Services
 
         public async Task<ApiResponse<IEnumerable<DrugCatalogDto>>> GetAllDrugCatalogs()
         {
-            var drugCatalogs = await _context.DrugCatalogs.ToListAsync();
+            var drugCatalogs = await _drugcatalogRepository.GetAllAsync();
             var drugCatalogDtos = _mapper.Map<IEnumerable<DrugCatalogDto>>(drugCatalogs);
 
             return ResponseFactory.Success(_httpContextAccessor.HttpContext!.Request.Path, drugCatalogDtos, "All drug catalogs retrieved successfully", StatusCodes.Status200OK);

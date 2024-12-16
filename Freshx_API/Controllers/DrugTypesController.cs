@@ -21,17 +21,20 @@ namespace Freshx_API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<List<DrugTypeDto>>>> GetDrugType()
+        public async Task<ActionResult<ApiResponse<List<DrugTypeDto>>>> GetDrugType(string? searchKeyword,
+      DateTime? CreatetDate,
+      DateTime? UpdatedDate,
+      int? status)
         {
             try
             {
-                var drugType = await _drugTypeService.GetDrugTypeAsync();
+                var drugType = await _drugTypeService.GetDrugTypeAsync(searchKeyword, CreatetDate, UpdatedDate, status);
 
                 if (drugType == null)
                 {
                     return NotFound(ResponseFactory.Error<DrugTypeDto>(
                         Request.Path,
-                        "Drug type not found",
+                        "Không tìm thấy loại thuốc",
                         StatusCodes.Status404NotFound));
                 }
 
@@ -43,7 +46,7 @@ namespace Freshx_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError,
                     ResponseFactory.Error<DrugTypeDto>(
                         Request.Path,
-                        "An error occurred while retrieving the drug type",
+                        "Đã xảy ra lỗi khi lấy loại thuốc",
                         StatusCodes.Status500InternalServerError));
             }
         }
@@ -60,11 +63,11 @@ namespace Freshx_API.Controllers
                 {
                     return NotFound(ResponseFactory.Error<DrugTypeDto>(
                         Request.Path,
-                        "Drug type not found",
+                        "Không tìm thấy loại thuốc",
                         StatusCodes.Status404NotFound));
                 }
 
-                return Ok(ResponseFactory.Success(Request.Path, drugType, "Drug type retrieved successfully"));
+                return Ok(ResponseFactory.Success(Request.Path, drugType, "Đã tìm thấy loại thuốc thành công"));
             }
             catch (Exception ex)
             {
@@ -85,7 +88,7 @@ namespace Freshx_API.Controllers
                 var createdDrugType = await _drugTypeService.CreateDrugTypeAsync(createDto);
 
                 return StatusCode(StatusCodes.Status201Created,
-                    ResponseFactory.Success(Request.Path, createdDrugType, "Drug type created successfully", StatusCodes.Status201Created));
+                    ResponseFactory.Success(Request.Path, createdDrugType, "Đã thêm loại thuốc thành công", StatusCodes.Status201Created));
             }
             catch (Exception ex)
             {
@@ -109,11 +112,11 @@ namespace Freshx_API.Controllers
                 {
                     return NotFound(ResponseFactory.Error<DrugTypeDto>(
                         Request.Path,
-                        "Drug type not found",
+                        "Không tìm thấy loại thuốc",
                         StatusCodes.Status404NotFound));
                 }
 
-                return Ok(ResponseFactory.Success(Request.Path, updatedDrugType, "Drug type updated successfully"));
+                return Ok(ResponseFactory.Success(Request.Path, updatedDrugType, "Đã tìm cập nhật loại thuốc thành công"));
             }
             catch (Exception ex)
             {
@@ -122,6 +125,34 @@ namespace Freshx_API.Controllers
                     ResponseFactory.Error<DrugTypeDto>(
                         Request.Path,
                         "An error occurred while updating the drug type",
+                        StatusCodes.Status500InternalServerError));
+            }
+        }
+
+        [HttpDelete("soft-delete{id}")]
+        public async Task<ActionResult<ApiResponse<bool>>> SoftDeleteDrugType(int id)
+        {
+            try
+            {
+                var isDeleted = await _drugTypeService.SoftDeleteDrugTypeAsync(id);
+
+                if (!isDeleted)
+                {
+                    return NotFound(ResponseFactory.Error<bool>(
+                        Request.Path,
+                        "Không tìm thấy loại thuốc",
+                        StatusCodes.Status404NotFound));
+                }
+
+                return Ok(ResponseFactory.Success(Request.Path, true, "Đã xóa loại thuốc"));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting the drug type with ID {id}", id);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ResponseFactory.Error<bool>(
+                        Request.Path,
+                        "An error occurred while deleting the drug type",
                         StatusCodes.Status500InternalServerError));
             }
         }
@@ -137,11 +168,11 @@ namespace Freshx_API.Controllers
                 {
                     return NotFound(ResponseFactory.Error<bool>(
                         Request.Path,
-                        "Drug type not found",
+                        "Không tìm thấy loại thuốc",
                         StatusCodes.Status404NotFound));
                 }
 
-                return Ok(ResponseFactory.Success(Request.Path, true, "Drug type deleted successfully"));
+                return Ok(ResponseFactory.Success(Request.Path, true, "Đã tìm xóa loại thuốc thành công"));
             }
             catch (Exception ex)
             {
