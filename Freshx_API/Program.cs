@@ -314,10 +314,6 @@ builder.Services.AddSingleton<DefaultAzureCredential>();
 
 // Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
 builder.Services.AddHttpContextAccessor();
-
-
-
-
 var app = builder.Build();
 
 // Cấu hình CORS để cho phép truy cập từ mọi nguồn

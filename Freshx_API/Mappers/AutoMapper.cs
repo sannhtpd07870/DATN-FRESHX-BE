@@ -39,9 +39,15 @@ namespace Freshx_API.Mappers
 
 
             // Doctor Mappings
+<<<<<<< Updated upstream
             CreateMap<Doctor, DoctorDto>();
             CreateMap<Doctor, DoctorDetailDto>();
-            CreateMap<DoctorCreateUpdateDto, Doctor>()
+            CreateMap<DoctorCreateUpdateDto, Doctor>();
+=======
+            CreateMap<Doctor, DoctorDto>(); 
+            CreateMap<Doctor, DoctorDetailDto>();   
+            CreateMap<DoctorCreateUpdateDto, Doctor>();
+>>>>>>> Stashed changes
 
             // Mapping từ Model Department sang DTO
             CreateMap<Department, DepartmentDto>();
