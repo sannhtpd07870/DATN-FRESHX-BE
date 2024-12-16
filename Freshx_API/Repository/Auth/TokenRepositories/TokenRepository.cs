@@ -91,7 +91,11 @@ namespace Freshx_API.Repository.Auth.TokenRepositories
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.ExpiredTime > DateTime.UtcNow);
             return user?.UserName;
         }
-
+        public async Task<AppUser?> RetrieveUserByRefreshToken(string refreshToken)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == refreshToken && u.ExpiredTime > DateTime.UtcNow);
+            return user;
+        }
         // Phương thức lấy ID người dùng từ token
         public string GetUserIdFromToken(string token)
         {
