@@ -22,6 +22,11 @@ namespace Freshx_API.Mappers
             CreateMap<DrugType, DrugTypeDto>();
             CreateMap<DrugTypeCreateDto, DrugType>();
             CreateMap<DrugTypeUpdateDto, DrugType>();
+            CreateMap<Pharmacy, PharmacyDto>().ReverseMap();
+            CreateMap<PharmacyCreateDto, Pharmacy>();
+            CreateMap<PharmacyUpdateDto, Pharmacy>();
+            CreateMap<DocumentPurpose, DocumentPurposeDto>().ReverseMap();
+
         }
     }
 }
