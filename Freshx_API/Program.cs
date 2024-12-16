@@ -302,6 +302,10 @@ builder.Services.AddScoped<DepartmentTypeService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<DepartmentService>();
 
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IInventoryTypeRepository, InventoryTypeRepository>();
+builder.Services.AddScoped<InventoryTypeService>();
+
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
