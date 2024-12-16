@@ -11,6 +11,8 @@ using Freshx_API.Dtos.DepartmentDtos;
 using Freshx_API.Dtos.Drugs;
 using Freshx_API.Models;
 using Microsoft.AspNetCore.Identity;
+using Freshx_API.Dtos.InventoryType;
+using Freshx_API.Dtos.Pharmacy;
 
 namespace Freshx_API.Mappers
 {
@@ -47,10 +49,26 @@ namespace Freshx_API.Mappers
             CreateMap<Department, DepartmentDto>();
             CreateMap<Department, DepartmentDetailDto>();
 
+
             // Mapping từ DTO sang Model Department khi tạo hoặc cập nhật
             CreateMap<DepartmentCreateUpdateDto, Department>()
 
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            // Entity to DTO
+            CreateMap<InventoryType, InventoryTypeDto>();
+
+            // DTO to Entity
+            CreateMap<InventoryTypeCreateUpdateDto, InventoryType>();
+
+            // Ánh xạ Pharmacy sang PharmacyDto
+            CreateMap<Pharmacy, PharmacyDto>();
+
+            // Ánh xạ PharmacyCreateUpdateDto sang Pharmacy (dùng cho tạo mới hoặc cập nhật)
+            CreateMap<PharmacyCreateUpdateDto, Pharmacy>();
+
+            // Ánh xạ Pharmacy sang PharmacyDetailDto (chi tiết của nhà thuốc)
+            CreateMap<Pharmacy, PharmacyDetailDto>();
         }
     }
 }
