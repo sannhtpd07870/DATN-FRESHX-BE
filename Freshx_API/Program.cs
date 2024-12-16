@@ -299,9 +299,16 @@ builder.Services.AddScoped<IDepartmentTypeRepository, DepartmentTypeRepository>(
 builder.Services.AddScoped<DepartmentTypeService>();
 
 
+
 // Đăng ký Repository và Service với Doctor Injection
 builder.Services.AddScoped<IDoctorRepository, DoctorRepository>();
 builder.Services.AddScoped<DoctorService>();
+
+// Đăng ký Repository và Service với Dependency Injection
+builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+builder.Services.AddScoped<DepartmentService>();
+
+
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
