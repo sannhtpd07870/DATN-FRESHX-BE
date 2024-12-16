@@ -21,11 +21,11 @@ public partial class Pharmacy
 
     public DateTime? CreatedDate { get; set; } // Ngày tạo
 
-    public int? CreatedBy { get; set; } // Người tạo
+    public string? CreatedBy { get; set; } // Người tạo
 
     public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
 
-    public int? UpdatedBy { get; set; } // Người cập nhật
+    public string? UpdatedBy { get; set; } // Người cập nhật
 
     public bool? IsSourceManagement { get; set; } // Trạng thái quản lý nguồn
 
