@@ -20,8 +20,8 @@ using Microsoft.AspNetCore.Mvc;
 using Freshx_API.Interfaces.Auth;
 using Microsoft.Identity.Client;
 using Freshx_API.Repository.Auth.TokenRepositories;
+using Freshx_API.Services.CommonServices;
 using Freshx_API.Interfaces.DocumentPurposeRepository;
-using Freshx_API.Repositories;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -297,7 +297,7 @@ builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 builder.Services.AddScoped<IDocumentPurposeRepository, DocumentPurposeRepository>();
 builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
 builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
-builder.Services.AddScoped<IPharmacyService,PharmacyService>();
+builder.Services.AddScoped<PharmacyService>();
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
