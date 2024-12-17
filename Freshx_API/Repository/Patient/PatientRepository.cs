@@ -22,14 +22,36 @@ namespace Freshx_API.Repository
             {
                 var patient = new Patient()
                 {
-                    MedicalRecordNumber = addingPatientRequest.MedicalRecordNumber,
-                    AdmissionNumber = addingPatientRequest.AdmissionNumber,
-                    Name = addingPatientRequest.Name,
-                    Gender = addingPatientRequest.Gender,
-                    DateOfBirth = addingPatientRequest.DateOfBirth,
-
+                    MedicalRecordNumber = addingPatientRequest?.MedicalRecordNumber,
+                    AdmissionNumber = addingPatientRequest?.AdmissionNumber,
+                    Name = addingPatientRequest?.Name,
+                    Gender = addingPatientRequest?.Gender,
+                    DateOfBirth = addingPatientRequest?.DateOfBirth,
+                    PhoneNumber = addingPatientRequest?.PhoneNumber,
+                    IdentityCardNumber = addingPatientRequest?.IdentityCardNumber,
+                    Address = addingPatientRequest?.Address,
+                    CreatedBy = addingPatientRequest?.CreatedBy,
+                    CreatedDate = DateTime.UtcNow,
+                    UpdatedDate = DateTime.UtcNow,
+                    IsDeleted = 0,
+                    ImageUrl = addingPatientRequest?.ImageUrl,
+                    Ethnicity = addingPatientRequest?.Ethnicity
                 };
-                return patient;
+                using (var transaction = await _context.Database.BeginTransactionAsync())
+                {
+                    try
+                    {
+                        await _context.Patients.AddAsync(patient);
+                        await _context.SaveChangesAsync();
+                        await transaction.CommitAsync();
+                        return patient;
+                    }
+                    catch (Exception)
+                    {
+                        await transaction.RollbackAsync();
+                        throw;
+                    }
+                }
             }
             catch (Exception e)
             {
