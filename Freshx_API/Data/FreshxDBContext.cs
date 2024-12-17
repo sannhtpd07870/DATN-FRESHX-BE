@@ -101,6 +101,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Province> Provinces { get; set; }
     public DbSet<Ward> Wards { get; set; }
     public DbSet<ZaloUser> ZaloUsers { get; set; }
+    public DbSet<Receptionist> Receptionists { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
