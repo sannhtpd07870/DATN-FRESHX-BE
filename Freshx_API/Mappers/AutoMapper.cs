@@ -13,6 +13,7 @@ using Freshx_API.Models;
 using Microsoft.AspNetCore.Identity;
 using Freshx_API.Dtos.InventoryType;
 using Freshx_API.Dtos.Pharmacy;
+using Freshx_API.Dtos.Receptionist;
 
 namespace Freshx_API.Mappers
 {
@@ -69,6 +70,18 @@ namespace Freshx_API.Mappers
 
             // Ánh xạ Pharmacy sang PharmacyDetailDto (chi tiết của nhà thuốc)
             CreateMap<Pharmacy, PharmacyDetailDto>();
+
+
+
+            // Ánh xạ từ model Receptionist sang DTO hiển thị thông tin cơ bản
+            CreateMap<Receptionist, ReceptionistDto>();
+
+            // Ánh xạ từ DTO tạo mới/cập nhật sang model Receptionist
+            CreateMap<ReceptionistCreateUpdateDto, Receptionist>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            // Ánh xạ từ model Receptionist sang DTO hiển thị chi tiết thông tin
+            CreateMap<Receptionist, ReceptionistDetailDto>();
         }
     }
 }

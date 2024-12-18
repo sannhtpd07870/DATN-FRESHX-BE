@@ -321,6 +321,10 @@ builder.Services.AddScoped<InventoryTypeService>();
 builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
+builder.Services.AddScoped<ReceptionistService>();
+
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
