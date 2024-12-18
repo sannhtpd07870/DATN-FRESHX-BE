@@ -4,6 +4,7 @@ using Freshx_API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Freshx_API.Migrations
 {
     [DbContext(typeof(FreshxDBContext))]
-    partial class FreshxDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241218103040_ServiceCatalogUpdateDataField")]
+    partial class ServiceCatalogUpdateDataField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2866,6 +2869,8 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ParentServiceId");
 
+                    b.HasIndex("PriceTypeId");
+
                     b.HasIndex("ServiceCatalogId1");
 
                     b.HasIndex("ServiceGroupId");
@@ -4352,6 +4357,11 @@ namespace Freshx_API.Migrations
                         .HasForeignKey("ParentServiceId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Freshx_API.Models.PriceType", "PriceType")
+                        .WithMany()
+                        .HasForeignKey("PriceTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Freshx_API.Models.ServiceCatalog", null)
                         .WithMany("ChildServices")
                         .HasForeignKey("ServiceCatalogId1");
@@ -4362,6 +4372,8 @@ namespace Freshx_API.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("ParentService");
+
+                    b.Navigation("PriceType");
 
                     b.Navigation("ServiceGroup");
                 });

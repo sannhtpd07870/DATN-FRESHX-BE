@@ -174,10 +174,10 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .HasForeignKey(s => s.ParentServiceId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<ServiceCatalog>()
-            .HasOne(s => s.PriceType)
-            .WithMany()
-            .HasForeignKey(s => s.PriceTypeId)
-            .OnDelete(DeleteBehavior.Restrict);
+        //modelBuilder.Entity<ServiceCatalog>()
+        //    .HasOne(s => s.PriceType)
+        //    .WithMany()
+        //    .HasForeignKey(s => s.PriceTypeId)
+        //    .OnDelete(DeleteBehavior.Restrict);
     }
 }

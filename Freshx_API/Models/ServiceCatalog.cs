@@ -27,11 +27,11 @@ public partial class ServiceCatalog
 
     public int? IsSuspended { get; set; } // Trạng thái tạm ngưng
 
-    public int? CreatedBy { get; set; } // Người tạo
+    public string? CreatedBy { get; set; } // Người tạo
 
     public DateTime? CreatedDate { get; set; } // Ngày tạo
 
-    public int? UpdatedBy { get; set; } // Người cập nhật
+    public string? UpdatedBy { get; set; } // Người cập nhật
 
     public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
 
@@ -50,8 +50,8 @@ public partial class ServiceCatalog
     public virtual ServiceGroup? ServiceGroup { get; set; } // Nhóm dịch vụ
 
     public ICollection<ServiceCatalog> ChildServices { get; set; }
-    public PriceType PriceType { get; set; }
-    public virtual ICollection<ServiceStandardValue> ServiceStandardValues { get; set; } = new List<ServiceStandardValue>(); // Danh sách giá trị tiêu chuẩn dịch vụ
+    //public PriceType PriceType { get; set; }
+    //public virtual ICollection<ServiceStandardValue> ServiceStandardValues { get; set; } = new List<ServiceStandardValue>(); // Danh sách giá trị tiêu chuẩn dịch vụ
 
     //public virtual ICollection<UserAction> UserActions { get; set; } = new List<UserAction>(); // Danh sách hành động của người dùng
 }
