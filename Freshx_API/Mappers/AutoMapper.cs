@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Freshx_API.Dtos.InventoryType;
 using Freshx_API.Dtos.Pharmacy;
 using Freshx_API.Dtos.Receptionist;
+using Freshx_API.Dtos.ServiceGroup;
 
 namespace Freshx_API.Mappers
 {
@@ -78,6 +79,17 @@ namespace Freshx_API.Mappers
 
             // Ánh xạ từ DTO tạo mới/cập nhật sang model Receptionist
             CreateMap<ReceptionistCreateUpdateDto, Receptionist>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+
+            // Mapping từ Model ServiceGroup sang DTO cơ bản
+            CreateMap<ServiceGroup, ServiceGroupDto>();
+
+            // Mapping từ Model ServiceGroup sang DTO chi tiết
+            CreateMap<ServiceGroup, ServiceGroupDetailDto>();
+
+            // Mapping từ DTO ServiceGroupCreateUpdateDto sang Model ServiceGroup khi tạo hoặc cập nhật
+            CreateMap<ServiceGroupCreateUpdateDto, ServiceGroup>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Ánh xạ từ model Receptionist sang DTO hiển thị chi tiết thông tin
