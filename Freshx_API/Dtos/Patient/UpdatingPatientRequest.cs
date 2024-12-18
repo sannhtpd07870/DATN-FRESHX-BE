@@ -1,6 +1,6 @@
 ﻿namespace Freshx_API.Dtos.Patient
 {
-    public class AddingPatientRequest
+    public class UpdatingPatientRequest
     {
         public string? MedicalRecordNumber { get; set; } // Số hồ sơ bệnh án
 
@@ -11,7 +11,6 @@
         public string? Gender { get; set; } // Giới tính bệnh nhân
 
         public DateTime? DateOfBirth { get; set; } // Ngày sinh bệnh nhân
-
 
         public string? PhoneNumber { get; set; } // Số điện thoại bệnh nhân
 
