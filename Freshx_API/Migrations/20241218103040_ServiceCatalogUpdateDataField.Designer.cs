@@ -4,6 +4,7 @@ using Freshx_API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Freshx_API.Migrations
 {
     [DbContext(typeof(FreshxDBContext))]
-    partial class FreshxDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241218103040_ServiceCatalogUpdateDataField")]
+    partial class ServiceCatalogUpdateDataField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -2812,8 +2815,7 @@ namespace Freshx_API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceCatalogId"));
 
                     b.Property<string>("Code")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -2830,22 +2832,23 @@ namespace Freshx_API.Migrations
                     b.Property<bool?>("IsParentService")
                         .HasColumnType("bit");
 
-                    b.Property<int>("IsSuspended")
+                    b.Property<int?>("IsSuspended")
                         .HasColumnType("int");
 
                     b.Property<int?>("Level")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ParentServiceId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("PriceTypeId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("ServiceCatalogId1")
                         .HasColumnType("int");
@@ -2853,12 +2856,8 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("ServiceGroupId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ServiceGroupId1")
-                        .HasColumnType("int");
-
                     b.Property<string>("UnitOfMeasure")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -2870,11 +2869,11 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ParentServiceId");
 
+                    b.HasIndex("PriceTypeId");
+
                     b.HasIndex("ServiceCatalogId1");
 
                     b.HasIndex("ServiceGroupId");
-
-                    b.HasIndex("ServiceGroupId1");
 
                     b.ToTable("ServiceCatalogs");
                 });
@@ -2890,8 +2889,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -2905,8 +2904,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -4358,6 +4357,11 @@ namespace Freshx_API.Migrations
                         .HasForeignKey("ParentServiceId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Freshx_API.Models.PriceType", "PriceType")
+                        .WithMany()
+                        .HasForeignKey("PriceTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Freshx_API.Models.ServiceCatalog", null)
                         .WithMany("ChildServices")
                         .HasForeignKey("ServiceCatalogId1");
@@ -4367,11 +4371,9 @@ namespace Freshx_API.Migrations
                         .HasForeignKey("ServiceGroupId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("Freshx_API.Models.ServiceGroup", null)
-                        .WithMany("ServiceCatalogs")
-                        .HasForeignKey("ServiceGroupId1");
-
                     b.Navigation("ParentService");
+
+                    b.Navigation("PriceType");
 
                     b.Navigation("ServiceGroup");
                 });
@@ -4379,7 +4381,7 @@ namespace Freshx_API.Migrations
             modelBuilder.Entity("Freshx_API.Models.ServiceStandardValue", b =>
                 {
                     b.HasOne("Freshx_API.Models.ServiceCatalog", "ServiceCatalog")
-                        .WithMany("ServiceStandardValues")
+                        .WithMany()
                         .HasForeignKey("ServiceCatalogId");
 
                     b.Navigation("ServiceCatalog");
@@ -4549,13 +4551,6 @@ namespace Freshx_API.Migrations
             modelBuilder.Entity("Freshx_API.Models.ServiceCatalog", b =>
                 {
                     b.Navigation("ChildServices");
-
-                    b.Navigation("ServiceStandardValues");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.ServiceGroup", b =>
-                {
-                    b.Navigation("ServiceCatalogs");
                 });
 #pragma warning restore 612, 618
         }

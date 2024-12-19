@@ -15,6 +15,7 @@ using Freshx_API.Dtos.InventoryType;
 using Freshx_API.Dtos.Pharmacy;
 using Freshx_API.Dtos.Receptionist;
 using Freshx_API.Dtos.ServiceGroup;
+using Freshx_API.Dtos.ServiceCatalog;
 
 namespace Freshx_API.Mappers
 {
@@ -94,6 +95,12 @@ namespace Freshx_API.Mappers
 
             // Ánh xạ từ model Receptionist sang DTO hiển thị chi tiết thông tin
             CreateMap<Receptionist, ReceptionistDetailDto>();
+
+            // ServiceCatalog Mappings
+            CreateMap<ServiceCatalog, ServiceCatalogDto>();
+            CreateMap<ServiceCatalog, ServiceCatalogDetailDto>();
+            CreateMap<ServiceCatalogCreateUpdateDto, ServiceCatalog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

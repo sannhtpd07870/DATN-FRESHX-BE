@@ -35,7 +35,7 @@ public partial class ServiceCatalog
     [ForeignKey("ServiceGroup")]
     public int? ServiceGroupId { get; set; } // ID nhóm dịch vụ
 
-    public bool IsSuspended { get; set; } = false; // Trạng thái tạm ngưng (default = false)
+    public int IsSuspended { get; set; } // Trạng thái tạm ngưng (default = false)
 
     public string? CreatedBy { get; set; } // Người tạo
 

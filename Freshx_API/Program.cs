@@ -330,6 +330,12 @@ builder.Services.AddScoped<ReceptionistService>();
 builder.Services.AddScoped<IServiceGroupRepository, ServiceGroupRepository>();
 builder.Services.AddScoped<ServiceGroupService>();
 
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IServiceCatalogRepository, ServiceCatalogRepository>();
+builder.Services.AddScoped<ServiceCatalogService>();
+
+
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
