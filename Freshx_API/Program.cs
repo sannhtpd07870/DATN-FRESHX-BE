@@ -336,12 +336,13 @@ builder.Services.AddScoped<IServiceCatalogRepository, ServiceCatalogRepository>(
 builder.Services.AddScoped<ServiceCatalogService>();
 
 
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IUnitOfMeasureRepository, UnitOfMeasureRepository>();
+builder.Services.AddScoped<UnitOfMeasureService>();
 
 // Đăng ký Repository và Service với InventoryType Injection
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<SupplierService>();
-
-
 
 
 // Thêm DefaultAzureCredential
