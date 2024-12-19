@@ -290,6 +290,7 @@ builder.Services.AddScoped<IAccountRepository,AccountRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
@@ -324,6 +325,10 @@ builder.Services.AddScoped<PharmacyService>();
 // Đăng ký Repository và Service với InventoryType Injection
 builder.Services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
 builder.Services.AddScoped<ReceptionistService>();
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IServiceGroupRepository, ServiceGroupRepository>();
+builder.Services.AddScoped<ServiceGroupService>();
 
 
 // Đăng ký Repository và Service với InventoryType Injection
