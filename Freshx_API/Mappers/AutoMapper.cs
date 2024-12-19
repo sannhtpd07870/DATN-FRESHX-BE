@@ -20,6 +20,7 @@ using Freshx_API.Dtos.UnitOfMeasure;
 using Freshx_API.Dtos.Supplier;
 using System.Diagnostics.Metrics;
 using Freshx_API.Dtos.Country;
+using Freshx_API.Dtos.DrugCatalog;
 
 namespace Freshx_API.Mappers
 {
@@ -30,10 +31,6 @@ namespace Freshx_API.Mappers
             CreateMap<Savefile, FileDto>().ReverseMap();
             CreateMap<IdentityRole, RoleResponse>();
             CreateMap<AppUser, RegisterResponse>();
-            CreateMap<DrugCatalog, DrugCatalogDto>();
-            CreateMap<CreateDrugCatalogDto, DrugCatalog>();
-            CreateMap<UpdateDrugCatalogDto, DrugCatalog>()
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<DrugType, DrugTypeDto>();
             CreateMap<DrugTypeCreateDto, DrugType>();
             CreateMap<DrugTypeUpdateDto, DrugType>();
@@ -127,6 +124,13 @@ namespace Freshx_API.Mappers
             CreateMap<CountryCreateUpdateDto, Country>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
+
+            // Map DrugCatalog -> DrugCatalogDetailDto
+            CreateMap<DrugCatalog, DrugCatalogDetailDto>();
+
+            // Map DrugCatalogCreateUpdateDto -> DrugCatalog
+            CreateMap<DrugCatalogCreateUpdateDto, DrugCatalog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }
