@@ -16,6 +16,7 @@ using Freshx_API.Dtos.Pharmacy;
 using Freshx_API.Dtos.Receptionist;
 using Freshx_API.Dtos.ServiceGroup;
 using Freshx_API.Dtos.ServiceCatalog;
+using Freshx_API.Dtos.UnitOfMeasure;
 
 namespace Freshx_API.Mappers
 {
@@ -100,6 +101,13 @@ namespace Freshx_API.Mappers
             CreateMap<ServiceCatalog, ServiceCatalogDto>();
             CreateMap<ServiceCatalog, ServiceCatalogDetailDto>();
             CreateMap<ServiceCatalogCreateUpdateDto, ServiceCatalog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            // Map UnitOfMeasure -> UnitOfMeasureDetailDto
+            CreateMap<UnitOfMeasure, UnitOfMeasureDetailDto>();
+
+            // Map UnitOfMeasureCreateUpdateDto -> UnitOfMeasure
+            CreateMap<UnitOfMeasureCreateUpdateDto, UnitOfMeasure>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
