@@ -345,6 +345,10 @@ builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 builder.Services.AddScoped<SupplierService>();
 
 
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<CountryService>();
+
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
