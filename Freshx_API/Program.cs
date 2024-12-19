@@ -21,6 +21,8 @@ using Freshx_API.Interfaces.Auth;
 using Microsoft.Identity.Client;
 using Freshx_API.Repository.Auth.TokenRepositories;
 using Freshx_API.Services.CommonServices;
+using Freshx_API.Repository.Drugs;
+using Freshx_API.Services.Drugs;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -293,8 +295,7 @@ builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
-builder.Services.AddScoped<IDrugCatalogService, DrugCatalogService>();
+
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 
@@ -348,6 +349,10 @@ builder.Services.AddScoped<SupplierService>();
 // Đăng ký Repository và Service với InventoryType Injection
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<CountryService>();
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
+builder.Services.AddScoped<DrugCatalogService>();
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();

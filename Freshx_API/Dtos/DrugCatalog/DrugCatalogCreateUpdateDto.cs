@@ -1,27 +1,8 @@
-using Freshx_API.Models;
-using System.ComponentModel.DataAnnotations;
-namespace Freshx_API.Dtos
+﻿namespace Freshx_API.Dtos.DrugCatalog
 {
-
-    //public class DrugCatalogDetailDto
-    //{
-    //    public int DrugCatalogId { get; set; }
-    //    public string? Code { get; set; }
-    //    public string? Name { get; set; }
-    //    public string? FullName { get; set; }
-    //    public string? ActiveIngredient { get; set; }
-    //    public string? Usage { get; set; }
-    //    public string? Dosage { get; set; }
-    //    public string? Effect { get; set; }
-    //    public int? DrugTypeId { get; set; }
-    //    public decimal? UnitPrice { get; set; }
-    //    public int? IsSuspended { get; set; }
-    //    // Thêm các trường cần thiết khác
-    //}
-
-    public class CreateDrugCatalogDetailDto
+    // DTO để nhận dữ liệu từ client khi tạo hoặc cập nhật danh mục thuốc
+    public class DrugCatalogCreateUpdateDto
     {
-        [Required]
         public string? Code { get; set; } // Mã danh mục thuốc
 
         public string? Name { get; set; } // Tên danh mục thuốc
@@ -52,11 +33,6 @@ namespace Freshx_API.Dtos
 
         public int? IsSuspended { get; set; } // Trạng thái tạm ngưng
 
-        public int? CreatedBy { get; set; } // Người tạo
-
-
-        public int? UpdatedBy { get; set; } // Người cập nhật
-
         public string? NationalDrugCode { get; set; } // Mã thuốc quốc gia
 
         public string? Description { get; set; } // Mô tả thuốc
@@ -70,6 +46,7 @@ namespace Freshx_API.Dtos
         public string? Note3 { get; set; } // Ghi chú 3
 
         public int? IsDeleted { get; set; } // Trạng thái đã xóa
+
         public decimal? QuantityImported { get; set; } // Số lượng nhập khẩu
 
         public decimal? QuantityInStock { get; set; } // Số lượng tồn kho
@@ -81,15 +58,5 @@ namespace Freshx_API.Dtos
         public int? ManagementPharmacyId { get; set; } // ID nhà thuốc quản lý
 
         public int? DepartmentPharmacyId { get; set; } // ID nhà thuốc phòng ban
-
-    }
-
-    public class UpdateDrugCatalogDetailDto
-    {
-        public string? Name { get; set; }
-        public string? FullName { get; set; }
-        public string? ActiveIngredient { get; set; }
-        public decimal? UnitPrice { get; set; }
-        // Thêm các trường cần thiết khác
     }
 }
