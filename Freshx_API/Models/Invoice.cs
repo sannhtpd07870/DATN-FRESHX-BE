@@ -86,4 +86,6 @@ public partial class Invoice
     //public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 
     public virtual Reception? Reception { get; set; }
+    public ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; }
+    public bool IsPaid { get; set; }
 }
