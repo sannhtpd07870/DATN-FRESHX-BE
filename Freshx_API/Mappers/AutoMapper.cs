@@ -18,6 +18,8 @@ using Freshx_API.Dtos.ServiceGroup;
 using Freshx_API.Dtos.ServiceCatalog;
 using Freshx_API.Dtos.UnitOfMeasure;
 using Freshx_API.Dtos.Supplier;
+using System.Diagnostics.Metrics;
+using Freshx_API.Dtos.Country;
 
 namespace Freshx_API.Mappers
 {
@@ -116,6 +118,13 @@ namespace Freshx_API.Mappers
 
             // Map SupplierCreateUpdateDto -> Supplier
             CreateMap<SupplierCreateUpdateDto, Supplier>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            // Map country -> CountryDto
+            CreateMap<Country, CountryDto>();
+
+            // Map CountryCreateUpdateDto -> Country
+            CreateMap<CountryCreateUpdateDto, Country>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
         }
