@@ -16,6 +16,7 @@ using Freshx_API.Dtos.Pharmacy;
 using Freshx_API.Dtos.Receptionist;
 using Freshx_API.Dtos.ServiceGroup;
 using Freshx_API.Dtos.ServiceCatalog;
+using Freshx_API.Dtos.Supplier;
 
 namespace Freshx_API.Mappers
 {
@@ -101,6 +102,15 @@ namespace Freshx_API.Mappers
             CreateMap<ServiceCatalog, ServiceCatalogDetailDto>();
             CreateMap<ServiceCatalogCreateUpdateDto, ServiceCatalog>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+
+            // Map Supplier -> SupplierDetailDto
+            CreateMap<Supplier, SupplierDetailDto>();
+
+            // Map SupplierCreateUpdateDto -> Supplier
+            CreateMap<SupplierCreateUpdateDto, Supplier>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
         }
     }
 }
