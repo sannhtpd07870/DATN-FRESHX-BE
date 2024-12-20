@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Freshx_API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TestFileController : ControllerBase
@@ -20,7 +20,7 @@ namespace Freshx_API.Controllers
 
         // API để lưu tệp
         [HttpPost("upload")] // POST: api/file/upload
-        public async Task<IActionResult> UploadFiles(int? userId, string? folderName, [FromForm] List<IFormFile> files)
+        public async Task<IActionResult> UploadFiles(string? userId, string? folderName, [FromForm] List<IFormFile> files)
         {
             if (files == null || files.Count == 0)
             {

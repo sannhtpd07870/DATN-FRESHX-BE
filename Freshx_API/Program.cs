@@ -21,6 +21,8 @@ using Freshx_API.Interfaces.Auth;
 using Microsoft.Identity.Client;
 using Freshx_API.Repository.Auth.TokenRepositories;
 using Freshx_API.Services.CommonServices;
+using Freshx_API.Interfaces.UserAccount;
+using Freshx_API.Repository.UserAccount;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -291,6 +293,8 @@ builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
+builder.Services.AddScoped<IPositionRepository, PositionRepository>();
+builder.Services.AddScoped<IUserAccountRepository,UserAccountRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
