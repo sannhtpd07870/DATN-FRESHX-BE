@@ -27,6 +27,8 @@ using Freshx_API.Repository.Drugs;
 using Freshx_API.Services.Drugs;
 using Freshx_API.Repository.Address;
 using Freshx_API.Interfaces.DocumentPurposeRepository;
+using Freshx_API.Interfaces.UserAccount;
+using Freshx_API.Repository.UserAccount;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -366,6 +368,11 @@ builder.Services.AddScoped<DrugCatalogService>();
 //Dăng kí Reponsitory và service cho địa chỉ
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
+
+builder.Services.AddScoped<ChatService>();
+
+//đăng kí service
+builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 
 //Đăng kí dịch vụ
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
