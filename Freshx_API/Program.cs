@@ -25,6 +25,7 @@ using Freshx_API.Services.Chat;
 using Freshx_API.Repository.Menu;
 using Freshx_API.Repository.Drugs;
 using Freshx_API.Services.Drugs;
+using Freshx_API.Repository.Address;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -356,6 +357,10 @@ builder.Services.AddScoped<CountryService>();
 // Đăng ký Repository và Service với InventoryType Injection
 builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
 builder.Services.AddScoped<DrugCatalogService>();
+
+//Dăng kí Reponsitory và service cho địa chỉ
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IAddressService, AddressService>();
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();

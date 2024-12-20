@@ -127,6 +127,12 @@ namespace Freshx_API.Mappers
             // Map DrugCatalogCreateUpdateDto -> DrugCatalog
             CreateMap<DrugCatalogCreateUpdateDto, DrugCatalog>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+
+            //Địa chỉ 
+            CreateMap<Province, ProvinceDto>();
+            CreateMap<District, DistrictDto>();
+            CreateMap<Ward, WardDto>();
         }
     }
 }
