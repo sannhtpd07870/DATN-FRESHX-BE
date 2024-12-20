@@ -357,6 +357,9 @@ builder.Services.AddScoped<CountryService>();
 builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
 builder.Services.AddScoped<DrugCatalogService>();
 
+//Đăng ký chatservice
+builder.Services.AddScoped<ChatService>();
+builder.Services.AddScoped<ChatService>();
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 

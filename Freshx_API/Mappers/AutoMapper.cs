@@ -127,6 +127,11 @@ namespace Freshx_API.Mappers
             // Map DrugCatalogCreateUpdateDto -> DrugCatalog
             CreateMap<DrugCatalogCreateUpdateDto, DrugCatalog>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<ConversationDto, Conversation>();
+            CreateMap<Conversation, ConversationDto>();
+            
+
         }
     }
 }

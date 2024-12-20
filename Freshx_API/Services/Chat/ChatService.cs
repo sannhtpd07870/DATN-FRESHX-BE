@@ -1,6 +1,7 @@
 ﻿using Freshx_API.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Net.Http.Headers;
 
 namespace Freshx_API.Services.Chat
 {
@@ -46,19 +47,72 @@ namespace Freshx_API.Services.Chat
         }
 
         // Tạo một cuộc trò chuyện mới
-        public async Task<int> CreateConversation(string title)
+        public async Task<Conversation> CreateConversation(string title)
         {
-            var conversation = new Conversation
+
+            // Định nghĩa URL và Header cho API
+            var apiUrl = "https://api.coze.com/v1/conversation/create";
+            using var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "pat_uCFKVIGLosFSIIUxSo09q7AdaDAbIzxpJRQtK45v9Nnyf8W1hAEm61zQFAbNka3P");
+
+            // Dữ liệu gửi lên API
+            var requestData = new
             {
-                Title = title,
-                CreatedAt = DateTime.UtcNow
+                bot_id = "7384550659657826311"
             };
 
-            _context.Conversations.Add(conversation);
-            await _context.SaveChangesAsync();
+            // Gửi yêu cầu POST đến API
+            var response = await httpClient.PostAsJsonAsync(apiUrl, requestData);
+          
+            // Kiểm tra phản hồi
+            if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"API call failed with status code {response.StatusCode}");
+                }
 
-            return conversation.Id;
+                // Đọc phản hồi JSON từ API
+                var responseData = await response.Content.ReadFromJsonAsync<CozeApiResponse>();
+                if (responseData == null || responseData.Code != 0)
+                {
+                    throw new Exception($"API returned an error: {responseData?.Msg}");
+                }
+
+                // Lấy ID từ dữ liệu trả về
+                var conversationId = responseData.Data.Id;
+
+                // Lưu thông tin cuộc trò chuyện vào cơ sở dữ liệu (nếu cần thiết)
+                var conversation = new Conversation
+                {
+                    Title = title,
+                    ExternalId = conversationId.ToString(), // Lưu ID từ API trả về
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _context.Conversations.Add(conversation);
+                await _context.SaveChangesAsync();
+
+                // Trả về ID của cuộc trò chuyện từ API
+                return conversation;
+            
+           
         }
+
+        // Lớp đại diện cho phản hồi API
+        public class CozeApiResponse
+        {
+            public int Code { get; set; }
+            public string Msg { get; set; }
+            public CozeApiData Data { get; set; }
+        }
+
+        public class CozeApiData
+        {
+            public long Id { get; set; }
+            public long CreatedAt { get; set; }
+            public long LastSectionId { get; set; }
+            public object MetaData { get; set; }
+        }
+
     }
 
 }

@@ -20,17 +20,18 @@ namespace Freshx_API.Controllers
 
         // API để lưu tệp
         [HttpPost("upload")] // POST: api/file/upload
-        public async Task<IActionResult> UploadFiles(int? userId, string? folderName, [FromForm] List<IFormFile> files)
+        public async Task<IActionResult> UploadFiles(int? userId, string? folderName, [FromForm] IFormFile files)
         {
-            if (files == null || files.Count == 0)
+            var fileList = new List<IFormFile> { files };
+            if (files == null || fileList.Count == 0)
             {
                 return BadRequest("Không có tệp nào được tải lên.");
             }
 
             try
             {
-                var file = await _fileService.SaveFileAsync(userId, folderName, files);
-                return Ok(new { message = "Tệp đã được lưu thành công.", file });
+                var file = await _fileService.SaveFileAsync(userId, folderName, fileList);
+                return Ok(new { message = "Tệp đã được lưu thành công.", file});
             }
             catch (Exception ex)
             {
@@ -40,7 +41,7 @@ namespace Freshx_API.Controllers
 
         // API để cập nhật tệp
         [HttpPut("update/{fileId}")] // PUT: api/file/update/{fileId}
-        public async Task<IActionResult> UpdateFile(int fileId, [FromForm] IFormFile newFile)
+        public async Task<IActionResult> UpdateFile(int fileId, IFormFile newFile)
         {
             if (newFile == null)
             {

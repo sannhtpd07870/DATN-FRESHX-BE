@@ -79,6 +79,7 @@ namespace Freshx_API.Repository.Drugs
         // Tạo mới danh mục thuốc
         public async Task<DrugCatalog> CreateAsync(DrugCatalog entity)
         {
+            Console.WriteLine(entity);
             // Kiểm tra trạng thái trước khi tạo mới
             if (entity.IsSuspended != 0)
             {

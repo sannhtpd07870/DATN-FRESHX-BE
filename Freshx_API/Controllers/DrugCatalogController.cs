@@ -81,8 +81,9 @@ namespace Freshx_API.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Một lỗi đã xảy ra khi tạo danh mục thuốc.");
+                var errorMessage = $"Một lỗi đã xảy ra: {e      .Message}";
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<DrugCatalogDetailDto>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+                    ResponseFactory.Error<DrugCatalogDetailDto>(Request.Path, errorMessage, StatusCodes.Status500InternalServerError));
             }
         }
 
