@@ -302,6 +302,10 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
+builder.Services.AddScoped<IDocumentPurposeRepository, DocumentPurposeRepository>();
+builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
+builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
+builder.Services.AddScoped<IPharmacyService,PharmacyService>();
 
 
 // Đăng ký Repository và Service với Dependency Injection
