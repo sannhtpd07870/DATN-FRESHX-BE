@@ -7,7 +7,6 @@ using Freshx_API.Dtos.DepartmenTypeDtos;
 using Freshx_API.Dtos.Doctor;
 
 using Freshx_API.Dtos.DepartmentDtos;
-
 using Freshx_API.Dtos.Drugs;
 using Freshx_API.Models;
 using Microsoft.AspNetCore.Identity;
@@ -36,18 +35,10 @@ namespace Freshx_API.Mappers
             // Mapping từ DTO sang Model khi tạo hoặc cập nhật
             CreateMap<DepartmentTypeCreateUpdateDto, DepartmentType>();
 
-
-
             // Doctor Mappings
-<<<<<<< Updated upstream
             CreateMap<Doctor, DoctorDto>();
             CreateMap<Doctor, DoctorDetailDto>();
             CreateMap<DoctorCreateUpdateDto, Doctor>();
-=======
-            CreateMap<Doctor, DoctorDto>(); 
-            CreateMap<Doctor, DoctorDetailDto>();   
-            CreateMap<DoctorCreateUpdateDto, Doctor>();
->>>>>>> Stashed changes
 
             // Mapping từ Model Department sang DTO
             CreateMap<Department, DepartmentDto>();

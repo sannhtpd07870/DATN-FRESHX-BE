@@ -21,6 +21,8 @@ using Freshx_API.Interfaces.Auth;
 using Microsoft.Identity.Client;
 using Freshx_API.Repository.Auth.TokenRepositories;
 using Freshx_API.Services.CommonServices;
+using Freshx_API.Services.Chat;
+using Freshx_API.Repository.Menu;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -283,8 +285,9 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true; // Tùy chọn: lowercase cả query string
 });
+builder.Services.AddCors();
+builder.Services.AddSignalR();
 builder.Services.AddScoped<IFileService, FileService>();
-
 builder.Services.AddScoped<IRoleRepository,RoleRepository>();
 builder.Services.AddScoped<IAccountRepository,AccountRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
@@ -320,6 +323,14 @@ builder.Services.AddScoped<InventoryTypeService>();
 builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
+//Đăng kí repository và service của menu
+builder.Services.AddScoped<IMenuRepository, MenuRepository>();
+builder.Services.AddScoped<IMenuService, MenuService>();
+
+
+//Đăng Kí chat service 
+builder.Services.AddScoped<ChatService>();
+
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
@@ -327,15 +338,19 @@ builder.Services.AddSingleton<DefaultAzureCredential>();
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
+
+
 // Cấu hình CORS để cho phép truy cập từ mọi nguồn
 // Enable CORS
 app.UseCors(builder =>
 {
-    builder.AllowAnyOrigin()
+    builder.WithOrigins("http://localhost:5173")
            .AllowAnyMethod()
-           .AllowAnyHeader();
+           .AllowAnyHeader()
+           .AllowCredentials();
 });
 
+app.MapHub<ChatHub>("/chathub");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -344,7 +359,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 //xac thuc truoc khi phan quyen
 app.UseAuthentication();
 app.UseAuthorization();
