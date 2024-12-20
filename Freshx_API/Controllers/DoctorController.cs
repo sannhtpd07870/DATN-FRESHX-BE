@@ -20,7 +20,7 @@ namespace Freshx_API.Controllers
             _logger = logger;
         }
 
-        // API GET: Lấy danh sách bác sĩ với các tiêu chí tìm kiếm
+        // API GET: Lấy danh sách bác sĩ với các tiêu chí tìm kiếm  
         [HttpGet()]
         public async Task<ActionResult<ApiResponse<List<DoctorDto>>>> GetAll(string? searchKeyword, DateTime? startDate, DateTime? endDate, int? status, string? specialty, string? phone, string? email, string? gender)
         {

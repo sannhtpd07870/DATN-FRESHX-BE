@@ -1,88 +1,110 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Freshx_API.Models;
-using Freshx_API.Services.CommonServices;
 using Freshx_API.Dtos;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using System.Net;
-using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Interfaces;
+using Freshx_API.Dtos.DrugCatalog;
+using Freshx_API.Interfaces.Auth;
+using Freshx_API.Dtos.Country;
+using Freshx_API.Dtos.Supplier;
+using Freshx_API.Dtos.UnitOfMeasure;
+using Freshx_API.Dtos.Drugs;
 
-namespace Freshx_API.Services
+namespace Freshx_API.Services.Drugs
 {
-    public class DrugCatalogService : IDrugCatalogService
+    public class DrugCatalogService
     {
-        private readonly FreshxDBContext _context;
+        private readonly IDrugCatalogRepository _repository;
         private readonly IMapper _mapper;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IDrugCatalogRepository _drugcatalogRepository;
-        public DrugCatalogService(FreshxDBContext context, IMapper mapper, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IDrugCatalogRepository drugcatalogRepository)
+        private readonly ITokenRepository _tokenRepository;
+
+        public DrugCatalogService(IDrugCatalogRepository repository, IMapper mapper, ITokenRepository tokenRepository)
         {
-            _context = context;
+            _repository = repository;
             _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
-            _drugcatalogRepository = drugcatalogRepository;
+            _tokenRepository = tokenRepository;
         }
 
-        public async Task<ApiResponse<DrugCatalogDto>> GetDrugCatalogById(int id)
+        // Lấy danh sách danh mục thuốc với các bộ lọc
+        public async Task<IEnumerable<DrugCatalogDetailDto>> GetAllAsync(string? searchKeyword,
+            DateTime? createdDate, DateTime? updatedDate, int? status)
         {
-            var drugCatalog = await _context.DrugCatalogs.FindAsync(id);
-
-            if (drugCatalog == null)
-            {
-                return ResponseFactory.Error<DrugCatalogDto>(_httpContextAccessor.HttpContext!.Request.Path, "Drug catalog not found", StatusCodes.Status404NotFound);
-            }
-
-            var drugCatalogDto = _mapper.Map<DrugCatalogDto>(drugCatalog);
-
-            return ResponseFactory.Success(_httpContextAccessor.HttpContext!.Request.Path, drugCatalogDto, "Retrieved successfully", StatusCodes.Status200OK);
+            var entities = await _repository.GetAllAsync(searchKeyword, createdDate, updatedDate, status);
+            // Sử dụng AutoMapper để chuyển đổi từ Model sang DTO
+            return _mapper.Map<IEnumerable<DrugCatalogDetailDto>>(entities);
         }
 
-        public async Task<ApiResponse<IEnumerable<DrugCatalogDto>>> GetAllDrugCatalogs()
+        // Lấy danh mục thuốc theo ID
+        public async Task<DrugCatalogDetailDto?> GetByIdAsync(int id)
         {
-            var drugCatalogs = await _drugcatalogRepository.GetAllAsync();
-            var drugCatalogDtos = _mapper.Map<IEnumerable<DrugCatalogDto>>(drugCatalogs);
-
-            return ResponseFactory.Success(_httpContextAccessor.HttpContext!.Request.Path, drugCatalogDtos, "All drug catalogs retrieved successfully", StatusCodes.Status200OK);
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null) return null;
+            return _mapper.Map<DrugCatalogDetailDto>(entity);
         }
 
-        public async Task<ApiResponse<bool>> CreateDrugCatalog(CreateDrugCatalogDto drugCatalogDto)
+        // Tạo mới danh mục thuốc
+        public async Task<DrugCatalogDetailDto> CreateAsync(DrugCatalogCreateUpdateDto dto)
         {
-            var drugCatalog = _mapper.Map<DrugCatalog>(drugCatalogDto);
-            _context.DrugCatalogs.Add(drugCatalog);
-            await _context.SaveChangesAsync();
-
-            return ResponseFactory.Success(_httpContextAccessor.HttpContext!.Request.Path, true, "Drug catalog created successfully", StatusCodes.Status201Created);
+            // Kiểm tra sự tồn tại của danh mục thuốc, nếu cần kiểm tra logic
+            var entity = _mapper.Map<DrugCatalog>(dto);
+            // Thiết lập giá trị mặc định
+            entity.IsDeleted = 0;
+            entity.CreatedDate = DateTime.UtcNow;
+            entity.CreatedBy = _tokenRepository.GetUserIdFromToken();
+            var createdEntity = await _repository.CreateAsync(entity);
+            return _mapper.Map<DrugCatalogDetailDto>(createdEntity);
         }
 
-        public async Task<ApiResponse<bool>> UpdateDrugCatalog(int id, DrugCatalogDto drugCatalogDto)
+        // Cập nhật danh mục thuốc
+        public async Task UpdateAsync(int id, DrugCatalogCreateUpdateDto dto)
         {
-            var existingDrugCatalog = await _context.DrugCatalogs.FindAsync(id);
-            if (existingDrugCatalog == null)
-            {
-                return ResponseFactory.Error<bool>(_httpContextAccessor.HttpContext!.Request.Path, "Drug catalog not found", StatusCodes.Status404NotFound);
-            }
-
-            _mapper.Map(drugCatalogDto, existingDrugCatalog);
-            await _context.SaveChangesAsync();
-
-            return ResponseFactory.Success(_httpContextAccessor.HttpContext!.Request.Path, true, "Drug catalog updated successfully", StatusCodes.Status200OK);
+            var existingEntity = await _repository.GetByIdAsync(id);
+            if (existingEntity == null)
+                throw new KeyNotFoundException("Danh mục thuốc không tồn tại.");
+            // Sử dụng AutoMapper để cập nhật dữ liệu từ DTO sang Entity
+            _mapper.Map(dto, existingEntity);
+            existingEntity.UpdatedDate = DateTime.UtcNow;
+            existingEntity.UpdatedBy = _tokenRepository.GetUserIdFromToken();
+            await _repository.UpdateAsync(existingEntity);
         }
 
-        public async Task<ApiResponse<bool>> DeleteDrugCatalog(int id)
+        // Xóa mềm danh mục thuốc
+        public async Task DeleteAsync(int id)
         {
-            var existingDrugCatalog = await _context.DrugCatalogs.FindAsync(id);
-            if (existingDrugCatalog == null)
-            {
-                return ResponseFactory.Error<bool>(_httpContextAccessor.HttpContext!.Request.Path, "Drug catalog not found", StatusCodes.Status404NotFound);
-            }
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null)
+                throw new KeyNotFoundException("Danh mục thuốc không tồn tại.");
+            await _repository.DeleteAsync(id);
+        }
+        // Lấy nhà sản xuất theo ID
+        public async Task<SupplierDetailDto?> GetManufacturerByIdAsync(int? manufacturerId)
+        {
+            var manufacturer = await _repository.GetManufacturerByIdAsync(manufacturerId);
+            if (manufacturer == null) return null;
+            return _mapper.Map<SupplierDetailDto>(manufacturer);
+        }
 
-            _context.DrugCatalogs.Remove(existingDrugCatalog);
-            await _context.SaveChangesAsync();
+        // Lấy đơn vị đo lường theo ID
+        public async Task<UnitOfMeasureDetailDto?> GetUnitOfMeasureByIdAsync(int? unitOfMeasureId)
+        {
+            var unitOfMeasure = await _repository.GetUnitOfMeasureByIdAsync(unitOfMeasureId);
+            if (unitOfMeasure == null) return null;
+            return _mapper.Map<UnitOfMeasureDetailDto>(unitOfMeasure);
+        }
 
-            return ResponseFactory.Success(_httpContextAccessor.HttpContext!.Request.Path, true, "Drug catalog deleted successfully", StatusCodes.Status200OK);
+        // Lấy quốc gia theo ID
+        public async Task<CountryDto?> GetCountryByIdAsync(int? countryId)
+        {
+            var country = await _repository.GetCountryByIdAsync(countryId);
+            if (country == null) return null;
+            return _mapper.Map<CountryDto>(country);
+        }
+
+        // Lấy loại thuốc theo ID
+        public async Task<DrugTypeDto?> GetDrugTypeByIdAsync(int? drugTypeId)
+        {
+            var drugType = await _repository.GetDrugTypeByIdAsync(drugTypeId);
+            if (drugType == null) return null;
+            return _mapper.Map<DrugTypeDto>(drugType);
         }
     }
 }

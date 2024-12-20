@@ -174,6 +174,35 @@ namespace Freshx_API.Migrations
                     b.ToTable("Appointments");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("User")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.ToTable("ChatMessages");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.ConclusionDictionary", b =>
                 {
                     b.Property<int>("ConclusionDictionaryId")
@@ -243,6 +272,26 @@ namespace Freshx_API.Migrations
                     b.ToTable("ConclusionDictionaries");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Conversation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Conversations");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Country", b =>
                 {
                     b.Property<int>("CountryId")
@@ -254,8 +303,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -278,8 +327,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("ShortName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -1303,8 +1352,8 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -1384,8 +1433,8 @@ namespace Freshx_API.Migrations
                     b.Property<decimal?>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -3105,8 +3154,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("ContactPerson")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -3159,8 +3208,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("TaxCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -3330,8 +3379,8 @@ namespace Freshx_API.Migrations
                     b.Property<decimal?>("ConversionValue")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -3348,8 +3397,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -3786,6 +3835,15 @@ namespace Freshx_API.Migrations
                     b.Navigation("Patient");
 
                     b.Navigation("Reception");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.ChatMessage", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Conversation", null)
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ConclusionDictionary", b =>
@@ -4609,6 +4667,11 @@ namespace Freshx_API.Migrations
             modelBuilder.Entity("Freshx_API.Models.Doctor", b =>
                 {
                     b.Navigation("Receptions");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Conversation", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Position", b =>
