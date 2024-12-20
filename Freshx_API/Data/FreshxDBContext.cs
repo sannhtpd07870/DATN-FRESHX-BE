@@ -182,5 +182,10 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
         //    .WithMany()
         //    .HasForeignKey(s => s.PriceTypeId)
         //    .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Invoice>()
+                    .HasMany(i => i.MedicalServiceRequests)
+                    .WithOne(msr => msr.Invoice)
+                    .HasForeignKey(msr => msr.InvoiceId);
     }
 }

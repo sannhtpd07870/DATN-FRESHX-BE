@@ -3,7 +3,6 @@ using Freshx_API.Dtos;
 using Freshx_API.Dtos.Auth.Account;
 using Freshx_API.Dtos.Auth.Role;
 using Freshx_API.Dtos.DepartmenTypeDtos;
-
 using Freshx_API.Dtos.Doctor;
 
 using Freshx_API.Dtos.DepartmentDtos;
@@ -15,6 +14,7 @@ using Freshx_API.Dtos.Pharmacy;
 using Freshx_API.Dtos.Receptionist;
 using Freshx_API.Dtos.ServiceGroup;
 using Freshx_API.Dtos.ServiceCatalog;
+using Freshx_API.DTOs;
 using Freshx_API.Dtos.UnitOfMeasure;
 using Freshx_API.Dtos.Supplier;
 using System.Diagnostics.Metrics;
@@ -100,6 +100,16 @@ namespace Freshx_API.Mappers
             CreateMap<ServiceCatalog, ServiceCatalogDetailDto>();
             CreateMap<ServiceCatalogCreateUpdateDto, ServiceCatalog>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+
+            // Invoice Mappings
+            CreateMap<Invoice, InvoiceDto>();
+            CreateMap<CreateInvoiceDto, Invoice>();
+            CreateMap<UpdateInvoiceDto, Invoice>();
+
+            CreateMap<Patient, PatientDto>();
+            CreateMap<Reception, ReceptionDto>();
+            CreateMap<ICDCatalog, ICDCatalogDto>();
 
             // Map UnitOfMeasure -> UnitOfMeasureDetailDto
             CreateMap<UnitOfMeasure, UnitOfMeasureDetailDto>();
