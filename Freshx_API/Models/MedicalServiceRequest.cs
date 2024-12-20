@@ -69,7 +69,7 @@ public partial class MedicalServiceRequest
     //public virtual ICollection<MedicalServiceRequest> InverseParentMedicalServiceRequest { get; set; } = new List<MedicalServiceRequest>();
 
     public virtual MedicalServiceRequest? ParentMedicalServiceRequest { get; set; }
-
+    
     public virtual Patient? Patient { get; set; }
 
     public virtual Reception? Reception { get; set; }

@@ -6,7 +6,6 @@ using Freshx_API.Dtos.DepartmenTypeDtos;
 using Freshx_API.Dtos.Doctor;
 
 using Freshx_API.Dtos.DepartmentDtos;
-
 using Freshx_API.Dtos.Drugs;
 using Freshx_API.Models;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +15,12 @@ using Freshx_API.Dtos.Receptionist;
 using Freshx_API.Dtos.ServiceGroup;
 using Freshx_API.Dtos.ServiceCatalog;
 using Freshx_API.DTOs;
+using Freshx_API.Dtos.UnitOfMeasure;
+using Freshx_API.Dtos.Supplier;
+using System.Diagnostics.Metrics;
+using Freshx_API.Dtos.Country;
+using Freshx_API.Dtos.DrugCatalog;
+using Freshx_API.Dtos.UserAccount;
 
 namespace Freshx_API.Mappers
 {
@@ -26,10 +31,6 @@ namespace Freshx_API.Mappers
             CreateMap<Savefile, FileDto>().ReverseMap();
             CreateMap<IdentityRole, RoleResponse>();
             CreateMap<AppUser, RegisterResponse>();
-            CreateMap<DrugCatalog, DrugCatalogDto>();
-            CreateMap<CreateDrugCatalogDto, DrugCatalog>();
-            CreateMap<UpdateDrugCatalogDto, DrugCatalog>()
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
             CreateMap<DrugType, DrugTypeDto>();
             CreateMap<DrugTypeCreateDto, DrugType>();
             CreateMap<DrugTypeUpdateDto, DrugType>();
@@ -41,17 +42,14 @@ namespace Freshx_API.Mappers
             // Mapping từ DTO sang Model khi tạo hoặc cập nhật
             CreateMap<DepartmentTypeCreateUpdateDto, DepartmentType>();
 
-
-
             // Doctor Mappings
             CreateMap<Doctor, DoctorDto>();
-            CreateMap<Doctor, DoctorDetailDto>();   
+            CreateMap<Doctor, DoctorDetailDto>();
             CreateMap<DoctorCreateUpdateDto, Doctor>();
 
             // Mapping từ Model Department sang DTO
             CreateMap<Department, DepartmentDto>();
             CreateMap<Department, DepartmentDetailDto>();
-
 
             // Mapping từ DTO sang Model Department khi tạo hoặc cập nhật
             CreateMap<DepartmentCreateUpdateDto, Department>()
@@ -78,6 +76,7 @@ namespace Freshx_API.Mappers
             // Ánh xạ từ model Receptionist sang DTO hiển thị thông tin cơ bản
             CreateMap<Receptionist, ReceptionistDto>();
 
+
             // Ánh xạ từ DTO tạo mới/cập nhật sang model Receptionist
             CreateMap<ReceptionistCreateUpdateDto, Receptionist>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
@@ -102,6 +101,7 @@ namespace Freshx_API.Mappers
             CreateMap<ServiceCatalogCreateUpdateDto, ServiceCatalog>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
+
             // Invoice Mappings
             CreateMap<Invoice, InvoiceDto>();
             CreateMap<CreateInvoiceDto, Invoice>();
@@ -110,6 +110,51 @@ namespace Freshx_API.Mappers
             CreateMap<Patient, PatientDto>();
             CreateMap<Reception, ReceptionDto>();
             CreateMap<ICDCatalog, ICDCatalogDto>();
+
+            // Map UnitOfMeasure -> UnitOfMeasureDetailDto
+            CreateMap<UnitOfMeasure, UnitOfMeasureDetailDto>();
+
+            // Map UnitOfMeasureCreateUpdateDto -> UnitOfMeasure
+            CreateMap<UnitOfMeasureCreateUpdateDto, UnitOfMeasure>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            // Map Supplier -> SupplierDetailDto
+            CreateMap<Supplier, SupplierDetailDto>();
+
+            // Map SupplierCreateUpdateDto -> Supplier
+            CreateMap<SupplierCreateUpdateDto, Supplier>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            // Map country -> CountryDto
+            CreateMap<Country, CountryDto>();
+
+            // Map CountryCreateUpdateDto -> Country
+            CreateMap<CountryCreateUpdateDto, Country>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+
+            // Map DrugCatalog -> DrugCatalogDetailDto
+            CreateMap<DrugCatalog, DrugCatalogDetailDto>();
+
+            // Map DrugCatalogCreateUpdateDto -> DrugCatalog
+            CreateMap<DrugCatalogCreateUpdateDto, DrugCatalog>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            //Map DocumentPurposeDto
+            // Entity to DTO
+            CreateMap<DocumentPurpose, DocumentPurposeDto>();
+
+            // DTO to Entity
+            CreateMap<DocumentPurpose, DocumentPurposeDto>();
+            CreateMap<DocumentPurposeDto, DocumentPurpose>();
+            CreateMap<CreateDocumentPurposeDto, DocumentPurpose>(); // If CreateDocumentPurposeDto is used
+
+            //Địa chỉ 
+            CreateMap<Province, ProvinceDto>();
+            CreateMap<District, DistrictDto>();
+            CreateMap<Ward, WardDto>();
+            //
+            CreateMap<AppUser,UserResponse>().ReverseMap();
         }
     }
 }

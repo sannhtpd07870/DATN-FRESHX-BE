@@ -3,23 +3,23 @@ using System.ComponentModel.DataAnnotations;
 namespace Freshx_API.Dtos
 {
 
-    public class DrugCatalogDto
-    {
-        public int DrugCatalogId { get; set; }
-        public string? Code { get; set; }
-        public string? Name { get; set; }
-        public string? FullName { get; set; }
-        public string? ActiveIngredient { get; set; }
-        public string? Usage { get; set; }
-        public string? Dosage { get; set; }
-        public string? Effect { get; set; }
-        public int? DrugTypeId { get; set; }
-        public decimal? UnitPrice { get; set; }
-        public int? IsSuspended { get; set; }
-        // Thêm các trường cần thiết khác
-    }
+    //public class DrugCatalogDetailDto
+    //{
+    //    public int DrugCatalogId { get; set; }
+    //    public string? Code { get; set; }
+    //    public string? Name { get; set; }
+    //    public string? FullName { get; set; }
+    //    public string? ActiveIngredient { get; set; }
+    //    public string? Usage { get; set; }
+    //    public string? Dosage { get; set; }
+    //    public string? Effect { get; set; }
+    //    public int? DrugTypeId { get; set; }
+    //    public decimal? UnitPrice { get; set; }
+    //    public int? IsSuspended { get; set; }
+    //    // Thêm các trường cần thiết khác
+    //}
 
-    public class CreateDrugCatalogDto
+    public class CreateDrugCatalogDetailDto
     {
         [Required]
         public string? Code { get; set; } // Mã danh mục thuốc
@@ -84,7 +84,7 @@ namespace Freshx_API.Dtos
 
     }
 
-    public class UpdateDrugCatalogDto
+    public class UpdateDrugCatalogDetailDto
     {
         public string? Name { get; set; }
         public string? FullName { get; set; }
