@@ -26,6 +26,8 @@ using Freshx_API.Repository.Menu;
 using Freshx_API.Repository.Drugs;
 using Freshx_API.Services.Drugs;
 using Freshx_API.Repository.Address;
+using Freshx_API.Interfaces.UserAccount;
+using Freshx_API.Repository.UserAccount;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -297,15 +299,17 @@ builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IEmailService,EmailService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
+builder.Services.AddScoped<IPositionRepository, PositionRepository>();
+builder.Services.AddScoped<IUserAccountRepository,UserAccountRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
-builder.Services.AddScoped<IDocumentPurposeRepository, DocumentPurposeRepository>();
+builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
 builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
 builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
-builder.Services.AddScoped<IPharmacyService,PharmacyService>();
+builder.Services.AddScoped<PharmacyService>();
 
 
 // Đăng ký Repository và Service với Dependency Injection

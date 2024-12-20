@@ -20,6 +20,7 @@ using Freshx_API.Dtos.Supplier;
 using System.Diagnostics.Metrics;
 using Freshx_API.Dtos.Country;
 using Freshx_API.Dtos.DrugCatalog;
+using Freshx_API.Dtos.UserAccount;
 
 namespace Freshx_API.Mappers
 {
@@ -133,6 +134,8 @@ namespace Freshx_API.Mappers
             CreateMap<Province, ProvinceDto>();
             CreateMap<District, DistrictDto>();
             CreateMap<Ward, WardDto>();
+            //
+            CreateMap<AppUser,UserResponse>().ReverseMap();
         }
     }
 }
