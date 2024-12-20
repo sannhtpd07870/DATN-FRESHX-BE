@@ -21,6 +21,11 @@ using Freshx_API.Interfaces.Auth;
 using Microsoft.Identity.Client;
 using Freshx_API.Repository.Auth.TokenRepositories;
 using Freshx_API.Services.CommonServices;
+using Freshx_API.Services.Chat;
+using Freshx_API.Repository.Menu;
+using Freshx_API.Repository.Drugs;
+using Freshx_API.Services.Drugs;
+using Freshx_API.Repository.Address;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -283,16 +288,18 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true; // Tùy chọn: lowercase cả query string
 });
+builder.Services.AddCors();
+builder.Services.AddSignalR();
 builder.Services.AddScoped<IFileService, FileService>();
-
 builder.Services.AddScoped<IRoleRepository,RoleRepository>();
 builder.Services.AddScoped<IAccountRepository,AccountRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IEmailService,EmailService>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
-builder.Services.AddScoped<IDrugCatalogService, DrugCatalogService>();
+
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 builder.Services.AddScoped<IDocumentPurposeRepository, DocumentPurposeRepository>();
@@ -324,26 +331,61 @@ builder.Services.AddScoped<InventoryTypeService>();
 builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
+builder.Services.AddScoped<ReceptionistService>();
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IServiceGroupRepository, ServiceGroupRepository>();
+builder.Services.AddScoped<ServiceGroupService>();
+
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IServiceCatalogRepository, ServiceCatalogRepository>();
+builder.Services.AddScoped<ServiceCatalogService>();
+
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IUnitOfMeasureRepository, UnitOfMeasureRepository>();
+builder.Services.AddScoped<UnitOfMeasureService>();
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+builder.Services.AddScoped<SupplierService>();
+
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<CountryService>();
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
+builder.Services.AddScoped<DrugCatalogService>();
+
+//Dăng kí Reponsitory và service cho địa chỉ
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
 // Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
 builder.Services.AddHttpContextAccessor();
-
-
-
-
 var app = builder.Build();
+
+
 
 // Cấu hình CORS để cho phép truy cập từ mọi nguồn
 // Enable CORS
 app.UseCors(builder =>
 {
-    builder.AllowAnyOrigin()
+    builder.WithOrigins("http://localhost:5173")
            .AllowAnyMethod()
-           .AllowAnyHeader();
+           .AllowAnyHeader()
+           .AllowCredentials();
 });
 
+app.MapHub<ChatHub>("/chathub");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -352,7 +394,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 //xac thuc truoc khi phan quyen
 app.UseAuthentication();
 app.UseAuthorization();
