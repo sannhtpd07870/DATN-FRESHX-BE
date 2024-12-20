@@ -103,6 +103,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<ZaloUser> ZaloUsers { get; set; }
     public DbSet<ChatMessage> ChatMessages { get; set; }
     public DbSet<Conversation> Conversations { get; set; }
+    public DbSet<Receptionist> Receptionists { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -175,10 +176,10 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .HasForeignKey(s => s.ParentServiceId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<ServiceCatalog>()
-            .HasOne(s => s.PriceType)
-            .WithMany()
-            .HasForeignKey(s => s.PriceTypeId)
-            .OnDelete(DeleteBehavior.Restrict);
+        //modelBuilder.Entity<ServiceCatalog>()
+        //    .HasOne(s => s.PriceType)
+        //    .WithMany()
+        //    .HasForeignKey(s => s.PriceTypeId)
+        //    .OnDelete(DeleteBehavior.Restrict);
     }
 }

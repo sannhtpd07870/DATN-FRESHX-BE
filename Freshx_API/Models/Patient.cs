@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Freshx_API.Models;
 
@@ -16,10 +17,8 @@ public partial class Patient
     public string? Name { get; set; } // Tên bệnh nhân
 
     public string? Gender { get; set; } // Giới tính bệnh nhân
-
+    [Column(TypeName = "date")]
     public DateTime? DateOfBirth { get; set; } // Ngày sinh bệnh nhân
-
-    public int? YearOfBirth { get; set; } // Năm sinh bệnh nhân
 
     public string? PhoneNumber { get; set; } // Số điện thoại bệnh nhân
 
@@ -27,11 +26,11 @@ public partial class Patient
 
     public string? Address { get; set; } // Địa chỉ bệnh nhân
 
-    public int? WardId { get; set; } // ID phường/xã
+   // public int? WardId { get; set; } // ID phường/xã
 
-    public int? DistrictId { get; set; } // ID quận/huyện
+   // public int? DistrictId { get; set; } // ID quận/huyện
 
-    public int? ProvinceId { get; set; } // ID tỉnh/thành phố
+  //  public int? ProvinceId { get; set; } // ID tỉnh/thành phố
 
     public int? CreatedBy { get; set; } // Người tạo
 
@@ -45,19 +44,19 @@ public partial class Patient
 
     public string? ImageUrl { get; set; } // Đường dẫn đến ảnh bệnh nhân
 
-    public string? ZaloId { get; set; } // ID Zalo của bệnh nhân
+   // public string? ZaloId { get; set; } // ID Zalo của bệnh nhân
 
-    public int? Ethnicity { get; set; } // Dân tộc của bệnh nhân
+    public string? Ethnicity { get; set; } // Dân tộc của bệnh nhân
 
-    public string? TaxCode { get; set; } // Mã số thuế của bệnh nhân
+    //public string? TaxCode { get; set; } // Mã số thuế của bệnh nhân
 
-    public string? CompanyName { get; set; } // Tên công ty của bệnh nhân
+  //  public string? CompanyName { get; set; } // Tên công ty của bệnh nhân
 
     //public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>(); // Danh sách cuộc hẹn
 
     //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
 
-    public virtual District? District { get; set; } // Đơn vị hành chính quận/huyện
+   // public virtual District? District { get; set; } // Đơn vị hành chính quận/huyện
 
     //public virtual ICollection<EinvoiceFile> EinvoiceFiles { get; set; } = new List<EinvoiceFile>(); // Danh sách tệp hóa đơn điện tử
 
@@ -67,11 +66,11 @@ public partial class Patient
 
     //public virtual ICollection<LabTestFile> LabTestFiles { get; set; } = new List<LabTestFile>(); // Danh sách tệp xét nghiệm
 
-    //public virtual ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; } = new List<MedicalServiceRequest>(); // Danh sách yêu cầu dịch vụ y tế
+    //public virtual ICollection<MedicalServiceRequest> MedicalSe  rviceRequests { get; set; } = new List<MedicalServiceRequest>(); // Danh sách yêu cầu dịch vụ y tế
 
-    public virtual Province? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
+   // public virtual Province? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
 
     //public virtual ICollection<Reception> Receptions { get; set; } = new List<Reception>(); // Danh sách tiếp nhận
 
-    public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
+    //public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
 }
