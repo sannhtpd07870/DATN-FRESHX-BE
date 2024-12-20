@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Country
 {
+    [Key]
     public int CountryId { get; set; } // ID quốc gia
 
     public string? Code { get; set; } // Mã quốc gia
@@ -23,11 +25,11 @@ public partial class Country
 
     public DateTime? CreatedDate { get; set; } // Ngày tạo
 
-    public int? CreatedBy { get; set; } // Người tạo
+    public string? CreatedBy { get; set; } // Người tạo
 
     public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
 
-    public int? UpdatedBy { get; set; } // Người cập nhật
+    public string? UpdatedBy { get; set; } // Người cập nhật
 
-    public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>(); // Danh sách danh mục thuốc liên quan
+    //public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>(); // Danh sách danh mục thuốc liên quan
 }

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Freshx_API.Models;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class DiagnosticImagingResult
 {
+    [Key]
     public int DiagnosticImagingResultId { get; set; }
 
     public DateTime? ExecutionDate { get; set; }
@@ -77,7 +80,7 @@ public partial class DiagnosticImagingResult
 
     public virtual Doctor? ConcludingDoctor { get; set; }
 
-    public virtual ICollection<DiagnosticImagingResultImage> DiagnosticImagingResultImages { get; set; } = new List<DiagnosticImagingResultImage>();
+    //public virtual ICollection<DiagnosticImagingResultImage> DiagnosticImagingResultImages { get; set; } = new List<DiagnosticImagingResultImage>();
 
     public virtual MedicalServiceRequest? MedicalServiceRequest { get; set; }
 

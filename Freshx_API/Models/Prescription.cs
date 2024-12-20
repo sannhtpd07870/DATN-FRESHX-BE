@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Prescription
 {
@@ -47,7 +47,7 @@ public partial class Prescription
 
     public string? Note { get; set; } // Ghi chú
 
-    public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>(); // Danh sách đặt thuốc
+    //public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>(); // Danh sách đặt thuốc
 
     public virtual DrugCatalog? DrugCatalog { get; set; } // Danh mục thuốc
 

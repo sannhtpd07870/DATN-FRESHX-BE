@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class LoginSession
 {
@@ -23,13 +23,13 @@ public partial class LoginSession
 
     public virtual Department? Department { get; set; }
 
-    public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>();
+   // public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>();
 
     public virtual Pharmacy? Pharmacy { get; set; }
 
     public virtual User? User { get; set; }
 
-    public virtual ICollection<UserActionByMedicalRecord> UserActionByMedicalRecords { get; set; } = new List<UserActionByMedicalRecord>();
+    //public virtual ICollection<UserActionByMedicalRecord> UserActionByMedicalRecords { get; set; } = new List<UserActionByMedicalRecord>();
 
-    public virtual ICollection<UserAction> UserActions { get; set; } = new List<UserAction>();
+    //public virtual ICollection<UserAction> UserActions { get; set; } = new List<UserAction>();
 }

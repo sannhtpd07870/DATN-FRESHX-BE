@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class ServiceGroup
 {
@@ -13,11 +13,11 @@ public partial class ServiceGroup
 
     public int? IsSuspended { get; set; }
 
-    public int? CreatedBy { get; set; }
+    public string? CreatedBy { get; set; }
 
     public DateTime? CreatedDate { get; set; }
 
-    public int? UpdatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
 
     public DateTime? UpdatedDate { get; set; }
 

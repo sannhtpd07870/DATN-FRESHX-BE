@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class ExaminationConfirmation
 {
@@ -22,6 +22,6 @@ public partial class ExaminationConfirmation
     public int? IsDeleted { get; set; }
 
     public virtual Invoice? MedicalExamination { get; set; }
-
+    public Invoice Invoice { get; set; } // Thêm thuộc tính này
     public virtual Reception? Reception { get; set; }
 }

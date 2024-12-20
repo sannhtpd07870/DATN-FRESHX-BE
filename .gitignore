@@ -40,7 +40,6 @@ $RECYCLE.BIN/
 **/bin/
 **/obj/
 **/artifacts/
-
 # Visual Studio
 .vs/
 .vscode/

@@ -7,5 +7,6 @@ namespace Freshx_API.Interfaces.Auth
     {
         public Task<AppUser?> RegisterAccount(AddingRegister registerDto);
         public Task<LoginResponse> LoginAccount(LoginRequest loginRequest);
+        public Task<bool> EmailExist (string email);
     }
 }

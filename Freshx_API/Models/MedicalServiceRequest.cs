@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Freshx_API.Models;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class MedicalServiceRequest
 {
@@ -63,12 +64,12 @@ public partial class MedicalServiceRequest
 
     public virtual Employee? AssignedBy { get; set; }
 
-    public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>();
+    //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>();
 
-    public virtual ICollection<MedicalServiceRequest> InverseParentMedicalServiceRequest { get; set; } = new List<MedicalServiceRequest>();
+    //public virtual ICollection<MedicalServiceRequest> InverseParentMedicalServiceRequest { get; set; } = new List<MedicalServiceRequest>();
 
     public virtual MedicalServiceRequest? ParentMedicalServiceRequest { get; set; }
-
+    
     public virtual Patient? Patient { get; set; }
 
     public virtual Reception? Reception { get; set; }

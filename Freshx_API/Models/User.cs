@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class User
 {
+    [Key]
     public int UserId { get; set; } // ID người dùng
 
     public string? UserCode { get; set; } // Mã người dùng
 
     public string? UserName { get; set; } // Tên người dùng
 
-    public string? Password { get; set; } // Mật khẩu người dùng
+    public string? Email { get; set; } // Mật khẩu người dùng
 
     public int? HospitalId { get; set; } // ID bệnh viện
 
@@ -29,15 +32,15 @@ public partial class User
 
     public virtual Hospital? Hospital { get; set; } // Bệnh viện của người dùng
 
-    public virtual ICollection<LoginSession> LoginSessions { get; set; } = new List<LoginSession>(); // Danh sách phiên đăng nhập
+    //public virtual ICollection<LoginSession> LoginSessions { get; set; } = new List<LoginSession>(); // Danh sách phiên đăng nhập
 
-    public virtual ICollection<MenuPermission> MenuPermissions { get; set; } = new List<MenuPermission>(); // Danh sách quyền truy cập menu
+    //public virtual ICollection<MenuPermission> MenuPermissions { get; set; } = new List<MenuPermission>(); // Danh sách quyền truy cập menu
 
-    public virtual ICollection<ReportPermission> ReportPermissions { get; set; } = new List<ReportPermission>(); // Danh sách quyền truy cập báo cáo
+    //public virtual ICollection<ReportPermission> ReportPermissions { get; set; } = new List<ReportPermission>(); // Danh sách quyền truy cập báo cáo
 
-    public virtual ICollection<UserActionByMedicalRecord> UserActionByMedicalRecords { get; set; } = new List<UserActionByMedicalRecord>(); // Danh sách hành động của người dùng theo hồ sơ bệnh án
+    //public virtual ICollection<UserActionByMedicalRecord> UserActionByMedicalRecords { get; set; } = new List<UserActionByMedicalRecord>(); // Danh sách hành động của người dùng theo hồ sơ bệnh án
 
-    public virtual ICollection<UserDepartment> UserDepartments { get; set; } = new List<UserDepartment>(); // Danh sách phòng ban của người dùng
+    //public virtual ICollection<UserDepartment> UserDepartments { get; set; } = new List<UserDepartment>(); // Danh sách phòng ban của người dùng
 
-    public virtual ICollection<UserPharmacy> UserPharmacies { get; set; } = new List<UserPharmacy>(); // Danh sách nhà thuốc của người dùng
+    //public virtual ICollection<UserPharmacy> UserPharmacies { get; set; } = new List<UserPharmacy>(); // Danh sách nhà thuốc của người dùng
 }

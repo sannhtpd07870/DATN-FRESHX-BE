@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class InventoryType
 {
@@ -11,5 +11,5 @@ public partial class InventoryType
 
     public string? Name { get; set; } // Tên loại tồn kho
 
-    public virtual ICollection<Pharmacy> Pharmacies { get; set; } = new List<Pharmacy>(); // Danh sách nhà thuốc liên quan
+   // public virtual ICollection<Pharmacy> Pharmacies { get; set; } = new List<Pharmacy>(); // Danh sách nhà thuốc liên quan
 }

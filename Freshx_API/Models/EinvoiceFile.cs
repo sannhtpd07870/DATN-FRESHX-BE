@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Freshx_API.Models;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class EinvoiceFile
 {

@@ -2,6 +2,8 @@
 using Freshx_API.Interfaces.Auth;
 using Freshx_API.Models;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
+using System.Diagnostics;
 
 namespace Freshx_API.Repository.Auth.AccountRepositories
 {
@@ -26,6 +28,7 @@ namespace Freshx_API.Repository.Auth.AccountRepositories
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
+
             //phuong thuc tao tai khoan mac dinh trong asp.netcore identity voi UseName la duy nhat neu trung lap se tao tai khoan khong thanh cong
             //vi co che modelBinding nen email va mat khau da duoc kiem tra tinh hop le truoc
             var result = await _userManager.CreateAsync(appUser, registerDto.Password);
@@ -33,7 +36,7 @@ namespace Freshx_API.Repository.Auth.AccountRepositories
             {
                 return null;
             }
-            await _userManager.AddToRoleAsync(appUser,"Normal User");          
+            await _userManager.AddToRoleAsync(appUser,"user");          
             return appUser;
         }
         public async Task<LoginResponse> LoginAccount(LoginRequest loginRequest)
@@ -116,6 +119,11 @@ namespace Freshx_API.Repository.Auth.AccountRepositories
                 Succeeded = false,
                 Message = $"Email or password false. {attemptsLeft} remaining"
             };
+        }
+        public async Task<bool> EmailExist(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user != null;
         }
 
     }

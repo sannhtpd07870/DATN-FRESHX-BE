@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class DrugCatalog
 {
@@ -39,11 +39,11 @@ public partial class DrugCatalog
 
     public DateTime? CreatedDate { get; set; } // Ngày tạo
 
-    public int? CreatedBy { get; set; } // Người tạo
+    public string? CreatedBy { get; set; } // Người tạo
 
     public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
 
-    public int? UpdatedBy { get; set; } // Người cập nhật
+    public string? UpdatedBy { get; set; } // Người cập nhật
 
     public string? NationalDrugCode { get; set; } // Mã thuốc quốc gia
 
@@ -73,24 +73,24 @@ public partial class DrugCatalog
 
     public int? ManagementPharmacyId { get; set; } // ID nhà thuốc quản lý
 
-    public int? DepartmentPharmacyId { get; set; } // ID nhà thuốc phòng ban
+      public int? DepartmentPharmacyId { get; set; } // ID nhà thuốc phòng ban
 
     public virtual Country? Country { get; set; } // Quốc gia của thuốc
 
     public virtual Pharmacy? DepartmentPharmacy { get; set; } // Nhà thuốc phòng ban
 
-    public virtual ICollection<DocumentDetail> DocumentDetails { get; set; } = new List<DocumentDetail>(); // Danh sách chi tiết tài liệu
+    //public virtual ICollection<DocumentDetail> DocumentDetails { get; set; } = new List<DocumentDetail>(); // Danh sách chi tiết tài liệu
 
-    public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>(); // Danh sách đặt thuốc
+    //public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>(); // Danh sách đặt thuốc
 
     public virtual DrugType? DrugType { get; set; } // Loại thuốc
 
     public virtual Pharmacy? ManagementPharmacy { get; set; } // Nhà thuốc quản lý
     public virtual Supplier? Manufacturer { get; set; }
 
-    public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
+    //public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 
-    public virtual ICollection<TemplatePrescriptionDrugMapping> TemplatePrescriptionDrugMappings { get; set; } = new List<TemplatePrescriptionDrugMapping>();
+    //public virtual ICollection<TemplatePrescriptionDrugMapping> TemplatePrescriptionDrugMappings { get; set; } = new List<TemplatePrescriptionDrugMapping>();
 
     public virtual UnitOfMeasure? UnitOfMeasure { get; set; }
 }

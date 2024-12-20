@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Freshx_API.Models;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Invoice
 {
@@ -27,7 +28,7 @@ public partial class Invoice
 
     public string? Symptoms { get; set; } // Triệu chứng
 
-    public int? IcdcatalogId { get; set; } // ID danh mục ICD
+    public int?  ICDCatalogId { get; set; } // ID danh mục ICD
 
     public string? Diagnosis { get; set; } // Chẩn đoán
 
@@ -69,20 +70,20 @@ public partial class Invoice
 
     public int MedicalExaminationId { get; set; } // ID khám bệnh
 
-    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>(); // Danh sách cuộc hẹn
+    //public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>(); // Danh sách cuộc hẹn
 
-    public virtual ICollection<Document> Documents { get; set; } = new List<Document>(); // Danh sách tài liệu
+    //public virtual ICollection<Document> Documents { get; set; } = new List<Document>(); // Danh sách tài liệu
 
-    public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>(); // Danh sách đặt thuốc
+    //public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>(); // Danh sách đặt thuốc
 
-    public virtual ICollection<EinvoiceFile> EinvoiceFiles { get; set; } = new List<EinvoiceFile>(); // Danh sách tệp hóa đơn điện tử
-    public virtual ICollection<ExaminationConfirmation> ExaminationConfirmations { get; set; } = new List<ExaminationConfirmation>(); // Danh sách xác nhận khám bệnh
+    //public virtual ICollection<EinvoiceFile> EinvoiceFiles { get; set; } = new List<EinvoiceFile>(); // Danh sách tệp hóa đơn điện tử
+    //public virtual ICollection<ExaminationConfirmation> ExaminationConfirmations { get; set; } = new List<ExaminationConfirmation>(); // Danh sách xác nhận khám bệnh
 
-    public virtual Icdcatalog? Icdcatalog { get; set; }
+    public virtual  ICDCatalog?  ICDCatalog { get; set; }
 
     public virtual Patient? Patient { get; set; }
 
-    public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
+    //public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 
     public virtual Reception? Reception { get; set; }
 }

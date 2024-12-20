@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Supplier
 {
@@ -39,11 +39,11 @@ public partial class Supplier
 
     public DateTime? CreatedDate { get; set; } // Ngày tạo
 
-    public int? CreatedBy { get; set; } // Người tạo
+    public string? CreatedBy { get; set; } // Người tạo
 
     public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
 
-    public int? UpdatedBy { get; set; } // Người cập nhật
+    public string? UpdatedBy { get; set; } // Người cập nhật
 
     public bool IsPharmaceuticalSupplier { get; set; } // Trạng thái nhà cung cấp dược phẩm
 
@@ -53,7 +53,7 @@ public partial class Supplier
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
 
-    public virtual ICollection<Document> Documents { get; set; } = new List<Document>(); // Danh sách tài liệu liên quan
+    //public virtual ICollection<Document> Documents { get; set; } = new List<Document>(); // Danh sách tài liệu liên quan
 
-    public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>(); // Danh sách danh mục thuốc liên quan
+    //public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>(); // Danh sách danh mục thuốc liên quan
 }

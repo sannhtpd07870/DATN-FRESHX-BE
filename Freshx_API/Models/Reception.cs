@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Freshx_API.Models;
 
-namespace convert_model.Models;
+namespace Freshx_API.Models;
 
 public partial class Reception
 {
@@ -17,17 +18,11 @@ public partial class Reception
 
     public int? ReceptionLocationId { get; set; }
 
-    public int? ReceptionistId { get; set; }
+    public int? ReceptionistId { get; set; } // nhan vien le tan khoa ngoai
 
     public DateTime? ReceptionDate { get; set; }
 
-    public DateTime? ReceptionTime { get; set; }
-
-    public int? ReceptionYear { get; set; }
-
-    public int? ReceptionMonth { get; set; }
-
-    public string? ContactAddress { get; set; }
+   // public string? ContactAddress { get; set; }
 
     public string? Note { get; set; }
 
@@ -45,21 +40,22 @@ public partial class Reception
 
     public string? ReasonForVisit { get; set; }
 
-    public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
+    //public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
-    public virtual Doctor? AssignedDoctor { get; set; }
+    public virtual Doctor? AssignedDoctor { get; set; } // bác sĩ khám
 
-    public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>();
+    //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>();
 
-    public virtual ICollection<ExaminationConfirmation> ExaminationConfirmations { get; set; } = new List<ExaminationConfirmation>();
+    //public virtual ICollection<ExaminationConfirmation> ExaminationConfirmations { get; set; } = new List<ExaminationConfirmation>();
 
-    public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
+    //public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
 
-    public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>();
+    //public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>();
 
-    public virtual ICollection<LabTestFile> LabTestFiles { get; set; } = new List<LabTestFile>();
+    //public virtual ICollection<LabTestFile> LabTestFiles { get; set; } = new List<LabTestFile>();
 
-    public virtual ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; } = new List<MedicalServiceRequest>();
+   // public virtual ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; } = new List<MedicalServiceRequest>();
 
-    public virtual Patient? Patient { get; set; }
+    public virtual Patient? Patient { get; set; } // bệnh nhân khám
+    public virtual Receptionist? Receptionist { get; set; } // nhân viên tiếp nhận
 }
