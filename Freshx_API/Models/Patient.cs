@@ -16,6 +16,8 @@ public partial class Patient
 
     public string? Name { get; set; } // Tên bệnh nhân
 
+    public string? Email { get; set; }
+
     public string? Gender { get; set; } // Giới tính bệnh nhân
     [Column(TypeName = "date")]
     public DateTime? DateOfBirth { get; set; } // Ngày sinh bệnh nhân
@@ -26,11 +28,11 @@ public partial class Patient
 
     public string? Address { get; set; } // Địa chỉ bệnh nhân
 
-   // public int? WardId { get; set; } // ID phường/xã
+    public int? WardId { get; set; } // ID phường/xã
 
-   // public int? DistrictId { get; set; } // ID quận/huyện
+    public int? DistrictId { get; set; } // ID quận/huyện
 
-  //  public int? ProvinceId { get; set; } // ID tỉnh/thành phố
+    public int? ProvinceId { get; set; } // ID tỉnh/thành phố
 
     public int? CreatedBy { get; set; } // Người tạo
 
@@ -56,7 +58,7 @@ public partial class Patient
 
     //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
 
-   // public virtual District? District { get; set; } // Đơn vị hành chính quận/huyện
+    public virtual District? District { get; set; } // Đơn vị hành chính quận/huyện
 
     //public virtual ICollection<EinvoiceFile> EinvoiceFiles { get; set; } = new List<EinvoiceFile>(); // Danh sách tệp hóa đơn điện tử
 
@@ -68,9 +70,9 @@ public partial class Patient
 
     //public virtual ICollection<MedicalServiceRequest> MedicalSe  rviceRequests { get; set; } = new List<MedicalServiceRequest>(); // Danh sách yêu cầu dịch vụ y tế
 
-   // public virtual Province? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
+    public virtual Province? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
 
     //public virtual ICollection<Reception> Receptions { get; set; } = new List<Reception>(); // Danh sách tiếp nhận
 
-    //public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
+    public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
 }

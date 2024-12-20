@@ -101,8 +101,9 @@ namespace Freshx_API.Repository.UserAccount
 
         }
         //
-        public async Task<AppUser?> GetUserByIdAsync(string id)
+        public async Task<AppUser?> GetUserByIdAsync()
         {
+            string id;
             try
             {
                 id = _tokenRepository.GetUserIdFromToken();
@@ -186,8 +187,9 @@ namespace Freshx_API.Repository.UserAccount
                     throw;
                 }         
         }
-        public async Task<AppUser?> UpdateUserByIdAsync(string id, UpdatingUserRequest request)
+        public async Task<AppUser?> UpdateUserByIdAsync(UpdatingUserRequest request)
         {
+            string id;
             try
             {
                 int? avartarId;

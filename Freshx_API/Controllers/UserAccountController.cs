@@ -59,15 +59,15 @@ namespace Freshx_API.Controllers
             }
         }
         [HttpGet]
-        [Route("{id}")]
-        public async Task<ActionResult<ApiResponse<UserResponse>>> GetUserByIdAsync(string id)
+        [Route("profile")]
+        public async Task<ActionResult<ApiResponse<UserResponse>>> GetUserByIdAsync()
         {
             try
             {
-                var user = await _userAccountRepository.GetUserByIdAsync(id);
+                var user = await _userAccountRepository.GetUserByIdAsync();
                 if (user == null)
                 {
-                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<Object>(Request.Path,$"Get information by {id} not found", StatusCodes.Status404NotFound));
+                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<Object>(Request.Path,$"Get information not found", StatusCodes.Status404NotFound));
                 }
                 var data = _mapper.Map<AppUser,UserResponse>(user);
                 return StatusCode(StatusCodes.Status200OK,ResponseFactory.Success(Request.Path,data));
@@ -78,15 +78,15 @@ namespace Freshx_API.Controllers
             }
         }
         [HttpDelete]
-        [Route("{id}")]
-        public async Task<ActionResult<ApiResponse<UserResponse>>> DeleteUserByid(string id)
+        
+        public async Task<ActionResult<ApiResponse<UserResponse>>> DeleteUserByid()
         {
             try
             {
-                var user = await _userAccountRepository.GetUserByIdAsync (id);
+                var user = await _userAccountRepository.GetUserByIdAsync();
                 if(user == null)
                 {
-                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<Object>(Request.Path, $"Delete user by {id} fail", StatusCodes.Status404NotFound));
+                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<Object>(Request.Path, $"Lỗi khi xóa người dùng", StatusCodes.Status404NotFound));
                 }
                 return StatusCode(StatusCodes.Status200OK,ResponseFactory.Success<Object>(Request.Path,null,"User deleted success",StatusCodes.Status200OK));
             }
@@ -98,23 +98,23 @@ namespace Freshx_API.Controllers
         }
 
         [HttpPut]
-        [Route("{id}")]
-        public async Task<ActionResult<ApiResponse<UserResponse>>> UpdateUserById(string id, UpdatingUserRequest request)
+        
+        public async Task<ActionResult<ApiResponse<UserResponse>>> UpdateUserById(UpdatingUserRequest request)
         {
             try
             {
-                var user = await _userAccountRepository.UpdateUserByIdAsync(id, request);
+                var user = await _userAccountRepository.UpdateUserByIdAsync(request);
                 if(user == null)
                 {
-                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<UserResponse>(Request.Path, $"Updating user by {id} not found", StatusCodes.Status404NotFound));
+                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<UserResponse>(Request.Path, $"Lỗi khi lấy người dùng", StatusCodes.Status404NotFound));
                 }
                 var data = _mapper.Map<AppUser,UserResponse>(user);
                 return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, data));
             }
             catch(Exception e)
             {
-                _logger.LogError(e, $"An exception occured while updating user by {id} fail");
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, $"An exception occured while updating user by {id}", StatusCodes.Status500InternalServerError));
+                _logger.LogError(e, $"An exception occured while updating user fail");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, $"Xảy ra lỗi khi cập nhật dữ liệu", StatusCodes.Status500InternalServerError));
             }
         } 
     }

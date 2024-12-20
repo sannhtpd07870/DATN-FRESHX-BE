@@ -10,9 +10,9 @@ namespace Freshx_API.Interfaces.UserAccount
     {
 
         public Task<AppUser?> CreateUserAsync(AddingUserRequest request);
-        public Task<AppUser?> GetUserByIdAsync(string id);
+        public Task<AppUser?> GetUserByIdAsync();
         public Task<CustomPageResponse<IEnumerable<UserResponse?>>> GetUsersAsync(PaginationParameters parameters);
         public Task<AppUser?> DeleteUserByIdAsync(string id);      
-        public Task<AppUser?> UpdateUserByIdAsync(string id, UpdatingUserRequest request);
+        public Task<AppUser?> UpdateUserByIdAsync( UpdatingUserRequest request);
     }
 }
