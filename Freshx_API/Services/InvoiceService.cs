@@ -1,72 +1,73 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using AutoMapper;
-using Freshx_API.Dtos.Invoice;
+﻿using AutoMapper;
+using Freshx_API.DTOs;
+using Freshx_API.Interfaces;
+using Freshx_API.Interfaces.Invoice;
 using Freshx_API.Models;
 using Freshx_API.Repositories;
-using Humanizer;
-using NuGet.Protocol.Core.Types;
 
 namespace Freshx_API.Services
 {
-    public class InvoiceService
+    public class InvoiceService : IInvoiceService
     {
-        private readonly IInvoiceRepository _repository;
+        private readonly IInvoiceRepository _invoiceRepository;
         private readonly IMapper _mapper;
 
-        public InvoiceService(IInvoiceRepository invoiceRepository)
+        public InvoiceService(IInvoiceRepository invoiceRepository, IMapper mapper)
         {
-            _repository = invoiceRepository;
+            _invoiceRepository = invoiceRepository;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Invoice>> GetAllInvoicesAsync()
+        public async Task<IEnumerable<InvoiceDto>> GetAllInvoicesAsync()
         {
-            return await _repository.GetAllInvoicesAsync();
+            var invoices = await _invoiceRepository.GetAllAsync();
+            return _mapper.Map<IEnumerable<InvoiceDto>>(invoices);
         }
 
-        public async Task<Invoice?> GetInvoiceByIdAsync(int id)
+        public async Task<InvoiceDto?> GetInvoiceByIdAsync(int id)
         {
-            return await _repository.GetInvoiceByIdAsync(id);
+            var invoice = await _invoiceRepository.GetByIdAsync(id);
+            return invoice == null ? null : _mapper.Map<InvoiceDto>(invoice);
         }
 
-        public async Task<IEnumerable<Invoice>> GetInvoicesByPatientIdAsync(int patientId)
+        public async Task<InvoiceDto> CreateInvoiceAsync(CreateInvoiceDto createInvoiceDto)
         {
-            return await _repository.GetInvoicesByPatientIdAsync(patientId);
+            var invoice = _mapper.Map<Invoice>(createInvoiceDto);
+
+            invoice.CreatedDate = DateTime.Now;
+            invoice.CreatedTime = DateTime.Now;
+            invoice.IsDeleted = 0;
+
+            var createdInvoice = await _invoiceRepository.CreateAsync(invoice);
+            await _invoiceRepository.SaveChangesAsync();
+
+            return _mapper.Map<InvoiceDto>(createdInvoice);
         }
 
-        public async Task AddInvoiceAsync(Invoice invoice)
+        public async Task<InvoiceDto?> UpdateInvoiceAsync(int id, UpdateInvoiceDto updateInvoiceDto)
         {
-            await _repository.AddInvoiceAsync(invoice);
-            await _repository.SaveChangesAsync();
+            var existingInvoice = await _invoiceRepository.GetByIdAsync(id);
+
+            if (existingInvoice == null)
+                return null;
+
+            _mapper.Map(updateInvoiceDto, existingInvoice);
+            existingInvoice.UpdatedDate = DateTime.Now;
+
+            var updatedInvoice = await _invoiceRepository.UpdateAsync(existingInvoice);
+            await _invoiceRepository.SaveChangesAsync();
+
+            return updatedInvoice == null ? null : _mapper.Map<InvoiceDto>(updatedInvoice);
         }
 
-        // cap nhat invoice theo id
-        public async Task<bool> UpdateInvoiceAsync(int id, InvoiceUpdateDto dto)
-        {
-            var existInvoice = await _repository.GetInvoiceByIdAsync(id);
-
-            if(existInvoice == null)
-                return false;
-            await _repository.UpdateInvoiceAsync(existInvoice);
-            await _repository.SaveChangesAsync();
-
-            _mapper.Map(dto, existInvoice);
-            await _repository.UpdateInvoiceAsync(existInvoice);
-            return true;
-        }
-
-        // xoa invoice theo id
         public async Task<bool> DeleteInvoiceAsync(int id)
         {
-            var invoice = await _repository.GetInvoiceByIdAsync(id);
+            var result = await _invoiceRepository.DeleteAsync(id);
 
-            if (invoice == null)
-                return false;
+            if (result)
+                await _invoiceRepository.SaveChangesAsync();
 
-            await _repository.DeleteInvoiceAsync(id);
-            await _repository.SaveChangesAsync();
-
-            return true;
+            return result;
         }
     }
 }

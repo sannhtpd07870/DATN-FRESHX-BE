@@ -1,65 +1,70 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Freshx_API.Models;
-using Freshx_API.Services;
-using AutoMapper;
+using Freshx_API.DTOs;
+using Freshx_API.Interfaces;
+using Freshx_API.Interfaces.Invoice;
 
 namespace Freshx_API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    public class InvoiceController : ControllerBase
+    [Route("api/[controller]")]
+    public class InvoicesController : ControllerBase
     {
-        private readonly InvoiceService _service;
+        private readonly IInvoiceService _invoiceService;
 
-        public InvoiceController(InvoiceService invoiceService, ILogger<InvoiceController> logger)
+        public InvoicesController(IInvoiceService invoiceService)
         {
-            _service = invoiceService;
+            _invoiceService = invoiceService;
         }
 
         [HttpGet]
-        public async Task<IEnumerable<Invoice>> GetAllInvoices()
+        public async Task<ActionResult<IEnumerable<InvoiceDto>>> GetInvoices()
         {
-            return await _service.GetAllInvoicesAsync();
+            var invoices = await _invoiceService.GetAllInvoicesAsync();
+            return Ok(invoices);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Invoice>> GetInvoiceById(int id)
+        public async Task<ActionResult<InvoiceDto>> GetInvoice(int id)
         {
-            var invoice = await _service.GetInvoiceByIdAsync(id);
+            var invoice = await _invoiceService.GetInvoiceByIdAsync(id);
+
             if (invoice == null)
                 return NotFound();
-            return invoice;
+
+            return Ok(invoice);
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddInvoice(Invoice invoice)
+        public async Task<ActionResult<InvoiceDto>> CreateInvoice(CreateInvoiceDto createInvoiceDto)
         {
-            await _service.AddInvoiceAsync(invoice);
-            return CreatedAtAction(nameof(GetInvoiceById), new { id = invoice.InvoiceId }, invoice);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var createdInvoice = await _invoiceService.CreateInvoiceAsync(createInvoiceDto);
+            return CreatedAtAction(nameof(GetInvoice), new { id = createdInvoice.InvoiceId }, createdInvoice);
         }
 
-        // Cap nhat thong tin invoice qua id
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateInvoice(int id, Invoice invoice)
+        public async Task<ActionResult<InvoiceDto>> UpdateInvoice(int id, UpdateInvoiceDto updateInvoiceDto)
         {
-            if (id != invoice.InvoiceId)
-                return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            await _service.UpdateInvoiceAsync(invoice);
-            return NoContent();
+            var updatedInvoice = await _invoiceService.UpdateInvoiceAsync(id, updateInvoiceDto);
+
+            if (updatedInvoice == null)
+                return NotFound();
+
+            return Ok(updatedInvoice);
         }
 
-        // Xoa invoice qua id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteInvoice(int id)
         {
-            var isDeletedInvoice = await _service.DeleteInvoiceAsync(id);
+            var result = await _invoiceService.DeleteInvoiceAsync(id);
 
-            if (!isDeletedInvoice)
-            {
-                return NotFound("Hoá đơn không tồn tại.");
-            }
+            if (!result)
+                return NotFound();
 
             return NoContent();
         }
