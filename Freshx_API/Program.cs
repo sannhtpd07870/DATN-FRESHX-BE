@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using Freshx_API.Interfaces.Auth;
 using Microsoft.Identity.Client;
 using Freshx_API.Repository.Auth.TokenRepositories;
+using Freshx_API.Services.CommonServices;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -287,12 +288,14 @@ builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IRoleRepository,RoleRepository>();
 builder.Services.AddScoped<IAccountRepository,AccountRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<IEmailService,EmailService>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
 builder.Services.AddScoped<IDrugCatalogService, DrugCatalogService>();
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
+
 
 // Đăng ký Repository và Service với Dependency Injection
 builder.Services.AddScoped<IDepartmentTypeRepository, DepartmentTypeRepository>();
@@ -308,6 +311,14 @@ builder.Services.AddScoped<DoctorService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<DepartmentService>();
 
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IInventoryTypeRepository, InventoryTypeRepository>();
+builder.Services.AddScoped<InventoryTypeService>();
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
+builder.Services.AddScoped<PharmacyService>();
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();

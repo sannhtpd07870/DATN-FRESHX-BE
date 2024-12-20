@@ -1,9 +1,11 @@
 ﻿using Freshx_API.Interfaces;
 using Freshx_API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Freshx_API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TestFileController : ControllerBase
