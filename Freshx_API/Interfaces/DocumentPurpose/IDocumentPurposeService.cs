@@ -6,10 +6,10 @@ namespace Freshx_API.Services
 {
     public interface IDocumentPurposeService
     {
-        Task<DocumentPurposeDto> GetDocumentPurposeByIdAsync(int id);
-        Task<IEnumerable<DocumentPurposeDto>> GetAllDocumentPurposesAsync();
-        Task<DocumentPurposeDto> CreateDocumentPurposeAsync(DocumentPurposeDto documentPurposeDto);
-        Task<DocumentPurposeDto> UpdateDocumentPurposeAsync(int id, DocumentPurposeDto documentPurposeDto);
-        Task DeleteDocumentPurposeAsync(int id);
+        Task<List<DocumentPurposeDto>> GetAllDocumentPurposesAsync(string? searchKey);
+        Task<DocumentPurposeDto?> GetDocumentPurposeByIdAsync(int id);
+        Task<DocumentPurposeDto> CreateDocumentPurposeAsync(CreateDocumentPurposeDto dto);
+        Task<DocumentPurposeDto?> UpdateDocumentPurposeAsync(int id, DocumentPurposeDto dto);
+        Task<bool> DeleteDocumentPurposeAsync(int id);
     }
 }

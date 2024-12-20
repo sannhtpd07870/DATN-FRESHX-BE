@@ -29,7 +29,7 @@ namespace Freshx_API.Controllers
 
             try
             {
-                var file = await _fileService.SaveFileAsync(userId, folderName, files);
+                var file = await _fileService.SaveFileAsync( userId, folderName, files);
                 return Ok(new { message = "Tệp đã được lưu thành công.", file });
             }
             catch (Exception ex)
