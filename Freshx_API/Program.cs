@@ -26,6 +26,7 @@ using Freshx_API.Repository.Menu;
 using Freshx_API.Repository.Drugs;
 using Freshx_API.Services.Drugs;
 using Freshx_API.Repository.Address;
+using Freshx_API.Interfaces.DocumentPurposeRepository;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -305,7 +306,7 @@ builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 builder.Services.AddScoped<IDocumentPurposeRepository, DocumentPurposeRepository>();
 builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
 builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
-builder.Services.AddScoped<IPharmacyService,PharmacyService>();
+//builder.Services.AddScoped<IPharmacyService, PharmacyService>();
 
 
 // Đăng ký Repository và Service với Dependency Injection
@@ -365,6 +366,16 @@ builder.Services.AddScoped<DrugCatalogService>();
 //Dăng kí Reponsitory và service cho địa chỉ
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
+
+//Dăng kí Reponsitory và service cho địa chỉ
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+
+//Dăng kí Reponsitory và service cho địa chỉ
+builder.Services.AddScoped< MedicalHistoryService>();
+builder.Services.AddScoped<IMedicalHistoryRepository, MedicalHistoryRepository>();
+
+
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();

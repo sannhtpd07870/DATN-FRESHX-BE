@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Freshx_API.Models;
 
 namespace Freshx_API.Models;
 
@@ -72,5 +73,8 @@ public partial class Patient
 
     //public virtual ICollection<Reception> Receptions { get; set; } = new List<Reception>(); // Danh sách tiếp nhận
 
-    //public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
+    //public virtual AdministrativeUnit? Ward { get; set; } // Đơn vị hành chính phường/xã
+
+    public virtual ICollection<MedicalHistory> MedicalHistories { get; set; } = new List<MedicalHistory>();
+
 }

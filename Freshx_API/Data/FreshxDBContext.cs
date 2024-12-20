@@ -104,6 +104,8 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<ChatMessage> ChatMessages { get; set; }
     public DbSet<Conversation> Conversations { get; set; }
     public DbSet<Receptionist> Receptionists { get; set; }
+    public DbSet<MedicalHistory> MedicalHistorys { get; set; }
+ 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
