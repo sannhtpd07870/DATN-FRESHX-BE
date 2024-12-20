@@ -7,10 +7,8 @@ namespace Freshx_API.Dtos.UserAccount
         public string? FullName { get; set; }
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
-        public bool? IsActive { get; set; }
         public string? Gender { get; set; }
         public string? IdentityCardNumber { get; set; } // Số CMND/CCCD
-        public int? PositionId { get; set; }
         public string? WardId { get; set; } // ID phường/xã
         public string? DistrictId { get; set; } // ID quận/huyện
         public string? ProvinceId { get; set; } // ID tỉnh/thành phố

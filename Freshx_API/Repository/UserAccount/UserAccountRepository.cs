@@ -59,20 +59,18 @@ namespace Freshx_API.Repository.UserAccount
                     PhoneNumber = request.PhoneNumber,
                     Gender = request.Gender,
                     IdentityCardNumber = request.IdentityCardNumber,
-                    PositionId = request.PositionId,
                     Age = request.DateOfBirth?.Year == null ? null : (DateTime.Now.Year - request.DateOfBirth.Value.Year),   
                     ProvinceId = request.ProvinceId,
                     WardId = request.WardId,
                     DistrictId = request.DistrictId,
                     AvatarId = avartarId,
-                    IsActive = false
+                    IsActive = true
                 };
                 var result = await _userManager.CreateAsync(appUser);
                 if(result.Succeeded)
                 {
                     // Load related entities
-                    return await _userManager.Users
-                        .Include(u => u.Position)
+                    return await _userManager.Users                     
                         .Include(u => u.Ward)
                         .Include(u => u.District)
                         .Include(u => u.Province)
@@ -92,7 +90,7 @@ namespace Freshx_API.Repository.UserAccount
             try
             {
                 id = _tokenRepository.GetUserIdFromToken();
-               return await _userManager.FindByIdAsync(id);
+                return await _userManager.FindByIdAsync(id);
           
             }
             catch (Exception e)
@@ -108,9 +106,17 @@ namespace Freshx_API.Repository.UserAccount
             try
             {
                 id = _tokenRepository.GetUserIdFromToken();
-                
-                return await _userManager.FindByIdAsync(id);
-                
+                if(id == null)
+                {
+                    return null;
+                }
+
+                return await _userManager.Users
+                        .Include(u => u.Ward)
+                        .Include(u => u.District)
+                        .Include(u => u.Province)
+                        .FirstOrDefaultAsync(u => u.Id == id);
+
             }
             catch(Exception e)
             {
@@ -160,16 +166,12 @@ namespace Freshx_API.Repository.UserAccount
                             Age = u.Age,
                             DateOfBirth = u.DateOfBirth,
                             Gender = u.Gender,
-                            IsActive = u.IsActive,
                             IdentityCardNumber = u.IdentityCardNumber,
                             Email = u.Email,
-                            Position = u.Position,
                             PhoneNumber = u.PhoneNumber,
                             Ward = u.Ward,
                             District = u.District,
-                            Province = u.Province,
-                            CreatedAt = u.CreatedAt,
-                            UpdatedAt = u.UpdatedAt
+                            Province = u.Province,                     
                         }).ToListAsync();
 
                     return new CustomPageResponse<IEnumerable<UserResponse?>>(
@@ -190,7 +192,7 @@ namespace Freshx_API.Repository.UserAccount
             {
                 int? avartarId;
                 string userId = _tokenRepository.GetUserIdFromToken();
-                var user = await _userManager.FindByIdAsync(id);
+                var user = await _userManager.FindByIdAsync(userId);
                 if (user == null)
                 {
                     return null;
@@ -208,38 +210,41 @@ namespace Freshx_API.Repository.UserAccount
                         var avartar = await _fileService.SaveFileAsync(userId, "avarta", listfiles);
                         avartarId = avartar[0].Id;
                     }
+                    user.FullName = request?.FullName;
+                    user.Email = request?.Email;
+                    user.Gender = request?.Gender;
+                    if (request.DateOfBirth != null)
+                    {
+                        user.DateOfBirth = request.DateOfBirth;
+                        user.Age = (int)(DateTime.Now.Year - user.DateOfBirth.Value.Year);
+                    }
+                    else
+                    {
+                        user.DateOfBirth = null;
+                        user.Age = null;
+                    }
+                    user.UpdatedAt = DateTime.UtcNow;
+                    user.WardId = request?.WardId;
+                    user.DistrictId = request?.DistrictId;
+                    user.ProvinceId = request?.ProvinceId;
+                    user.Gender = request?.Gender;
+                    user.PhoneNumber = request?.PhoneNumber;
+                    user.IdentityCardNumber = request?.IdentityCardNumber;
+                    user.AvatarId = avartarId;
                 }
                 else
                 {
-                    await _fileService.UpdateFileAsync(user.AvatarId,request.AvatarFile)
-                }
-                var result = await _fileService.UpdateFileAsync(user.AvatarId, request.AvatarFile);
-                user.FullName = request?.FullName;
-                user.Email = request?.Email;
-                user.Gender = request?.Gender;
-                if(request.DateOfBirth != null)
-                {
-                    user.DateOfBirth = request.DateOfBirth;
-                    user.Age = (int)(DateTime.Now.Year - user.DateOfBirth.Value.Year);
-                }
-                else
-                {
-                    user.DateOfBirth = null;
-                    user.Age = null;
-                }
-                user.UpdatedAt = DateTime.UtcNow;
-                user.WardId = request?.WardId;
-                user.DistrictId = request?.DistrictId;
-                user.ProvinceId = request?.ProvinceId;
-                user.Gender = request?.Gender;
-                user.IsActive = request?.IsActive;
-                user.PositionId = request?.PositionId;
-                user.PhoneNumber = request?.PhoneNumber;
-                user.IdentityCardNumber = request?.IdentityCardNumber;
+                    await _fileService.UpdateFileAsync(user.AvatarId, request.AvatarFile);
+                }    
                 var result = await _userManager.UpdateAsync(user);
                 if (result.Succeeded)
                 {
-                    return user;
+                    return
+                        await _userManager.Users
+                     .Include(u => u.Ward)
+                     .Include(u => u.District)
+                     .Include(u => u.Province)
+                     .FirstOrDefaultAsync(u => u.Id == userId);
                 }
                 return null;
             }

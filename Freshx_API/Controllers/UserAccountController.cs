@@ -97,6 +97,25 @@ namespace Freshx_API.Controllers
             }
         }
 
-        
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<ActionResult<ApiResponse<UserResponse>>> UpdateUserById(string id, UpdatingUserRequest request)
+        {
+            try
+            {
+                var user = await _userAccountRepository.UpdateUserByIdAsync(id, request);
+                if(user == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<UserResponse>(Request.Path, $"Updating user by {id} not found", StatusCodes.Status404NotFound));
+                }
+                var data = _mapper.Map<AppUser,UserResponse>(user);
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, data));
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, $"An exception occured while updating user by {id} fail");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, $"An exception occured while updating user by {id}", StatusCodes.Status500InternalServerError));
+            }
+        } 
     }
 }
