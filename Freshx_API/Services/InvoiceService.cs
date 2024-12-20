@@ -1,50 +1,72 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
+using Freshx_API.Dtos.Invoice;
 using Freshx_API.Models;
 using Freshx_API.Repositories;
+using Humanizer;
+using NuGet.Protocol.Core.Types;
 
 namespace Freshx_API.Services
 {
     public class InvoiceService
     {
-        private readonly IInvoiceRepository _invoiceRepository;
+        private readonly IInvoiceRepository _repository;
+        private readonly IMapper _mapper;
 
         public InvoiceService(IInvoiceRepository invoiceRepository)
         {
-            _invoiceRepository = invoiceRepository;
+            _repository = invoiceRepository;
         }
 
         public async Task<IEnumerable<Invoice>> GetAllInvoicesAsync()
         {
-            return await _invoiceRepository.GetAllInvoicesAsync();
+            return await _repository.GetAllInvoicesAsync();
         }
 
         public async Task<Invoice?> GetInvoiceByIdAsync(int id)
         {
-            return await _invoiceRepository.GetInvoiceByIdAsync(id);
+            return await _repository.GetInvoiceByIdAsync(id);
         }
 
         public async Task<IEnumerable<Invoice>> GetInvoicesByPatientIdAsync(int patientId)
         {
-            return await _invoiceRepository.GetInvoicesByPatientIdAsync(patientId);
+            return await _repository.GetInvoicesByPatientIdAsync(patientId);
         }
 
         public async Task AddInvoiceAsync(Invoice invoice)
         {
-            await _invoiceRepository.AddInvoiceAsync(invoice);
-            await _invoiceRepository.SaveChangesAsync();
+            await _repository.AddInvoiceAsync(invoice);
+            await _repository.SaveChangesAsync();
         }
 
-        public async Task UpdateInvoiceAsync(Invoice invoice)
+        // cap nhat invoice theo id
+        public async Task<bool> UpdateInvoiceAsync(int id, InvoiceUpdateDto dto)
         {
-            await _invoiceRepository.UpdateInvoiceAsync(invoice);
-            await _invoiceRepository.SaveChangesAsync();
+            var existInvoice = await _repository.GetInvoiceByIdAsync(id);
+
+            if(existInvoice == null)
+                return false;
+            await _repository.UpdateInvoiceAsync(existInvoice);
+            await _repository.SaveChangesAsync();
+
+            _mapper.Map(dto, existInvoice);
+            await _repository.UpdateInvoiceAsync(existInvoice);
+            return true;
         }
 
-        public async Task DeleteInvoiceAsync(int id)
+        // xoa invoice theo id
+        public async Task<bool> DeleteInvoiceAsync(int id)
         {
-            await _invoiceRepository.DeleteInvoiceAsync(id);
-            await _invoiceRepository.SaveChangesAsync();
+            var invoice = await _repository.GetInvoiceByIdAsync(id);
+
+            if (invoice == null)
+                return false;
+
+            await _repository.DeleteInvoiceAsync(id);
+            await _repository.SaveChangesAsync();
+
+            return true;
         }
     }
 }

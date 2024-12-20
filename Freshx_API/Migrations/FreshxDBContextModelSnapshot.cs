@@ -1901,6 +1901,9 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("IsDeleted")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
                     b.Property<string>("LabSummary")
                         .HasColumnType("nvarchar(max)");
 
@@ -2154,6 +2157,9 @@ namespace Freshx_API.Migrations
                     b.Property<DateTime?>("ExecutionTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("InvoiceId")
+                        .HasColumnType("int");
+
                     b.Property<bool?>("IsApproved")
                         .HasColumnType("bit");
 
@@ -2223,6 +2229,8 @@ namespace Freshx_API.Migrations
                     b.HasKey("MedicalServiceRequestId");
 
                     b.HasIndex("AssignedById");
+
+                    b.HasIndex("InvoiceId");
 
                     b.HasIndex("ParentMedicalServiceRequestId");
 
@@ -4209,6 +4217,12 @@ namespace Freshx_API.Migrations
                         .WithMany()
                         .HasForeignKey("AssignedById");
 
+                    b.HasOne("Freshx_API.Models.Invoice", "Invoice")
+                        .WithMany("MedicalServiceRequests")
+                        .HasForeignKey("InvoiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Freshx_API.Models.MedicalServiceRequest", "ParentMedicalServiceRequest")
                         .WithMany()
                         .HasForeignKey("ParentMedicalServiceRequestId");
@@ -4230,6 +4244,8 @@ namespace Freshx_API.Migrations
                         .HasForeignKey("ServiceId");
 
                     b.Navigation("AssignedBy");
+
+                    b.Navigation("Invoice");
 
                     b.Navigation("ParentMedicalServiceRequest");
 
@@ -4534,6 +4550,11 @@ namespace Freshx_API.Migrations
             modelBuilder.Entity("Freshx_API.Models.Doctor", b =>
                 {
                     b.Navigation("Receptions");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Invoice", b =>
+                {
+                    b.Navigation("MedicalServiceRequests");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Province", b =>

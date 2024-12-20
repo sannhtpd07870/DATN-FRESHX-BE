@@ -3,7 +3,7 @@ using Freshx_API.Dtos;
 using Freshx_API.Dtos.Auth.Account;
 using Freshx_API.Dtos.Auth.Role;
 using Freshx_API.Dtos.DepartmenTypeDtos;
-
+using Freshx_API.Dtos.Invoice;
 using Freshx_API.Dtos.Doctor;
 
 using Freshx_API.Dtos.DepartmentDtos;
@@ -101,6 +101,12 @@ namespace Freshx_API.Mappers
             CreateMap<ServiceCatalog, ServiceCatalogDetailDto>();
             CreateMap<ServiceCatalogCreateUpdateDto, ServiceCatalog>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<Invoice, InvoiceCreateDto>();
+            CreateMap<Invoice, InvoiceListResponseDto>();
+            CreateMap<Invoice, InvoiceResponseDto>();
+            CreateMap<Invoice, InvoiceUpdateDto>();
+            CreateMap<Invoice, InvoiceDto>();
         }
     }
 }
