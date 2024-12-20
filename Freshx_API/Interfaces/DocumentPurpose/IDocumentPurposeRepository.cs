@@ -4,11 +4,11 @@ namespace Freshx_API.Interfaces.DocumentPurposeRepository
 {
     public interface IDocumentPurposeRepository
     {
-        Task<DocumentPurpose> GetByIdAsync(int id);
-        Task<IEnumerable<DocumentPurpose>> GetAllAsync();
-        Task AddAsync(DocumentPurpose documentPurpose);
-        Task UpdateAsync(DocumentPurpose documentPurpose);
-        Task DeleteAsync(DocumentPurpose documentPurpose);
+        Task<List<DocumentPurpose>> GetAllAsync(string? searchKey);
+        Task<DocumentPurpose?> GetByIdAsync(int id);
+        Task<DocumentPurpose> CreateAsync(DocumentPurpose entity);
+        Task<DocumentPurpose> UpdateAsync(DocumentPurpose entity);
+        Task<bool> DeleteAsync(int id);
     }
 
 }

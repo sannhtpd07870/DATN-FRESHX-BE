@@ -13,32 +13,40 @@ namespace Freshx_API.Repository
             _context = context;
         }
 
-        public async Task<DocumentPurpose> GetByIdAsync(int id)
+        public async Task<List<DocumentPurpose>> GetAllAsync(string? searchKey)
+        {
+            return await _context.DocumentPurposes
+                .Where(dp => string.IsNullOrEmpty(searchKey) || dp.Name.Contains(searchKey))
+                .ToListAsync();
+        }
+
+        public async Task<DocumentPurpose?> GetByIdAsync(int id)
         {
             return await _context.DocumentPurposes.FindAsync(id);
         }
 
-        public async Task<IEnumerable<DocumentPurpose>> GetAllAsync()
+        public async Task<DocumentPurpose> CreateAsync(DocumentPurpose entity)
         {
-            return await _context.DocumentPurposes.ToListAsync();
+            _context.DocumentPurposes.Add(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
-        public async Task AddAsync(DocumentPurpose documentPurpose)
+        public async Task<DocumentPurpose> UpdateAsync(DocumentPurpose entity)
         {
-            await _context.DocumentPurposes.AddAsync(documentPurpose);
+            _context.DocumentPurposes.Update(entity);
             await _context.SaveChangesAsync();
+            return entity;
         }
 
-        public async Task UpdateAsync(DocumentPurpose documentPurpose)
+        public async Task<bool> DeleteAsync(int id)
         {
-            _context.DocumentPurposes.Update(documentPurpose);
-            await _context.SaveChangesAsync();
-        }
+            var entity = await _context.DocumentPurposes.FindAsync(id);
+            if (entity == null) return false;
 
-        public async Task DeleteAsync(DocumentPurpose documentPurpose)
-        {
-            _context.DocumentPurposes.Remove(documentPurpose);
+            _context.DocumentPurposes.Remove(entity);
             await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

@@ -76,6 +76,7 @@ namespace Freshx_API.Mappers
             // Ánh xạ từ model Receptionist sang DTO hiển thị thông tin cơ bản
             CreateMap<Receptionist, ReceptionistDto>();
 
+
             // Ánh xạ từ DTO tạo mới/cập nhật sang model Receptionist
             CreateMap<ReceptionistCreateUpdateDto, Receptionist>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
@@ -129,6 +130,14 @@ namespace Freshx_API.Mappers
             CreateMap<DrugCatalogCreateUpdateDto, DrugCatalog>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
+            //Map DocumentPurposeDto
+            // Entity to DTO
+            CreateMap<DocumentPurpose, DocumentPurposeDto>();
+
+            // DTO to Entity
+            CreateMap<DocumentPurpose, DocumentPurposeDto>();
+            CreateMap<DocumentPurposeDto, DocumentPurpose>();
+            CreateMap<CreateDocumentPurposeDto, DocumentPurpose>(); // If CreateDocumentPurposeDto is used
 
             //Địa chỉ 
             CreateMap<Province, ProvinceDto>();

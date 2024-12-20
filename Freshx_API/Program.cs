@@ -26,8 +26,7 @@ using Freshx_API.Repository.Menu;
 using Freshx_API.Repository.Drugs;
 using Freshx_API.Services.Drugs;
 using Freshx_API.Repository.Address;
-using Freshx_API.Interfaces.UserAccount;
-using Freshx_API.Repository.UserAccount;
+using Freshx_API.Interfaces.DocumentPurposeRepository;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -72,7 +71,7 @@ string saltString = Environment.GetEnvironmentVariable("ENCRYPTION_SALT")
 ?? builder.Configuration["EncryptionSettings:Salt"]
 ?? "DefaultSalt";
 //kết thúc biến môi trường
-    
+
 // Kiểm tra nếu không lấy được biến môi trường và dừng quá trình build
 if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
 {
@@ -85,7 +84,7 @@ byte[] salt = Encoding.UTF8.GetBytes(saltString);
 
 builder.Configuration.AddConfiguration(
     new ConfigurationBuilder()
-        .Add(new EncryptedConfigurationSource( password, salt))
+        .Add(new EncryptedConfigurationSource(password, salt))
         .Build());
 
 var connectionString = builder.Configuration["ConnectionStrings:DBFreshx"];
@@ -94,9 +93,9 @@ var blobConnectionString = builder.Configuration["AzureBlobStorage:ConnectionStr
 var containerName = builder.Configuration["AzureBlobStorage:ContainerName"];
 Console.WriteLine("jkds" + builder.Configuration["FileSettings:DevicePath"]);
 // Add services to the container.
-builder.Services.AddDbContext<FreshxDBContext>(options =>{
+builder.Services.AddDbContext<FreshxDBContext>(options => {
     options.UseSqlServer(connectionString);
-        });
+});
 //configure Identity Service
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
@@ -293,22 +292,20 @@ builder.Services.Configure<RouteOptions>(options =>
 builder.Services.AddCors();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IFileService, FileService>();
-builder.Services.AddScoped<IRoleRepository,RoleRepository>();
-builder.Services.AddScoped<IAccountRepository,AccountRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
-builder.Services.AddScoped<IEmailService,EmailService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
-builder.Services.AddScoped<IPositionRepository, PositionRepository>();
-builder.Services.AddScoped<IUserAccountRepository,UserAccountRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
+builder.Services.AddScoped<IDocumentPurposeRepository, DocumentPurposeRepository>();
 builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
-builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
-builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
+builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
 
@@ -369,6 +366,10 @@ builder.Services.AddScoped<DrugCatalogService>();
 //Dăng kí Reponsitory và service cho địa chỉ
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
+
+//Đăng kí dịch vụ
+builder.Services.AddScoped<IPositionRepository, PositionRepository>();
+
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
