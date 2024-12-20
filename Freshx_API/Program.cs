@@ -29,28 +29,24 @@ using Freshx_API.Repository.Address;
 using Freshx_API.Interfaces.DocumentPurposeRepository;
 using Freshx_API.Interfaces.UserAccount;
 using Freshx_API.Repository.UserAccount;
-internal class Program
+// Tải biến môi trường từ tệp .env
+Env.Load();
+var builder = WebApplication.CreateBuilder(args);
+//cấu hình Swagger phục vụ cho việc kiểm tra api với authorize
+builder.Services.AddSwaggerGen(option =>
 {
-    private static void Main(string[] args)
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "API DATN", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        // Tải biến môi trường từ tệp .env
-        Env.Load();
-        var builder = WebApplication.CreateBuilder(args);
-        //cấu hình Swagger phục vụ cho việc kiểm tra api với authorize
-        builder.Services.AddSwaggerGen(option =>
-        {
-            option.SwaggerDoc("v1", new OpenApiInfo { Title = "API DATN", Version = "v1" });
-            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                In = ParameterLocation.Header,
-                Description = "Please enter a valid token",
-                Name = "Authorization",
-                Type = SecuritySchemeType.Http,
-                BearerFormat = "JWT",
-                Scheme = "Bearer"
-            });
-            option.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
         {
             new OpenApiSecurityScheme
             {
@@ -375,8 +371,13 @@ internal class Program
         builder.Services.AddScoped<IAddressRepository, AddressRepository>();
         builder.Services.AddScoped<IAddressService, AddressService>();
 
-        //Đăng kí dịch vụ
-        builder.Services.AddScoped<IPositionRepository, PositionRepository>();
+builder.Services.AddScoped<ChatService>();
+
+//đăng kí service
+builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
+
+//Đăng kí dịch vụ
+builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 
 
         // Thêm DefaultAzureCredential
@@ -414,5 +415,3 @@ internal class Program
         app.MapControllers();
 
         app.Run();
-    }
-}
