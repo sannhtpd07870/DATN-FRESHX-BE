@@ -2,7 +2,7 @@
 using Freshx_API.Dtos;
 using Freshx_API.Interfaces.DocumentPurposeRepository;
 using Freshx_API.Models;
-using Freshx_API.Repositories;
+using Freshx_API.Repository;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

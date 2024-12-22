@@ -77,4 +77,6 @@ public partial class MedicalServiceRequest
     public virtual Employee? SampleCollector { get; set; }
 
     public virtual ServiceCatalog? Service { get; set; }
+    public int InvoiceId { get; set; }
+    public Invoice Invoice { get; set; }
 }

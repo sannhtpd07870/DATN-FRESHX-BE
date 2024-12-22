@@ -39,7 +39,7 @@ namespace Freshx_API.Controllers
         public async Task<ActionResult<DocumentPurposeDto>> CreateDocumentPurpose([FromBody] DocumentPurposeDto documentPurposeDto)
         {
             var result = await _service.CreateDocumentPurposeAsync(documentPurposeDto);
-            return CreatedAtAction(nameof(GetDocumentPurposeById), new { id = result.DocumentPurposeId }, result);
+            return CreatedAtAction(nameof(GetDocumentPurposeById), new { id = result }, result);
         }
 
         [HttpPut("{id}")]
