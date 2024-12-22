@@ -27,10 +27,8 @@ using Freshx_API.Repository.Drugs;
 using Freshx_API.Services.Drugs;
 using Freshx_API.Repository.Address;
 using Freshx_API.Interfaces.DocumentPurposeRepository;
-using Freshx_API.Interfaces.Payment;
-using Freshx_API.Services.Payment;
-using Freshx_API.Repository.Payment;
-// Tải biến môi trường từ tệp .env
+using Freshx_API.Interfaces.Payments;
+using Freshx_API.Repository.Payments;// Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 //cấu hình Swagger phục vụ cho việc kiểm tra api với authorize
@@ -310,9 +308,6 @@ builder.Services.AddScoped<IDocumentPurposeRepository, DocumentPurposeRepository
 builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
 builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
-builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
-builder.Services.AddScoped<IInvoiceService, InvoiceService>();
-builder.Services.AddScoped<IMedicalServiceRequestRepository, MedicalServiceRequestRepository>();
 
 
 // Đăng ký Repository và Service với Dependency Injection
@@ -372,6 +367,11 @@ builder.Services.AddScoped<DrugCatalogService>();
 //Dăng kí Reponsitory và service cho địa chỉ
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
+
+//Đăng ký Repository và service cho payments
+builder.Services.AddScoped<IBillRepository, BillRepository>();
+builder.Services.AddScoped<IBillService, BillService>();
+
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();

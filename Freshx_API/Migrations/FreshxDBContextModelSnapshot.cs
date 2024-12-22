@@ -142,6 +142,70 @@ namespace Freshx_API.Migrations
                     b.ToTable("Appointments");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Bill", b =>
+                {
+                    b.Property<int>("BillId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BillId"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("BillId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Bills");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.BillDetail", b =>
+                {
+                    b.Property<int>("BillDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BillDetailId"));
+
+                    b.Property<int>("BillId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceCatalogId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.HasKey("BillDetailId");
+
+                    b.HasIndex("BillId");
+
+                    b.HasIndex("ServiceCatalogId");
+
+                    b.ToTable("BillDetails");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.ChatMessage", b =>
                 {
                     b.Property<int>("Id")
@@ -2417,6 +2481,35 @@ namespace Freshx_API.Migrations
                     b.ToTable("Patients");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
+
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("BillId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("BillId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Pharmacy", b =>
                 {
                     b.Property<int>("PharmacyId")
@@ -3770,6 +3863,36 @@ namespace Freshx_API.Migrations
                     b.Navigation("Reception");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Bill", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.BillDetail", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Bill", "Bill")
+                        .WithMany("BillDetails")
+                        .HasForeignKey("BillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Freshx_API.Models.ServiceCatalog", "ServiceCatalog")
+                        .WithMany()
+                        .HasForeignKey("ServiceCatalogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bill");
+
+                    b.Navigation("ServiceCatalog");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.ChatMessage", b =>
                 {
                     b.HasOne("Freshx_API.Models.Conversation", null)
@@ -4340,6 +4463,17 @@ namespace Freshx_API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Payment", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Bill", "Bill")
+                        .WithMany("Payments")
+                        .HasForeignKey("BillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bill");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Pharmacy", b =>
                 {
                     b.HasOne("Freshx_API.Models.Department", "Department")
@@ -4603,6 +4737,13 @@ namespace Freshx_API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Bill", b =>
+                {
+                    b.Navigation("BillDetails");
+
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Conversation", b =>

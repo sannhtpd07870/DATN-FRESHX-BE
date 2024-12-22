@@ -20,7 +20,7 @@ using Freshx_API.Dtos.Supplier;
 using System.Diagnostics.Metrics;
 using Freshx_API.Dtos.Country;
 using Freshx_API.Dtos.DrugCatalog;
-using Freshx_API.Dtos.Payment;
+using Freshx_API.Dtos.Payments;
 
 namespace Freshx_API.Mappers
 {
@@ -135,8 +135,17 @@ namespace Freshx_API.Mappers
             CreateMap<District, DistrictDto>();
             CreateMap<Ward, WardDto>();
 
-            CreateMap<Invoice, InvoiceDTO>().ReverseMap();
-            CreateMap<MedicalServiceRequest, MedicalServiceRequestDTO>().ReverseMap();
+            // Mapping Bill to BillDto
+            CreateMap<Bill, BillDto>()
+                .ForMember(dest => dest.BillDetails, opt => opt.MapFrom(src => src.BillDetails));
+
+            // Mapping BillDto to Bill
+            CreateMap<BillDto, Bill>()
+                .ForMember(dest => dest.BillDetails, opt => opt.MapFrom(src => src.BillDetails));
+
+            // Mapping BillDetail to BillDetailDto
+            CreateMap<BillDetail, BillDetailDto>().ReverseMap();
+
         }
     }
 }
