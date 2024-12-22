@@ -18,11 +18,11 @@ namespace Freshx_API.Services
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<InvoiceDto>> GetAllInvoicesAsync()
+        public async Task<IEnumerable<InvoiceDto>> GetAllInvoicesAsync(string? searchKeyword = null)
         {
-            var invoices = await _invoiceRepository.GetAllAsync();
+            var invoices = await _invoiceRepository.GetAllAsync(searchKeyword);
             return _mapper.Map<IEnumerable<InvoiceDto>>(invoices);
-        }
+        } 
 
         public async Task<InvoiceDto?> GetInvoiceByIdAsync(int id)
         {

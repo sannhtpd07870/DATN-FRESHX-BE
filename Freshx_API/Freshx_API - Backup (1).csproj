@@ -29,7 +29,7 @@
   </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Interfaces\IServices\" />
+    <Folder Include="Dtos\NewFolder\" />
   </ItemGroup>
 
 </Project>

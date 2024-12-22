@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Freshx_API.Services.Chat;
+using Freshx_API.Services.SignalR;
 using Freshx_API.Dtos;
 
 namespace Freshx_API.Controllers

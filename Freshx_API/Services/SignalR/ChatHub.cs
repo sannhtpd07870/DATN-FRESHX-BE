@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 
-namespace Freshx_API.Services.Chat
+namespace Freshx_API.Services.SignalR
 {
     public class ChatHub : Hub
     {
@@ -43,6 +43,12 @@ namespace Freshx_API.Services.Chat
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, conversationId.ToString());
             await Clients.Group(conversationId.ToString())
                 .SendAsync("UserLeft", Context.User.Identity.Name);
+        }
+
+        //gửi thông báo
+        public async Task SendNotification(string message)
+        {
+            await Clients.All.SendAsync("ReceiveNotification", message);
         }
     }
 

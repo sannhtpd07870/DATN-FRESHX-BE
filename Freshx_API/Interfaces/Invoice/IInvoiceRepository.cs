@@ -6,7 +6,7 @@ namespace Freshx_API.Repositories
 {
     public interface IInvoiceRepository
     {
-        Task<IEnumerable<Invoice>> GetAllAsync();
+        Task<IEnumerable<Invoice>> GetAllAsync(string? searchKeyword = null);
         Task<Invoice?> GetByIdAsync(int id);
         Task<Invoice> CreateAsync(Invoice invoice);
         Task<Invoice?> UpdateAsync(Invoice invoice);

@@ -107,7 +107,7 @@ namespace Freshx_API.Mappers
             CreateMap<CreateInvoiceDto, Invoice>();
             CreateMap<UpdateInvoiceDto, Invoice>();
 
-            CreateMap<Patient, PatientDto>();
+            //CreateMap<Patient, PatientDto>();
             CreateMap<Reception, ReceptionDto>();
             CreateMap<ICDCatalog, ICDCatalogDto>();
 
@@ -154,7 +154,18 @@ namespace Freshx_API.Mappers
             CreateMap<District, DistrictDto>();
             CreateMap<Ward, WardDto>();
             //
-            CreateMap<AppUser,UserResponse>().ReverseMap();
+
+            CreateMap<MedicalServiceRequest, MedicalServiceRequestDTO>();
+    
+
+            CreateMap<CreateMedicalServiceRequestDTO, MedicalServiceRequest>()
+                .ForMember(dest => dest.RequestDate, opt => opt.MapFrom(src => DateTime.Now))
+                .ForMember(dest => dest.RequestTime, opt => opt.MapFrom(src => DateTime.Now));
+
+            CreateMap<UpdateMedicalServiceRequestDTO, MedicalServiceRequest>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<AppUser, UserResponse>().ReverseMap();
         }
     }
 }

@@ -17,14 +17,23 @@ namespace Freshx_API.Repositories
             _context = context;
         }
 
-        public async Task<IEnumerable<Invoice>> GetAllAsync()
+        public async Task<IEnumerable<Invoice>> GetAllAsync(string? searchKeyword = null)
         {
-            return await _context.Invoices
-                .Include(i => i.Patient)
-                .Include(i => i.Reception)
-                .Include(i => i.ICDCatalog)
-                .Where(i => i.IsDeleted != 1)
-                .ToListAsync();
+            var query = _context.Invoices
+         .Include(i => i.Patient)
+         .Include(i => i.Reception)
+         .Include(i => i.ICDCatalog)
+         .Where(i => i.IsDeleted != 1);
+
+            // Nếu có searchKeyword, thêm điều kiện lọc
+            if (!string.IsNullOrEmpty(searchKeyword))
+            {
+                query = query.Where(i =>
+                    i.InvoiceNumber.Contains(searchKeyword) ||
+                    (i.Patient != null && i.Patient.Name.Contains(searchKeyword))); // Tìm kiếm trong InvoiceNumber và PatientName
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<Invoice?> GetByIdAsync(int id)

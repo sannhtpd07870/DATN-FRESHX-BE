@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace Freshx_API.Services.Chat
+namespace Freshx_API.Services.SignalR
 {
     public class ChatService
     {

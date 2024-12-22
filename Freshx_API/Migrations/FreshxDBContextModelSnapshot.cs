@@ -4689,38 +4689,39 @@ namespace Freshx_API.Migrations
             modelBuilder.Entity("Freshx_API.Models.Invoice", b =>
                 {
                     b.Navigation("MedicalServiceRequests");
-            modelBuilder.Entity("Freshx_API.Models.Conversation", b =>
-                {
-                    b.Navigation("Messages");
-                });
+                    modelBuilder.Entity("Freshx_API.Models.Conversation", b =>
+                        {
+                            b.Navigation("Messages");
+                        });
 
-            modelBuilder.Entity("Freshx_API.Models.Position", b =>
-                {
-                    b.Navigation("Employees");
-                });
+                    modelBuilder.Entity("Freshx_API.Models.Position", b =>
+                        {
+                            b.Navigation("Employees");
+                        });
 
-            modelBuilder.Entity("Freshx_API.Models.Province", b =>
-                {
-                    b.Navigation("Districts");
-                });
+                    modelBuilder.Entity("Freshx_API.Models.Province", b =>
+                        {
+                            b.Navigation("Districts");
+                        });
 
-            modelBuilder.Entity("Freshx_API.Models.Receptionist", b =>
-                {
-                    b.Navigation("Receptions");
-                });
+                    modelBuilder.Entity("Freshx_API.Models.Receptionist", b =>
+                        {
+                            b.Navigation("Receptions");
+                        });
 
-            modelBuilder.Entity("Freshx_API.Models.ServiceCatalog", b =>
-                {
-                    b.Navigation("ChildServices");
+                    modelBuilder.Entity("Freshx_API.Models.ServiceCatalog", b =>
+                        {
+                            b.Navigation("ChildServices");
 
-                    b.Navigation("ServiceStandardValues");
-                });
+                            b.Navigation("ServiceStandardValues");
+                        });
 
-            modelBuilder.Entity("Freshx_API.Models.ServiceGroup", b =>
-                {
-                    b.Navigation("ServiceCatalogs");
-                });
+                    modelBuilder.Entity("Freshx_API.Models.ServiceGroup", b =>
+                        {
+                            b.Navigation("ServiceCatalogs");
+                        });
 #pragma warning restore 612, 618
-        }
+                });
+    }
     }
 }

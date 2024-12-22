@@ -28,8 +28,7 @@ namespace Freshx_API.DTOs
         public bool IsPaid { get; set; }
 
         // Navigation property DTOs
-        public PatientDto? Patient { get; set; }
-        public ReceptionDto? Reception { get; set; }
+  
         public ICDCatalogDto? ICDCatalog { get; set; }
     }
 
@@ -81,18 +80,6 @@ namespace Freshx_API.DTOs
         public int? UpdatedBy { get; set; }
     }
 
-    // Additional DTOs for related entities (simplified versions)
-    public class PatientDto
-    {
-        public int PatientId { get; set; }
-        public string? Name { get; set; }
-    }
-
-    public class ReceptionDto
-    {
-        public int ReceptionId { get; set; }
-        public DateTime? ReceptionDate { get; set; }
-    }
 
     public class ICDCatalogDto
     {

@@ -4,12 +4,14 @@ using Freshx_API.Dtos.Auth.Account;
 using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Interfaces.Auth;
 using Freshx_API.Models;
+using Freshx_API.Services.SignalR;
 using Freshx_API.Services.CommonServices;
 using Freshx_API.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Freshx_API.Controllers
 {
@@ -23,7 +25,8 @@ namespace Freshx_API.Controllers
         private readonly ILogger<AccountController> _logger;
         private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
-        public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger, IMapper mapper, ITokenRepository token, UserManager<AppUser> userManager, IEmailService emailService)
+        private readonly IHubContext<NotificationHub> _hubContext;
+        public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger, IMapper mapper, ITokenRepository token, UserManager<AppUser> userManager, IEmailService emailService, IHubContext<NotificationHub> hubContext)
         {
             _accountRepository = accountRepository;
             _logger = logger;
@@ -31,6 +34,7 @@ namespace Freshx_API.Controllers
             _tokenRepository = token;
             _userManager = userManager;
             _emailService = emailService;
+            _hubContext = hubContext;
         }
         [HttpPost("Register")]
         public async Task<ActionResult<ApiResponse<RegisterResponse>>> CreateAccount(AddingRegister addingRegister)
@@ -59,6 +63,7 @@ namespace Freshx_API.Controllers
                 var user = await _accountRepository.LoginAccount(loginRequest);
                 if (user.Succeeded)
                 {
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", $"có một đăng nhập mới vào tài khoản ");
                     return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, user, "Login successfully", StatusCodes.Status200OK));
                 }
                 if (user.IsLockedOut)
