@@ -29,7 +29,8 @@ namespace Freshx_API.Services
 
 
         //Phương thức lưu tệp và thông tin vào cơ sở dữ liệu
-        public async Task<List<Savefile>> SaveFileAsync(int? userId, string? folderName, List<IFormFile> files)
+        //userId int thành string
+        public async Task<List<Savefile>> SaveFileAsync(string? userId, string? folderName, List<IFormFile> files)
         {
             var result = new List<Savefile>();
 
@@ -83,7 +84,7 @@ namespace Freshx_API.Services
         }
 
         // Phương thức cập nhật thông tin tệp trong cơ sở dữ liệu
-        public async Task<bool> UpdateFileAsync(int fileId, IFormFile files)
+        public async Task<bool> UpdateFileAsync(int? fileId, IFormFile files)
         {
             // Lấy thông tin tệp từ cơ sở dữ liệu
             var file = await _context.Savefiles.FirstOrDefaultAsync(f => f.Id == fileId);
@@ -124,7 +125,7 @@ namespace Freshx_API.Services
         }
 
         // Phương thức xóa tệp từ thư mục và cơ sở dữ liệu
-        public async Task<bool> DeleteFileAsync(int fileId)
+        public async Task<bool> DeleteFileAsync(int? fileId)
         {
             var file = await _context.Savefiles.FindAsync(fileId);
             if (file == null)

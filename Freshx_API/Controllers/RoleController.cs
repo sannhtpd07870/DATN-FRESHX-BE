@@ -11,7 +11,6 @@ namespace Freshx_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class RoleController : ControllerBase
     {
         private readonly IRoleRepository _roleRepository;

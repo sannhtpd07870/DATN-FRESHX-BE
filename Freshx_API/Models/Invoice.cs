@@ -72,22 +72,12 @@ public partial class Invoice
 
     public int MedicalExaminationId { get; set; } // ID khám bệnh
 
-    //public virtual ICollection<Appointment> Appointments { get; set; } = new List<Appointment>(); // Danh sách cuộc hẹn
-
-    //public virtual ICollection<Document> Documents { get; set; } = new List<Document>(); // Danh sách tài liệu
-
-    //public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>(); // Danh sách đặt thuốc
-
-    //public virtual ICollection<EinvoiceFile> EinvoiceFiles { get; set; } = new List<EinvoiceFile>(); // Danh sách tệp hóa đơn điện tử
-    //public virtual ICollection<ExaminationConfirmation> ExaminationConfirmations { get; set; } = new List<ExaminationConfirmation>(); // Danh sách xác nhận khám bệnh
-
     public virtual  ICDCatalog?  ICDCatalog { get; set; }
 
     public virtual Patient? Patient { get; set; }
 
-    //public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
-
     public virtual Reception? Reception { get; set; }
 
     public ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; }
+    public bool IsPaid { get; set; }
 }

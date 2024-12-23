@@ -3,7 +3,6 @@ using Freshx_API.Dtos;
 using Freshx_API.Dtos.Auth.Account;
 using Freshx_API.Dtos.Auth.Role;
 using Freshx_API.Dtos.DepartmenTypeDtos;
-
 using Freshx_API.Dtos.Doctor;
 
 using Freshx_API.Dtos.DepartmentDtos;
@@ -15,12 +14,14 @@ using Freshx_API.Dtos.Pharmacy;
 using Freshx_API.Dtos.Receptionist;
 using Freshx_API.Dtos.ServiceGroup;
 using Freshx_API.Dtos.ServiceCatalog;
+using Freshx_API.DTOs;
 using Freshx_API.Dtos.UnitOfMeasure;
 using Freshx_API.Dtos.Supplier;
 using System.Diagnostics.Metrics;
 using Freshx_API.Dtos.Country;
 using Freshx_API.Dtos.DrugCatalog;
 using Freshx_API.Dtos.Payments;
+using Freshx_API.Dtos.UserAccount;
 
 namespace Freshx_API.Mappers
 {
@@ -76,6 +77,7 @@ namespace Freshx_API.Mappers
             // Ánh xạ từ model Receptionist sang DTO hiển thị thông tin cơ bản
             CreateMap<Receptionist, ReceptionistDto>();
 
+
             // Ánh xạ từ DTO tạo mới/cập nhật sang model Receptionist
             CreateMap<ReceptionistCreateUpdateDto, Receptionist>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
@@ -99,6 +101,16 @@ namespace Freshx_API.Mappers
             CreateMap<ServiceCatalog, ServiceCatalogDetailDto>();
             CreateMap<ServiceCatalogCreateUpdateDto, ServiceCatalog>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+
+            // Invoice Mappings
+            CreateMap<Invoice, InvoiceDto>();
+            CreateMap<CreateInvoiceDto, Invoice>();
+            CreateMap<UpdateInvoiceDto, Invoice>();
+
+            CreateMap<Patient, PatientDto>();
+            CreateMap<Reception, ReceptionDto>();
+            CreateMap<ICDCatalog, ICDCatalogDto>();
 
             // Map UnitOfMeasure -> UnitOfMeasureDetailDto
             CreateMap<UnitOfMeasure, UnitOfMeasureDetailDto>();
@@ -129,6 +141,14 @@ namespace Freshx_API.Mappers
             CreateMap<DrugCatalogCreateUpdateDto, DrugCatalog>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
+            //Map DocumentPurposeDto
+            // Entity to DTO
+            CreateMap<DocumentPurpose, DocumentPurposeDto>();
+
+            // DTO to Entity
+            CreateMap<DocumentPurpose, DocumentPurposeDto>();
+            CreateMap<DocumentPurposeDto, DocumentPurpose>();
+            CreateMap<CreateDocumentPurposeDto, DocumentPurpose>(); // If CreateDocumentPurposeDto is used
 
             //Địa chỉ 
             CreateMap<Province, ProvinceDto>();
@@ -146,6 +166,8 @@ namespace Freshx_API.Mappers
             // Mapping BillDetail to BillDetailDto
             CreateMap<BillDetail, BillDetailDto>().ReverseMap();
 
+            //
+            CreateMap<AppUser,UserResponse>().ReverseMap();
         }
     }
 }

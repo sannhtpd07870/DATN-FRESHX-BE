@@ -1,8 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Freshx_API.Dtos;
 using Freshx_API.Interfaces.DocumentPurposeRepository;
 using Freshx_API.Models;
 using Freshx_API.Repository;
+using Humanizer;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,45 +20,39 @@ namespace Freshx_API.Services
             _mapper = mapper;
         }
 
-        public async Task<DocumentPurposeDto> GetDocumentPurposeByIdAsync(int id)
+        public async Task<List<DocumentPurposeDto>> GetAllDocumentPurposesAsync(string? searchKey)
         {
-            var documentPurpose = await _repository.GetByIdAsync(id);
-            return _mapper.Map<DocumentPurposeDto>(documentPurpose);
+            var entities = await _repository.GetAllAsync(searchKey);
+            return _mapper.Map<List<DocumentPurposeDto>>(entities);
         }
 
-        public async Task<IEnumerable<DocumentPurposeDto>> GetAllDocumentPurposesAsync()
+        public async Task<DocumentPurposeDto?> GetDocumentPurposeByIdAsync(int id)
         {
-            var documentPurposes = await _repository.GetAllAsync();
-            return _mapper.Map<IEnumerable<DocumentPurposeDto>>(documentPurposes);
+            var entity = await _repository.GetByIdAsync(id);
+            return entity == null ? null : _mapper.Map<DocumentPurposeDto>(entity);
         }
 
-        public async Task<DocumentPurposeDto> CreateDocumentPurposeAsync(DocumentPurposeDto documentPurposeDto)
+        public async Task<DocumentPurposeDto> CreateDocumentPurposeAsync(CreateDocumentPurposeDto dto)
         {
-            var documentPurpose = _mapper.Map<DocumentPurpose>(documentPurposeDto);
-            await _repository.AddAsync(documentPurpose);
-            return _mapper.Map<DocumentPurposeDto>(documentPurpose);
+            var entity = _mapper.Map<DocumentPurpose>(dto); // Map DTO to entity
+            var createdEntity = await _repository.CreateAsync(entity);
+            return _mapper.Map<DocumentPurposeDto>(createdEntity); // Map entity back to DTO
         }
 
-        public async Task<DocumentPurposeDto> UpdateDocumentPurposeAsync(int id, DocumentPurposeDto documentPurposeDto)
-        {
-            var existingDocumentPurpose = await _repository.GetByIdAsync(id);
-            if (existingDocumentPurpose == null)
-            {
-                return null;
-            }
 
-            _mapper.Map(documentPurposeDto, existingDocumentPurpose);
-            await _repository.UpdateAsync(existingDocumentPurpose);
-            return _mapper.Map<DocumentPurposeDto>(existingDocumentPurpose);
+        public async Task<DocumentPurposeDto?> UpdateDocumentPurposeAsync(int id, DocumentPurposeDto dto)
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null) return null;
+
+            _mapper.Map(dto, entity);
+            var updatedEntity = await _repository.UpdateAsync(entity);
+            return _mapper.Map<DocumentPurposeDto>(updatedEntity);
         }
 
-        public async Task DeleteDocumentPurposeAsync(int id)
+        public async Task<bool> DeleteDocumentPurposeAsync(int id)
         {
-            var documentPurpose = await _repository.GetByIdAsync(id);
-            if (documentPurpose != null)
-            {
-                await _repository.DeleteAsync(documentPurpose);
-            }
+            return await _repository.DeleteAsync(id);
         }
     }
 }

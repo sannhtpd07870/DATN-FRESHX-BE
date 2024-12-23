@@ -107,6 +107,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Bill> Bills { get; set; } // Bảng hóa đơn
     public DbSet<BillDetail> BillDetails { get; set; } // Bảng chi tiết hóa đơn
     public DbSet<Payment> Payments { get; set; } // Bảng thanh toán
+    public DbSet<Position> Positions { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -198,5 +199,10 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .HasMany(b => b.Payments)
             .WithOne(p => p.Bill)
             .HasForeignKey(p => p.BillId);
+
+        modelBuilder.Entity<Invoice>()
+                    .HasMany(i => i.MedicalServiceRequests)
+                    .WithOne(msr => msr.Invoice)
+                    .HasForeignKey(msr => msr.InvoiceId);
     }
 }

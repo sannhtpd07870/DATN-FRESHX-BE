@@ -30,6 +30,12 @@ namespace Freshx_API.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AvatarId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -39,6 +45,9 @@ namespace Freshx_API.Migrations
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("DistrictId")
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -51,6 +60,12 @@ namespace Freshx_API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityCardNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("IsActive")
@@ -79,6 +94,12 @@ namespace Freshx_API.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("PositionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProvinceId")
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
@@ -95,7 +116,12 @@ namespace Freshx_API.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("WardId")
+                        .HasColumnType("nvarchar(20)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("DistrictId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -104,6 +130,12 @@ namespace Freshx_API.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("PositionId");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.HasIndex("WardId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -2569,6 +2601,22 @@ namespace Freshx_API.Migrations
                     b.ToTable("Pharmacies");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Position", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Positions");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Prescription", b =>
                 {
                     b.Property<int>("PrescriptionId")
@@ -3842,6 +3890,33 @@ namespace Freshx_API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.AppUser", b =>
+                {
+                    b.HasOne("Freshx_API.Models.District", "District")
+                        .WithMany()
+                        .HasForeignKey("DistrictId");
+
+                    b.HasOne("Freshx_API.Models.Position", "Position")
+                        .WithMany("Employees")
+                        .HasForeignKey("PositionId");
+
+                    b.HasOne("Freshx_API.Models.Province", "Province")
+                        .WithMany()
+                        .HasForeignKey("ProvinceId");
+
+                    b.HasOne("Freshx_API.Models.Ward", "Ward")
+                        .WithMany()
+                        .HasForeignKey("WardId");
+
+                    b.Navigation("District");
+
+                    b.Navigation("Position");
+
+                    b.Navigation("Province");
+
+                    b.Navigation("Ward");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Appointment", b =>
                 {
                     b.HasOne("Freshx_API.Models.Invoice", "MedicalExamination")
@@ -4746,6 +4821,7 @@ namespace Freshx_API.Migrations
                     b.Navigation("Payments");
                 });
 
+
             modelBuilder.Entity("Freshx_API.Models.Conversation", b =>
                 {
                     b.Navigation("Messages");
@@ -4778,11 +4854,42 @@ namespace Freshx_API.Migrations
                     b.Navigation("ServiceStandardValues");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.ServiceGroup", b =>
+            modelBuilder.Entity("Freshx_API.Models.Invoice", b =>
                 {
-                    b.Navigation("ServiceCatalogs");
+                    b.Navigation("MedicalServiceRequests");
+                    modelBuilder.Entity("Freshx_API.Models.Conversation", b =>
+                        {
+                            b.Navigation("Messages");
+                        });
+
+                    modelBuilder.Entity("Freshx_API.Models.Position", b =>
+                        {
+                            b.Navigation("Employees");
+                        });
+
+                    modelBuilder.Entity("Freshx_API.Models.Province", b =>
+                        {
+                            b.Navigation("Districts");
+                        });
+
+                    modelBuilder.Entity("Freshx_API.Models.Receptionist", b =>
+                        {
+                            b.Navigation("Receptions");
+                        });
+
+                    modelBuilder.Entity("Freshx_API.Models.ServiceCatalog", b =>
+                        {
+                            b.Navigation("ChildServices");
+
+                            b.Navigation("ServiceStandardValues");
+                        });
+
+                    modelBuilder.Entity("Freshx_API.Models.ServiceGroup", b =>
+                        {
+                            b.Navigation("ServiceCatalogs");
+                        });
                 });
-#pragma warning restore 612, 618
+        
         }
     }
 }
