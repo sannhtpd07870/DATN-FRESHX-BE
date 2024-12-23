@@ -1,4 +1,4 @@
-﻿namespace Freshx_API.Dtos
+namespace Freshx_API.Dtos
 {
     public class DocumentPurposeDto
     {

@@ -66,6 +66,8 @@ public partial class Invoice
 
     public string? ReasonForVisit { get; set; } // Lý do khám bệnh
 
+    public bool IsPaid { get; set; } //trạng thái 
+
     public string? ExaminationNote { get; set; } // Ghi chú khám bệnh
 
     public int MedicalExaminationId { get; set; } // ID khám bệnh
@@ -75,6 +77,7 @@ public partial class Invoice
     public virtual Patient? Patient { get; set; }
 
     public virtual Reception? Reception { get; set; }
+
     public ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; }
     public bool IsPaid { get; set; }
 }

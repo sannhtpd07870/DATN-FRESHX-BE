@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Freshx_API.Dtos;
 using Freshx_API.Interfaces.DocumentPurposeRepository;
 using Freshx_API.Models;

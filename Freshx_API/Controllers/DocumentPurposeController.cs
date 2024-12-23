@@ -1,4 +1,3 @@
-﻿
 using AutoMapper;
 using Freshx_API.Dtos;
 using Freshx_API.Dtos.Pharmacy;
