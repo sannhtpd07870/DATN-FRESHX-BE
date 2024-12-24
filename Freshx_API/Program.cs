@@ -4,20 +4,7 @@ using DotNetEnv;
 using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.Auth;
-<<<<<<< HEAD
-=======
-using Microsoft.Identity.Client;
-using Freshx_API.Repository.Auth.TokenRepositories;
-using Freshx_API.Services.CommonServices;
-using Freshx_API.Services.Chat;
-using Freshx_API.Repository.Menu;
-using Freshx_API.Repository.Drugs;
-using Freshx_API.Services.Drugs;
-using Freshx_API.Repository.Address;
-using Freshx_API.Interfaces.DocumentPurposeRepository;
-using Freshx_API.Interfaces.Payments;
-using Freshx_API.Repository.Payments;// Tải biến môi trường từ tệp .env
->>>>>>> 0e5644b437e6292cb418649831d526625cda49f6
+
 using Freshx_API.Interfaces.UserAccount;
 using Freshx_API.Mappers;
 using Freshx_API.Models;
@@ -41,6 +28,8 @@ using Microsoft.OpenApi.Models;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.SignalR;
+using Freshx_API.Interfaces.Payments;
+using Freshx_API.Repository.Payments;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -331,8 +320,7 @@ builder.Services.AddScoped<DepartmentTypeService>();
 
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
-builder.Services.AddScoped<IDocumentPurposeRepository, DocumentPurposeRepository>();
-builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
+
 builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
@@ -392,11 +380,6 @@ builder.Services.AddScoped<ChatService>();
 //đăng kí service
 builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 
-<<<<<<< HEAD
-=======
-//Đăng kí dịch vụ
-builder.Services.AddScoped<IPositionRepository, PositionRepository>();
-
 
 //Đăng ký Repository và service cho payments
 builder.Services.AddScoped<IBillRepository, BillRepository>();
@@ -410,12 +393,6 @@ builder.Services.AddSingleton<DefaultAzureCredential>();
         builder.Services.AddSingleton<DefaultAzureCredential>();
         // Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
         builder.Services.AddHttpContextAccessor();
-        var app = builder.Build();
->>>>>>> 0e5644b437e6292cb418649831d526625cda49f6
-
-
-
-
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 

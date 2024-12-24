@@ -59,10 +59,10 @@ public partial class Examine
 
     public string? ReasonForVisit { get; set; } // Lý do khám bệnh
 
-    public bool IsPaid { get; set; } //trạng thái 
+    public bool IsPaid { get; set; } // đổi trạng thái khi khám xong
 
     public string? ExaminationNote { get; set; } // Ghi chú khám bệnh
-    public bool IsPaid { get; set; } // đổi trạng thái khi khám xong
+  
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
     public virtual  ICDCatalog?  ICDCatalog { get; set; }
     public virtual Patient? Patient { get; set; }

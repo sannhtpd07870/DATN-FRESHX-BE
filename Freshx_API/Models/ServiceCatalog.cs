@@ -66,11 +66,9 @@ public partial class ServiceCatalog
         //Mỗi dịch vụ(ServiceCatalog) có thể là dịch vụ cha, chứa danh sách các dịch vụ con(ChildServices).
         //Cách hoạt động:
 
-<<<<<<< HEAD
         //Một ServiceCatalog có thể có nhiều dịch vụ con khác thông qua ParentServiceId.
         //Trong trường hợp này:
         //ParentServiceId: Trỏ đến ID của dịch vụ cha.
         //ChildServices: Chứa tất cả các dịch vụ con mà dịch vụ hiện tại là cha của chúng.
-=======
->>>>>>> 0e5644b437e6292cb418649831d526625cda49f6
+
 }

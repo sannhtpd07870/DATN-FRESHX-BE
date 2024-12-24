@@ -27,13 +27,10 @@ public partial class Patient
 
     public int? WardId { get; set; } // ID phường/xã
 
-<<<<<<< HEAD
     public int? DistrictId { get; set; } // ID quận/huyện
 
     public int? ProvinceId { get; set; } // ID tỉnh/thành phố
 
-=======
->>>>>>> 0e5644b437e6292cb418649831d526625cda49f6
     public int? CreatedBy { get; set; } // Người tạo
 
     public DateTime? CreatedDate { get; set; } // Ngày tạo
@@ -44,7 +41,6 @@ public partial class Patient
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
 
-<<<<<<< HEAD
     public int? ImageId  { get; set; } // Id đến ảnh bệnh nhân
 
     public string? Ethnicity { get; set; } // Dân tộc của bệnh nhân
@@ -52,12 +48,5 @@ public partial class Patient
     public virtual Province? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
     public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
     public virtual Savefile? Image { get; set; }
-=======
-    public string? ImageUrl { get; set; } // Đường dẫn đến ảnh bệnh nhân
 
-    // public string? ZaloId { get; set; } // ID Zalo của bệnh nhân
-
-    public string? Ethnicity { get; set; } // Dân tộc của bệnh nhân
-
->>>>>>> 0e5644b437e6292cb418649831d526625cda49f6
 }
