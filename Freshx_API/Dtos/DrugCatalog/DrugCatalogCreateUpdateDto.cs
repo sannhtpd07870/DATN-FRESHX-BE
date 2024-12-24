@@ -54,9 +54,5 @@
         public decimal? CostPrice { get; set; } // Giá vốn
 
         public decimal? UnitPrice { get; set; } // Giá bán
-
-        public int? ManagementPharmacyId { get; set; } // ID nhà thuốc quản lý
-
-        public int? DepartmentPharmacyId { get; set; } // ID nhà thuốc phòng ban
     }
 }

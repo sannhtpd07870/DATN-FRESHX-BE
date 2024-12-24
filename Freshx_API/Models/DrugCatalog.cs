@@ -69,11 +69,7 @@ public partial class DrugCatalog
 
     public decimal? UnitPrice { get; set; } // Giá bán
 
-      public int? DepartmentPharmacyId { get; set; } // ID nhà thuốc phòng ban
-
     public virtual Country? Country { get; set; } // Quốc gia của thuốc
-
-    public virtual Pharmacy? DepartmentPharmacy { get; set; } // Nhà thuốc phòng ban
 
     public virtual DrugType? DrugType { get; set; } // Loại thuốc
 
