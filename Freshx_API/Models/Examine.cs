@@ -59,6 +59,8 @@ public partial class Examine
 
     public string? ReasonForVisit { get; set; } // Lý do khám bệnh
 
+    public bool IsPaid { get; set; } //trạng thái 
+
     public string? ExaminationNote { get; set; } // Ghi chú khám bệnh
     public bool IsPaid { get; set; } // đổi trạng thái khi khám xong
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
@@ -66,6 +68,7 @@ public partial class Examine
     public virtual Patient? Patient { get; set; }
 
     public virtual Reception? Reception { get; set; }
+
     public ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; }
     public virtual Prescription? Prescription { get; set; }
     public virtual TemplatePrescription? PrescriptionTemplate { get; set; }

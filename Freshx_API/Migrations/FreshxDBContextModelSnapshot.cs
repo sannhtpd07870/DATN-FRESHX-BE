@@ -171,7 +171,104 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ReceptionId");
 
+<<<<<<< HEAD
                     b.ToTable("Appointments", (string)null);
+=======
+                    b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Bill", b =>
+                {
+                    b.Property<int>("BillId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BillId"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("BillId");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Bills");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.BillDetail", b =>
+                {
+                    b.Property<int>("BillDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BillDetailId"));
+
+                    b.Property<int>("BillId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceCatalogId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.HasKey("BillDetailId");
+
+                    b.HasIndex("BillId");
+
+                    b.HasIndex("ServiceCatalogId");
+
+                    b.ToTable("BillDetails");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("User")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.ToTable("ChatMessages");
+>>>>>>> 0e5644b437e6292cb418649831d526625cda49f6
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ConclusionDictionary", b =>
@@ -2392,6 +2489,35 @@ namespace Freshx_API.Migrations
                     b.ToTable("Patients", (string)null);
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
+
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("BillId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("BillId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Pharmacy", b =>
                 {
                     b.Property<int>("PharmacyId")
@@ -3788,6 +3914,48 @@ namespace Freshx_API.Migrations
                     b.Navigation("Reception");
                 });
 
+<<<<<<< HEAD
+=======
+            modelBuilder.Entity("Freshx_API.Models.Bill", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Patient");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.BillDetail", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Bill", "Bill")
+                        .WithMany("BillDetails")
+                        .HasForeignKey("BillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Freshx_API.Models.ServiceCatalog", "ServiceCatalog")
+                        .WithMany()
+                        .HasForeignKey("ServiceCatalogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bill");
+
+                    b.Navigation("ServiceCatalog");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.ChatMessage", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Conversation", null)
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+>>>>>>> 0e5644b437e6292cb418649831d526625cda49f6
             modelBuilder.Entity("Freshx_API.Models.ConclusionDictionary", b =>
                 {
                     b.HasOne("Freshx_API.Models.ServiceCatalog", "ServiceCatalog")
@@ -4341,6 +4509,17 @@ namespace Freshx_API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Payment", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Bill", "Bill")
+                        .WithMany("Payments")
+                        .HasForeignKey("BillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bill");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Pharmacy", b =>
                 {
                     b.HasOne("Freshx_API.Models.Department", "Department")
@@ -4606,12 +4785,51 @@ namespace Freshx_API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Bill", b =>
+                {
+                    b.Navigation("BillDetails");
+
+                    b.Navigation("Payments");
+                });
+
+
+            modelBuilder.Entity("Freshx_API.Models.Conversation", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Doctor", b =>
                 {
                     b.Navigation("Receptions");
                 });
 
+<<<<<<< HEAD
             modelBuilder.Entity("Freshx_API.Models.Position", b =>
+=======
+            modelBuilder.Entity("Freshx_API.Models.Invoice", b =>
+                {
+                    b.Navigation("MedicalServiceRequests");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Province", b =>
+                {
+                    b.Navigation("Districts");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Receptionist", b =>
+                {
+                    b.Navigation("Receptions");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.ServiceCatalog", b =>
+                {
+                    b.Navigation("ChildServices");
+
+                    b.Navigation("ServiceStandardValues");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Invoice", b =>
+>>>>>>> 0e5644b437e6292cb418649831d526625cda49f6
                 {
                     b.Navigation("Employees");
                 });
