@@ -16,6 +16,7 @@ public partial class Doctor
     public string? Email { get; set; } // Email 
     public string? Gender { get; set; } //giới tính
     public DateTime? DateOfBirth { get; set; } // Ngày sinh
+    public int? AvataId { get; set; } // ảnh
     public int? IsSuspended { get; set; } // Trạng thái tạm ngưng
     public string? CreatedBy { get; set; } // Người tạo
 
@@ -38,4 +39,5 @@ public partial class Doctor
     //public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>(); // Danh sách kết quả xét nghiệm
 
     public virtual ICollection<Reception> Receptions { get; set; } = new List<Reception>(); // Danh sách tiếp nhận
+    public virtual Savefile Avata { get; set; }
 }

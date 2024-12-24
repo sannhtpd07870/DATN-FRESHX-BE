@@ -57,7 +57,7 @@ namespace Freshx_API.Repository.UserAccount
                     UpdatedAt = DateTime.UtcNow,
                     Email = request.Email,
                     PhoneNumber = request.PhoneNumber,
-                    Gender = request.Gender,
+                   
                     IdentityCardNumber = request.IdentityCardNumber,
                     Age = request.DateOfBirth?.Year == null ? null : (DateTime.Now.Year - request.DateOfBirth.Value.Year),   
                     ProvinceId = request.ProvinceId,
@@ -129,7 +129,7 @@ namespace Freshx_API.Repository.UserAccount
         {
                 try
                 {
-                    var query = _userManager.Users.Include(u => u.Position)
+                    var query = _userManager.Users
                     .Include(u => u.Ward)
                     .Include(u => u.District)
                     .Include(u => u.Province).Where(u => u.PositionId != null) // Thêm điều kiện lọc mặc định
@@ -138,9 +138,9 @@ namespace Freshx_API.Repository.UserAccount
                     // Apply search filter
                     if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
                     {
-                        query = query.Where(u =>
-                            (u.FullName != null && u.FullName.Contains(parameters.SearchTerm)) ||
-                            (u.Gender != null && u.Gender.Contains(parameters.SearchTerm)));
+                    query = query.Where(u =>
+                        (u.FullName != null && u.FullName.Contains(parameters.SearchTerm)));
+                           
                     }
 
                     // Apply sorting
@@ -165,7 +165,7 @@ namespace Freshx_API.Repository.UserAccount
                             FullName = u.FullName,
                             Age = u.Age,
                             DateOfBirth = u.DateOfBirth,
-                            Gender = u.Gender,
+                            
                             IdentityCardNumber = u.IdentityCardNumber,
                             Email = u.Email,
                             PhoneNumber = u.PhoneNumber,
@@ -212,7 +212,7 @@ namespace Freshx_API.Repository.UserAccount
                     }
                     user.FullName = request?.FullName;
                     user.Email = request?.Email;
-                    user.Gender = request?.Gender;
+                  
                     if (request.DateOfBirth != null)
                     {
                         user.DateOfBirth = request.DateOfBirth;
@@ -227,7 +227,7 @@ namespace Freshx_API.Repository.UserAccount
                     user.WardId = request?.WardId;
                     user.DistrictId = request?.DistrictId;
                     user.ProvinceId = request?.ProvinceId;
-                    user.Gender = request?.Gender;
+                   
                     user.PhoneNumber = request?.PhoneNumber;
                     user.IdentityCardNumber = request?.IdentityCardNumber;
                     user.AvatarId = avartarId;

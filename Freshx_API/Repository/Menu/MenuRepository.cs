@@ -20,12 +20,7 @@ namespace Freshx_API.Repository.Menu
         {
             var query = _context.Menus.AsQueryable();
 
-            // Tìm kiếm theo tên hoặc mã menu
-            if (!string.IsNullOrEmpty(searchKey))
-            {
-                query = query.Where(m => m.Name.Contains(searchKey) || m.Code.Contains(searchKey));
-            }
-
+         
             var menus = await query.ToListAsync();
             return _mapper.Map<List<MenuDto>>(menus);
         }

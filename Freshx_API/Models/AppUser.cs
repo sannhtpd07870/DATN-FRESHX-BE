@@ -8,12 +8,14 @@ namespace Freshx_API.Models
         public string? FullName { get; set; }
         [DataType(DataType.Date)]
         public DateTime? DateOfBirth { get; set; }
-        public bool? IsActive  { get; set; }
+        public bool? IsActive { get; set; }
         public DateTime? CreatedAt { get; set; } //tạo tài khoản
         public DateTime? UpdatedAt { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? ExpiredTime { get; set; }
-        public string ? Gender { get; set; }
+        public int? DoctorId { get; set; }
+        public int? EmployeeId { get; set; }
+        public int? PatientId { get; set; }
         public string? IdentityCardNumber { get; set; } // Số CMND/CCCD
         public int? Age { get; set; }
         public int? AvatarId { get; set; }
@@ -24,6 +26,8 @@ namespace Freshx_API.Models
         public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
         public virtual District? District { get; set; } // Đơn vị hành chính huyện-thị trấn
         public virtual Province? Province { get; set; } // Đơn vị hành chính tỉnh
-        public virtual Position? Position { get; set; }
+        public virtual Doctor Doctor { get; set; }
+        public virtual Employee? Employee { get; set; }
+        public virtual Patient? Patient { get; set; }
     }
 }

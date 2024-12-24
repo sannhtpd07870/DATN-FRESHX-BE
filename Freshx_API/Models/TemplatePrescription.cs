@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NuGet.LibraryModel;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Freshx_API.Models;
 
@@ -11,6 +13,10 @@ public partial class TemplatePrescription
 
     public string? Name { get; set; } // Tên mẫu đơn thuốc
 
+    public int DrugCatalogId { get; set; }
+
+    [ForeignKey("DrugCatalogId")]
+    public virtual ICollection<DrugCatalog>? DrugCatalogs { get; set; } = new List<DrugCatalog>(); 
     public int? IsSuspended { get; set; } // Trạng thái tạm ngưng
 
     public int? CreatedBy { get; set; } // Người tạo

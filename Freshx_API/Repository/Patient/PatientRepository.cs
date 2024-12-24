@@ -36,7 +36,6 @@ namespace Freshx_API.Repository
                     CreatedDate = DateTime.UtcNow,
                     UpdatedDate = DateTime.UtcNow,
                     IsDeleted = 0,
-                    ImageUrl = addingPatientRequest?.ImageUrl,
                     Ethnicity = addingPatientRequest?.Ethnicity
                 };
                 using (var transaction = await _context.Database.BeginTransactionAsync())
@@ -93,7 +92,6 @@ namespace Freshx_API.Repository
                     patient.UpdatedDate = DateTime.UtcNow;
                     patient.UpdatedBy = updatingPatientRequest.UpdatedBy;
                     patient.IsDeleted = updatingPatientRequest.IsDeleted;
-                    patient.ImageUrl = updatingPatientRequest.ImageUrl;
                     patient.Ethnicity = updatingPatientRequest.Ethnicity;
                     var result = await _context.SaveChangesAsync();
                     if(result>0)

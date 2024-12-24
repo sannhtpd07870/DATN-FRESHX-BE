@@ -13,7 +13,7 @@ public partial class Icdchapter
 
     public string? NameEnglish { get; set; } // Tên chương ICD bằng tiếng Anh
 
-    public string? NameRussian { get; set; } // Tên chương ICD bằng tiếng Nga
+    public string? NameVietNamese { get; set; } // Tên chương ICD bằng tiếng Việt
 
     public bool IsSuspended { get; set; } // Trạng thái tạm ngưng
 

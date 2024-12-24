@@ -6,63 +6,28 @@ namespace Freshx_API.Models;
 
 public partial class MedicalServiceRequest
 {
-    public int MedicalServiceRequestId { get; set; }
+    public int MedicalServiceRequestId { get; set; } // mã yc dịch vụ
+    public DateTime? RequestTime { get; set; } // thời gian yc
+    public int? ReceptionId { get; set; } //id tiếp nhận
+    public int? ServiceId { get; set; } // id dịch vụ
+    public int? Quantity { get; set; } // số lượng
+    public decimal? ServiceTotalAmount { get; set; } // tổng tiền dịch vụ
+    public bool? IsApproved { get; set; } // có được phép thực hiện?
+    public bool? Status { get; set; } // trạng thái?
+    public int? AssignedById { get; set; } // người chỉ định
+    public int? CreatedBy { get; set; } // tạo bởi
 
-    public string? RequestNumber { get; set; }
+    public DateTime? CreatedDate { get; set; } // Ngày tạo
 
-    public DateTime? RequestDate { get; set; }
+    public string? UpdatedBy { get; set; } // Cập nhật bởi
 
-    public DateTime? RequestTime { get; set; }
+    public DateTime? UpdatedDate { get; set; } // ngày cập nhật
 
-    public int? ReceptionId { get; set; }
+    public int? IsDeleted { get; set; } // đã xóa?
 
-    public int? PatientId { get; set; }
 
-    public int? ServiceId { get; set; }
-
-    public int? Quantity { get; set; }
-
-    public decimal? ServiceUnitPrice { get; set; }
-
-    public decimal? ServiceTotalAmount { get; set; }
-
-    public bool? IsApproved { get; set; }
-
-    public bool? IsPaid { get; set; }
-
-    public string? Status { get; set; }
-
-    public int? AssignedById { get; set; }
-
-    public int? CreatedBy { get; set; }
-
-    public DateTime? CreatedDate { get; set; }
-
-    public int? UpdatedBy { get; set; }
-
-    public DateTime? UpdatedDate { get; set; }
-
-    public int? IsDeleted { get; set; }
-
-    public int? SampleCollectorId { get; set; }
-
-    public DateTime? SampleCollectionDate { get; set; }
-
-    public DateTime? SampleCollectionTime { get; set; }
-
-    public string? NumberOfTubes { get; set; }
-
-    public string? Sid { get; set; }
-
-    public DateTime? ExecutionDate { get; set; }
-
-    public DateTime? ExecutionTime { get; set; }
-
-    public string? Result { get; set; }
-
-    public int? ParentMedicalServiceRequestId { get; set; }
-
-    public virtual Employee? AssignedBy { get; set; }
+    public virtual Employee? AssignedByEmployee { get; set; }
+    public virtual Doctor? AssignedByDoctor { get; set; }
 
     //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>();
 
@@ -74,9 +39,5 @@ public partial class MedicalServiceRequest
 
     public virtual Reception? Reception { get; set; }
 
-    public virtual Employee? SampleCollector { get; set; }
-
     public virtual ServiceCatalog? Service { get; set; }
-    public int InvoiceId { get; set; }
-    public Invoice Invoice { get; set; }
 }

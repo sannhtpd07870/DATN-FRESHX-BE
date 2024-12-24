@@ -49,10 +49,6 @@ namespace Freshx_API.Repository
                 query = query.Where(p => p.InventoryTypeId == inventoryTypeId.Value);
             }
 
-            if (specialtyId.HasValue)
-            {
-                query = query.Where(p => p.SpecialtyId == specialtyId.Value);
-            }
 
             return await query.ToListAsync();
         }

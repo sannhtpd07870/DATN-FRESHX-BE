@@ -3,20 +3,20 @@ using System.Collections.Generic;
 
 namespace Freshx_API.Models;
 
-public partial class Hospital
+public partial class Clinic
 {
-    public int HospitalId { get; set; } // ID bệnh viện
+    public int ClinicId { get; set; } // ID bệnh viện
 
     public string? Code { get; set; } // Mã bệnh viện
 
     public string? Name { get; set; } // Tên bệnh viện
 
-    public string? Address1 { get; set; } // Địa chỉ 1
+    public string? Address { get; set; } // Địa chỉ chi tiết
+    public int? WardId { get; set; } // ID phường/xã
 
-    public string? Address2 { get; set; } // Địa chỉ 2
+    public int? DistrictId { get; set; } // ID quận/huyện
 
-    public string? Address3 { get; set; } // Địa chỉ 3
-
+    public int? ProvinceId { get; set; } // ID tỉnh/thành phố
     public string? PhoneNumber1 { get; set; } // Số điện thoại 1
 
     public string? PhoneNumber2 { get; set; } // Số điện thoại 2
@@ -34,6 +34,7 @@ public partial class Hospital
     public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
-
-    //public virtual ICollection<User> Users { get; set; } = new List<User>(); // Danh sách người dùng liên quan
+    public virtual District? District { get; set; } // Đơn vị hành chính quận/huyện
+    public virtual Province? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
+    public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
 }

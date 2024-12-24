@@ -8,25 +8,22 @@ namespace Freshx_API.Models;
 public partial class DiagnosticImagingResult
 {
     [Key]
-    public int DiagnosticImagingResultId { get; set; }
+    public int DiagnosticImagingResultId { get; set; } // Bảng kết quả cận lâm sàng chẩn đoán hình ảnh 
 
     public DateTime? ExecutionDate { get; set; }
 
     public DateTime? ExecutionTime { get; set; }
 
-    public int? MedicalServiceRequestId { get; set; }
+    public int? MedicalServiceRequestId { get; set; } // id yc dịch vụ
 
-    public int? ReceptionId { get; set; }
+    public int? TechnicianId { get; set; } // id người thực hiẻn
+    public int? ConclusionDictionaryId { get; set; } // từ điển kết luận
 
-    public int? PatientId { get; set; }
+    public int? ConcludingDoctorId { get; set; } // bác sĩ kết luận
 
-    public int? TechnicianId { get; set; }
+    public string? Conclusion { get; set; } // kết luận
 
-    public int? ConcludingDoctorId { get; set; }
-
-    public string? Conclusion { get; set; }
-
-    public string? Result { get; set; }
+    public string? Result { get; set; } // kết quả
 
     public string? Description { get; set; }
 
@@ -79,9 +76,6 @@ public partial class DiagnosticImagingResult
     public int? SampleCollectorId { get; set; }
 
     public virtual Doctor? ConcludingDoctor { get; set; }
-
-    //public virtual ICollection<DiagnosticImagingResultImage> DiagnosticImagingResultImages { get; set; } = new List<DiagnosticImagingResultImage>();
-
     public virtual MedicalServiceRequest? MedicalServiceRequest { get; set; }
 
     public virtual Patient? Patient { get; set; }
@@ -91,4 +85,5 @@ public partial class DiagnosticImagingResult
     public virtual Employee? SampleCollector { get; set; }
 
     public virtual Technician? Technician { get; set; }
+    public virtual ConclusionDictionary ConclusionDictionary { get; set; } // từ điển kết luận
 }

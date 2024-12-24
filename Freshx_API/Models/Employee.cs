@@ -16,8 +16,9 @@ public partial class Employee
     public DateTime? DateOfBirth { get; set; } // Ngày sinh nhân viên
 
     public string? Gender { get; set; } // Giới tính nhân viên
-
+    public int? AvataId { get; set; }
     public string? Address { get; set; } // Địa chỉ nhân viên
+   
 
     public int? WardId { get; set; } // ID phường/xã
 
@@ -26,10 +27,6 @@ public partial class Employee
     public int? ProvinceId { get; set; } // ID tỉnh/thành phố
 
     public int? DepartmentId { get; set; } // ID phòng ban
-
-    public int? PositionId { get; set; } // ID vị trí
-
-    public int? TitleId { get; set; } // ID chức danh
 
     public string? PhoneNumber { get; set; } // Số điện thoại nhân viên
 
@@ -48,4 +45,5 @@ public partial class Employee
     public virtual Province? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
 
     public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
+    public virtual Savefile? Avata { get; set; }
 }

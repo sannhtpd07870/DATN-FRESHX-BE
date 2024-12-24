@@ -31,5 +31,4 @@ public partial class Country
 
     public string? UpdatedBy { get; set; } // Người cập nhật
 
-    //public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>(); // Danh sách danh mục thuốc liên quan
 }

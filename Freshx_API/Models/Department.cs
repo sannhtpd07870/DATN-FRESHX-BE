@@ -16,7 +16,7 @@ public partial class Department
 
     public int? DepartmentTypeId { get; set; } // ID loại phòng ban
 
-    public int? IsSuspended { get; set; } // Trạng thái tạm ngưng
+    public int? IsSuspended { get; set; } // Trạng thái tạm ngưng ktra trạng thái
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
 
@@ -30,13 +30,4 @@ public partial class Department
 
     public virtual DepartmentType? DepartmentType { get; set; } // Loại phòng ban
 
-    //public virtual ICollection<Document> Documents { get; set; } = new List<Document>(); // Danh sách tài liệu liên quan
-
-    //public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>(); // Danh sách nhân viên liên quan
-
-    //public virtual ICollection<LoginSession> LoginSessions { get; set; } = new List<LoginSession>(); // Danh sách phiên đăng nhập của phòng ban
-
-    //public virtual ICollection<Pharmacy> Pharmacies { get; set; } = new List<Pharmacy>(); // Danh sách nhà thuốc liên quan
-
-    //public virtual ICollection<UserDepartment> UserDepartments { get; set; } = new List<UserDepartment>(); // Danh sách phòng ban người dùng
 }

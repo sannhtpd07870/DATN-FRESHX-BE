@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System;
 using System.Collections.Generic;
 
 namespace Freshx_API.Models;
@@ -38,12 +39,19 @@ public partial class ICDCatalog
     public int? UpdatedBy { get; set; } // Người cập nhật
 
     public int? LegacyCode { get; set; } // Mã kế thừa
-
-    //public virtual ICollection<DoctorsCommonIcd> DoctorsCommonIcds { get; set; } = new List<DoctorsCommonIcd>(); // Danh sách ICD phổ biến của bác sĩ
-
     public virtual  ICDCatalog?  ICDCatalogGroup { get; set; } // Nhóm danh mục ICD
+    //Giải thích:
+    //ICDCatalogGroup
+    //Loại: virtual ICDCatalog?
+    //Ý nghĩa: Xác định nhóm danh mục ICD mà danh mục này thuộc về.
+    //Foreign Key: ICDCatalogGroupId.
+    //Chức năng:
+    //Dùng để tạo mối quan hệ tự tham chiếu (self-referencing relationship), nghĩa là mỗi danh mục ICD có thể thuộc một nhóm danh mục cha mà không cần tạo bảng danh mục cha riêng.
+    //Ví dụ:
+    //Danh mục ICD A00 (dịch tả) thuộc nhóm A (bệnh truyền nhiễm).
+    //truy vấn
+    //var icdGroup = context.ICDCatalogs
+    //.Include(c => c.ICDCatalogGroup)
+    //.FirstOrDefault(c => c.ICDCatalogId == id);
 
-    //public virtual ICollection< ICDCatalog> Inverse ICDCatalogGroup { get; set; } = new List< ICDCatalog>(); // Danh sách nhóm danh mục ICD ngược
-
-    //public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>(); // Danh sách hóa đơn liên quan
 }

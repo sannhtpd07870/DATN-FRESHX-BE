@@ -4,12 +4,9 @@ using DotNetEnv;
 using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.Auth;
-using Freshx_API.Interfaces.DocumentPurposeRepository;
-using Freshx_API.Interfaces.Invoice;
 using Freshx_API.Interfaces.UserAccount;
 using Freshx_API.Mappers;
 using Freshx_API.Models;
-using Freshx_API.Repositories;
 using Freshx_API.Repository;
 using Freshx_API.Repository.Address;
 using Freshx_API.Repository.Auth.AccountRepositories;
@@ -308,8 +305,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
-builder.Services.AddScoped<IDocumentPurposeRepository, DocumentPurposeRepository>();
-builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
+
 builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
@@ -337,9 +333,7 @@ builder.Services.AddScoped<InventoryTypeService>();
 builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
-// Đăng ký Repository và Service với InventoryType Injection
-builder.Services.AddScoped<IReceptionistRepository, ReceptionistRepository>();
-builder.Services.AddScoped<ReceptionistService>();
+
 
 // Đăng ký Repository và Service với InventoryType Injection
 builder.Services.AddScoped<IServiceGroupRepository, ServiceGroupRepository>();
@@ -377,11 +371,7 @@ builder.Services.AddScoped<ChatService>();
 //đăng kí service
 builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 
-builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
-builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
-//Đăng kí dịch vụ
-builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 
 
 

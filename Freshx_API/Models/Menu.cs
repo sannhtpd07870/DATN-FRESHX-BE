@@ -6,11 +6,9 @@ namespace Freshx_API.Models;
 public partial class Menu
 {
     public int MenuId { get; set; } // ID menu
-
-    public string? Code { get; set; } // Mã menu
-
     public string? Name { get; set; } // Tên menu
 
+    public string? Path { get; set; } // đường dẫn
     public int? ParentMenuId { get; set; } // ID menu cha
 
     public int? IsSuspended { get; set; } // Trạng thái tạm ngưng
@@ -29,5 +27,5 @@ public partial class Menu
 
     //public virtual ICollection<MenuPermission> MenuPermissions { get; set; } = new List<MenuPermission>(); // Danh sách quyền truy cập menu
 
-    public virtual Menu? ParentMenu { get; set; } // Menu cha
+    public virtual MenuParent? ParentMenu { get; set; } // Menu cha
 }
