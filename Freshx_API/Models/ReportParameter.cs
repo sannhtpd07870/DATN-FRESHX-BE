@@ -31,5 +31,5 @@ public partial class ReportParameter
 
     public virtual Report Report { get; set; } = null!; // Báo cáo liên quan
 
-    public virtual TypeOfControlInput TypeOfControlInput { get; set; } = null!; // Loại đầu vào kiểm soát liên quan
+  
 }

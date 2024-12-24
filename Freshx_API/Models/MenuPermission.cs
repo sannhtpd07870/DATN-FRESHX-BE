@@ -14,6 +14,4 @@ public partial class MenuPermission
     public int? MenuId { get; set; } // ID menu
 
     public virtual Menu? Menu { get; set; } // Menu liên quan
-
-    public virtual User? User { get; set; } // Người dùng liên quan
 }

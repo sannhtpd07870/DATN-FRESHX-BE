@@ -384,16 +384,13 @@ builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IPositionRepository, PositionRepository>();
 
 
+
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
 // Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
-
-//khai báo gửi thông báo theo user id
-builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
-
 
 
 // Cấu hình CORS để cho phép truy cập từ mọi nguồn
@@ -402,12 +399,26 @@ app.UseCors(builder =>
 {
     builder.AllowAnyOrigin()
            .AllowAnyMethod()
-           .AllowAnyHeader();
+           .AllowAnyHeader()
+           .AllowAnyMethod();
            
 });
 
-app.MapHub<ChatHub>("/chathub");
-app.MapHub<NotificationHub>("/notificationHub");
+app.MapHub<ChatHub>("/chathub").RequireCors(policy =>
+{
+    policy.AllowAnyHeader()
+          .AllowAnyMethod()
+          .SetIsOriginAllowed(origin => true) // Tùy chọn: Chấp nhận tất cả origin
+          .AllowCredentials();                // Cho phép tín hiệu sử dụng cookie
+}); ;
+
+app.MapHub<NotificationHub>("/notificationHub").RequireCors(policy =>
+{
+    policy.AllowAnyHeader()
+          .AllowAnyMethod()
+          .SetIsOriginAllowed(origin => true) // Tùy chọn: Chấp nhận tất cả origin
+          .AllowCredentials();                // Cho phép tín hiệu sử dụng cookie
+});
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

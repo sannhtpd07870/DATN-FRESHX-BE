@@ -39,7 +39,6 @@ public partial class DrugBooking
 
     public virtual DrugCatalog? DrugCatalog { get; set; } // Danh mục thuốc
 
-    public virtual LoginSession? LoginSession { get; set; } // Phiên đăng nhập liên quan
 
     public virtual Invoice? MedicalExamination { get; set; } // Khám bệnh liên quan
 

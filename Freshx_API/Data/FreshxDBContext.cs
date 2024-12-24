@@ -69,7 +69,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Invoice> Invoices { get; set; }
     public DbSet<LabResult> LabResults { get; set; }
     public DbSet<LabTestFile> LabTestFiles { get; set; }
-    public DbSet<LoginSession> LoginSessions { get; set; }
+ 
     public DbSet<MedicalServiceRequest> MedicalServiceRequests { get; set; }
     public DbSet<Menu> Menus { get; set; }
     public DbSet<MenuPermission> MenuPermissions { get; set; }
@@ -89,18 +89,12 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Technician> Technicians { get; set; }
     public DbSet<TemplatePrescription> TemplatePrescriptions { get; set; }
-    public DbSet<TemplatePrescriptionDrugMapping> TemplatePrescriptionDrugMappings { get; set; }
-    public DbSet<TypeOfControlInput> TypeOfControlInputs { get; set; } // Consider reviewing the typo: TypeOfControlInput?
+   
     public DbSet<UnitOfMeasure> UnitOfMeasures { get; set; }
-    public DbSet<User> Users { get; set; }
-    public DbSet<UserAction> UserActions { get; set; }
-    public DbSet<UserActionByMedicalRecord> UserActionByMedicalRecords { get; set; }
-    public DbSet<UserDepartment> UserDepartments { get; set; }
-    public DbSet<UserPharmacy> UserPharmacies { get; set; }
     public DbSet<District> Districts { get; set; }
     public DbSet<Province> Provinces { get; set; }
     public DbSet<Ward> Wards { get; set; }
-    public DbSet<ZaloUser> ZaloUsers { get; set; }
+ 
     public DbSet<ChatMessage> ChatMessages { get; set; }
     public DbSet<Conversation> Conversations { get; set; }
     public DbSet<Receptionist> Receptionists { get; set; }
@@ -145,11 +139,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .HasForeignKey(r => r.ReportId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<ReportParameter>()
-            .HasOne(r => r.TypeOfControlInput)
-            .WithMany()
-            .HasForeignKey(r => r.TypeOfControlInputId)
-            .OnDelete(DeleteBehavior.Restrict);
+      
 
         // LabTestFile
         modelBuilder.Entity<LabTestFile>()

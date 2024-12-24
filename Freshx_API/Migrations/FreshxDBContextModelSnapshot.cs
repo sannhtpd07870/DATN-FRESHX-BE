@@ -4720,8 +4720,8 @@ namespace Freshx_API.Migrations
                         {
                             b.Navigation("ServiceCatalogs");
                         });
-#pragma warning restore 612, 618
                 });
-    }
+        
+        }
     }
 }

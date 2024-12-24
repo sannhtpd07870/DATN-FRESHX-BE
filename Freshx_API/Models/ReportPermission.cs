@@ -13,5 +13,5 @@ public partial class ReportPermission
 
     public virtual Report? Report { get; set; }
 
-    public virtual User? User { get; set; }
+
 }
