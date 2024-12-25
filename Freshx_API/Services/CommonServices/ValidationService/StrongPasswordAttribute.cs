@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Freshx_API.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Freshx_API.Services.CommonServices.ValidationService
 {
@@ -33,4 +34,56 @@ namespace Freshx_API.Services.CommonServices.ValidationService
             return ValidationResult.Success;
         }
     }
+    public class AgeValidationAttribute : ValidationAttribute
+    {
+        public int MinAge { get; set; }
+        public int MaxAge { get; set; }
+
+        public override bool IsValid(object? value)
+        {
+            if (value == null) return false;
+
+            var age = DateTime.Today.Year - ((DateTime)value).Year;
+
+            // Subtract one year if birthday hasn't occurred this year
+            if (((DateTime)value).Date > DateTime.Today.AddYears(-age))
+                age--;
+
+            return age >= MinAge && age <= MaxAge;
+        }
+    }
+    // Custom validation attribute for avatar
+    public class AvatarValidationAttribute : ValidationAttribute
+    {
+        public int MaxSizeInMb { get; set; }
+        public string[] AllowedExtensions { get; set; } = Array.Empty<string>();
+
+        public override bool IsValid(object? value)
+        {
+            if (value == null) return true; // Avatar is optional
+
+            var file = value as IFormFile;
+            if (file == null) return false;
+
+            // Check file size
+            if (file.Length > MaxSizeInMb * 1024 * 1024)
+                return false;
+
+            // Check file extension
+            var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (!AllowedExtensions.Contains(extension))
+                return false;
+
+            // Validate file content type
+            var allowedContentTypes = new[]
+            {
+            "image/jpeg",
+            "image/jpg",
+            "image/png"
+        };
+
+            return allowedContentTypes.Contains(file.ContentType);
+        }
+    }
+   
 }

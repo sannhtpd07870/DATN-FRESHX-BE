@@ -59,6 +59,8 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Bill> Bills { get; set; } // Bảng hóa đơn
     public DbSet<BillDetail> BillDetails { get; set; } // Bảng chi tiết hóa đơn
     public DbSet<Payment> Payments { get; set; } // Bảng thanh toán
+
+    public DbSet<Position> Positions { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -103,6 +105,40 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .WithOne(p => p.Bill)
             .HasForeignKey(p => p.BillId);
 
+        modelBuilder.Entity<AppUser>()
+        .HasOne(u => u.Doctor)
+        .WithOne(d => d.AppUser)
+        .HasForeignKey<Doctor>(d => d.AccountId)
+        .IsRequired(false)                          // FK không được null
+        .OnDelete(DeleteBehavior.Cascade)      // Xóa cascade
+        .OnDelete(DeleteBehavior.SetNull)      // Set null khi xóa
+        .OnDelete(DeleteBehavior.Restrict);    // Ngăn xóa nếu có quan hệ
 
+        modelBuilder.Entity<AppUser>()
+       .HasOne(u => u.Patient)
+       .WithOne(p => p.AppUser)
+       .HasForeignKey<Patient>(p => p.AccountId)
+       .IsRequired(false)                          // FK được null
+       .OnDelete(DeleteBehavior.Cascade)      // Xóa cascade
+       .OnDelete(DeleteBehavior.SetNull)      // Set null khi xóa
+       .OnDelete(DeleteBehavior.Restrict);    // Ngăn xóa nếu có quan hệ
+
+        modelBuilder.Entity<AppUser>()
+       .HasOne(u => u.Technician)
+       .WithOne(t => t.AppUser)
+       .HasForeignKey<Technician>(t => t.AccountId)
+       .IsRequired(false)                          // FK không được null
+       .OnDelete(DeleteBehavior.Cascade)      // Xóa cascade
+       .OnDelete(DeleteBehavior.SetNull)      // Set null khi xóa
+       .OnDelete(DeleteBehavior.Restrict);    // Ngăn xóa nếu có quan hệ
+
+        modelBuilder.Entity<AppUser>()
+       .HasOne(u => u.Employee)
+       .WithOne(e => e.AppUser)
+       .HasForeignKey<Employee>(e => e.AccountId)
+       .IsRequired(false)                          // FK được null
+       .OnDelete(DeleteBehavior.Cascade)      // Xóa cascade
+       .OnDelete(DeleteBehavior.SetNull)      // Set null khi xóa
+       .OnDelete(DeleteBehavior.Restrict);    // Ngăn xóa nếu có quan hệ
     }
 }

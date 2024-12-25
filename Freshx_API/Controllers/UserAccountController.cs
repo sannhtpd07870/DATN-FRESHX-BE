@@ -44,7 +44,7 @@ namespace Freshx_API.Controllers
             }
         }
         [HttpGet("Get-AllUsers")]
-        public async Task<ActionResult<ApiResponse<Object>>> GetAllUsers([FromQuery] PaginationParameters parameters)
+        public async Task<ActionResult<ApiResponse<Object>>> GetAllUsers([FromQuery] Parameters parameters)
         {
             try
             {
