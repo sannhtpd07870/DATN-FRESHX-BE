@@ -7,96 +7,51 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Freshx_API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class MedicalServiceRequestController : ControllerBase
     {
         private readonly IMedicalServiceRequestService _service;
-        private readonly ILogger<MedicalServiceRequestController> _logger;
-        public MedicalServiceRequestController(
-           IMedicalServiceRequestService service,
-           ILogger<MedicalServiceRequestController> logger)
+
+        public MedicalServiceRequestController(IMedicalServiceRequestService service)
         {
             _service = service;
-            _logger = logger;
         }
-        [HttpPost]
-        public async Task<ActionResult<ApiResponse<MedicalServiceRequestDTO>>> Create(CreateMedicalServiceRequestDTO createDto)
-        {
-            try
-            {
-                var response = await _service.CreateAsync(createDto);
-                return StatusCode(StatusCodes.Status200OK, response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating medical service request");
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<MedicalServiceRequestDTO>(
-                        Request.Path,
-                        "An error occurred while creating the medical service request",
-                        StatusCodes.Status500InternalServerError));
-            }
-        }
-        [HttpGet]
-        public async Task<ActionResult<ApiResponse<IEnumerable<MedicalServiceRequestDTO>>>> GetAll()
-        {
-            try
-            {
-                var response = await _service.GetAllAsync();
-                return StatusCode(StatusCodes.Status200OK, response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting all medical service requests");
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<IEnumerable<MedicalServiceRequestDTO>>(
-                        Request.Path,
-                        "An error occurred while retrieving medical service requests",
-                        StatusCodes.Status500InternalServerError));
-            }
-        }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<ApiResponse<MedicalServiceRequestDTO>>> GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            try
-            {
-                var response = await _service.GetByIdAsync(id);
-                return StatusCode(StatusCodes.Status200OK, response);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error getting medical service request by id");
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<MedicalServiceRequestDTO>(
-                        Request.Path,
-                        "An error occurred while retrieving the medical service request",
-                        StatusCodes.Status500InternalServerError));
-            }
+            var result = await _service.GetByIdAsync(id);
+            return result == null ? NotFound() : Ok(result);
         }
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ApiResponse<MedicalServiceRequestDTO>>> Update(
-           int id,
-           UpdateMedicalServiceRequestDTO updateDto)
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            try
-            {
-                var response = await _service.UpdateAsync(id, updateDto);
-                    return StatusCode(StatusCodes.Status200OK, response);
-                }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating medical service request");
-                return StatusCode(
-                    StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<MedicalServiceRequestDTO>(
-                        Request.Path,
-                        "An error occurred while updating the medical service request",
-                        StatusCodes.Status500InternalServerError));
-            }
+            var result = await _service.GetAllAsync();
+            return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Add(MedicalServiceRequestDto dto)
+        {
+            await _service.AddAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = dto.MedicalServiceRequestId }, dto);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(MedicalServiceRequestDto dto)
+        {
+            await _service.UpdateAsync(dto);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _service.DeleteAsync(id);
+            return NoContent();
         }
     }
+
 }

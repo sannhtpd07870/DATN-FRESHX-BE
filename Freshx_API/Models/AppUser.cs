@@ -11,7 +11,7 @@ namespace Freshx_API.Models
         public bool? IsActive { get; set; }
         public DateTime? CreatedAt { get; set; } //tạo tài khoản
         public DateTime? UpdatedAt { get; set; }
-        public string? RefreshToken { get; set; }
+        public string? RefreshToken { get; set; }           
         public DateTime? ExpiredTime { get; set; }
         public int? DoctorId { get; set; }
         public int? EmployeeId { get; set; }

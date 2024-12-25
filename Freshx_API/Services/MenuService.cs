@@ -1,4 +1,5 @@
 ﻿using Freshx_API.Dtos.Menu;
+using Freshx_API.Interfaces;
 using Freshx_API.Repository.Menu;
 
 namespace Freshx_API.Services

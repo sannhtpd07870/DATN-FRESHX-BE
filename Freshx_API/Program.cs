@@ -30,6 +30,7 @@ using System.Text;
 using Microsoft.AspNetCore.SignalR;
 using Freshx_API.Interfaces.Payments;
 using Freshx_API.Repository.Payments;
+using Freshx_API.Interfaces.IReception;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -384,6 +385,14 @@ builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 //Đăng ký Repository và service cho payments
 builder.Services.AddScoped<IBillRepository, BillRepository>();
 builder.Services.AddScoped<IBillService, BillService>();
+
+// đăng kí DI cho meducalService
+builder.Services.AddScoped<IMedicalServiceRequestRepository, MedicalServiceRequestRepository>();
+builder.Services.AddScoped<IMedicalServiceRequestService, MedicalServiceRequestService>();
+
+// Đăng kí Di cho recetion
+builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
+builder.Services.AddScoped<IReceptionService, ReceptionService>();
 
 
 // Thêm DefaultAzureCredential

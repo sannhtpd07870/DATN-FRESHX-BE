@@ -4,7 +4,6 @@ using Freshx_API.Dtos.Auth.Account;
 using Freshx_API.Dtos.Auth.Role;
 using Freshx_API.Dtos.DepartmenTypeDtos;
 using Freshx_API.Dtos.Doctor;
-
 using Freshx_API.Dtos.DepartmentDtos;
 using Freshx_API.Dtos.Drugs;
 using Freshx_API.Models;
@@ -90,7 +89,7 @@ namespace Freshx_API.Mappers
 
 
             //CreateMap<Patient, PatientDto>();
-            CreateMap<Reception, ReceptionDto>();
+            CreateMap<Reception, CreateReceptionDto>();
             
 
             // Map UnitOfMeasure -> UnitOfMeasureDetailDto
@@ -139,9 +138,15 @@ namespace Freshx_API.Mappers
             // Mapping BillDetail to BillDetailDto
             CreateMap<BillDetail, BillDetailDto>().ReverseMap();
 
-            //
+            //medical service reqest
+            CreateMap<MedicalServiceRequest, MedicalServiceRequestDto>().ReverseMap();
 
-            CreateMap<MedicalServiceRequest, MedicalServiceRequestDTO>();
+            // tiếp nhận
+            CreateMap<Reception, CreateReceptionDto>()
+          .ForMember(dest => dest.PatientName, opt => opt.MapFrom(src => src.Patient != null ? src.Patient.Name : null))
+          .ForMember(dest => dest.ReceptionistName, opt => opt.MapFrom(src => src.Receptionist != null ))
+          .ForMember(dest => dest.AssignedDoctorName, opt => opt.MapFrom(src => src.AssignedDoctor != null ? src.AssignedDoctor.Name : null))
+          .ReverseMap();
     
 
             CreateMap<UpdateMedicalServiceRequestDTO, MedicalServiceRequest>()

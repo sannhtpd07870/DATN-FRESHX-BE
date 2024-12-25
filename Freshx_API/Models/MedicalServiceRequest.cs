@@ -25,13 +25,8 @@ public partial class MedicalServiceRequest
 
     public int? IsDeleted { get; set; } // đã xóa?
 
-
     public virtual Employee? AssignedByEmployee { get; set; }
     public virtual Doctor? AssignedByDoctor { get; set; }
-
-    //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>();
-
-    //public virtual ICollection<MedicalServiceRequest> InverseParentMedicalServiceRequest { get; set; } = new List<MedicalServiceRequest>();
 
     public virtual MedicalServiceRequest? ParentMedicalServiceRequest { get; set; }
     
