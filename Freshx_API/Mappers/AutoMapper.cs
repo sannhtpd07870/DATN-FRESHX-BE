@@ -43,7 +43,10 @@ namespace Freshx_API.Mappers
             CreateMap<DepartmentTypeCreateUpdateDto, DepartmentType>();
 
             // Doctor Mappings
-            CreateMap<Doctor, DoctorDto>();
+            CreateMap<Doctor, DoctorDto>()
+             // Chỉ map những trường có tên khác nhau
+             .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name))
+             .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
             CreateMap<Doctor, DoctorDetailDto>();
             CreateMap<DoctorCreateUpdateDto, Doctor>();
 
@@ -152,6 +155,8 @@ namespace Freshx_API.Mappers
 
             //Mapping Patient Model to PatientResponseDto
             CreateMap<Patient,PatientResponseDto>();
+
+
         }
     }
 }

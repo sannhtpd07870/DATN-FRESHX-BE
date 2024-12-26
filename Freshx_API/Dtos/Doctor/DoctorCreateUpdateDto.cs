@@ -30,10 +30,10 @@ namespace Freshx_API.Dtos
         [StringLength(10, MinimumLength = 10, ErrorMessage = "Số điện thoại phải đúng 10 chữ số")]
         [RegularExpression(@"^(03|05|07|08|09)[0-9]{8}$", ErrorMessage = "Số điện thoại không hợp lệ")]
         public string? PhoneNumber { get; set; } // Số điện thoại
-
+        [Required(ErrorMessage = "Vai trò là bắt buộc")]
         [Range(1, int.MaxValue, ErrorMessage = "PositionID phải là số nguyên dương")]
         public int? PositionId { get; set; }
-
+        [Required(ErrorMessage = "Phòng ban là là bắt buộc")]
         [Range(1, int.MaxValue, ErrorMessage = "DepartmentId phải là số nguyên dương")]
         public int? DepartmentId { get; set; }
 
@@ -45,7 +45,7 @@ namespace Freshx_API.Dtos
 
         [Required(ErrorMessage = "Tỉnh/Thành phố là bắt buộc")]
         public string? ProvinceId { get; set; } // ID tỉnh/thành phố
-
+        [Required(ErrorMessage ="Dân tộc là bắt buộc")]
         [StringLength(50, ErrorMessage = "Dân tộc không được vượt quá 50 ký tự")]
         [RegularExpression(@"^[a-zA-ZÀ-ỹ\s]*$", ErrorMessage = "Dân tộc chỉ được chứa chữ cái và khoảng trắng")]
         public string? Ethnicity { get; set; } // Dân tộc của bệnh nhân

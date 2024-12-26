@@ -4,6 +4,13 @@ using Freshx_API.Dtos.Doctor;
 using Freshx_API.Services.CommonServices;
 using Freshx_API.Services;
 using Microsoft.AspNetCore.Mvc;
+using Freshx_API.Dtos;
+using Freshx_API.Interfaces;
+using Freshx_API.Models;
+using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis;
 
 namespace Freshx_API.Controllers
 {
@@ -11,165 +18,149 @@ namespace Freshx_API.Controllers
     [Route("api/[controller]")]
     public class DoctorController : ControllerBase
     {
-        private readonly DoctorService _service;
-        private readonly ILogger<DoctorController> _logger;
-
-        public DoctorController(DoctorService service, ILogger<DoctorController> logger)
+        private readonly IFixDoctorRepository _fixDoctorRepository;
+        private readonly FreshxDBContext _context;
+        private readonly IMapper _mapper;
+        private readonly ILogger<DoctorController> _logger;    
+        public DoctorController(IFixDoctorRepository service, ILogger<DoctorController> logger,IMapper mapper,FreshxDBContext context)
         {
-            _service = service;
+            _fixDoctorRepository = service;
             _logger = logger;
+            _mapper = mapper;
+            _context = context;
         }
-
-        // API GET: Lấy danh sách bác sĩ với các tiêu chí tìm kiếm  
-        [HttpGet()]
-        public async Task<ActionResult<ApiResponse<List<DoctorDto>>>> GetAll(string? searchKeyword, DateTime? startDate, DateTime? endDate, int? status, string? specialty, string? phone, string? email, string? gender)
+        [HttpPost("Create-Doctor")]
+        public async Task<ActionResult<ApiResponse<DoctorDto?>>> CreateDoctor(DoctorCreateUpdateDto request)
         {
             try
             {
-                // Gọi service để lấy danh sách bác sĩ với các tham số tìm kiếm
-                var result = await _service.GetAllAsync(searchKeyword, status, startDate, endDate, specialty, phone, email, gender);
-
-                // Nếu danh sách rỗng, trả về thông báo lỗi với mã trạng thái 404
-                if (result == null || !result.Any())
+                var isEmailExist = await _context.Doctors.FirstOrDefaultAsync(d => d.Email == request.Email);
+                if (isEmailExist != null)
                 {
-                    return StatusCode(StatusCodes.Status404NotFound,
-                        ResponseFactory.Error<List<DoctorDto>>(Request.Path, "Chưa có dữ liệu nào.", StatusCodes.Status404NotFound));
+                    return StatusCode(StatusCodes.Status400BadRequest,ResponseFactory.Error<Object>(Request.Path,"Email bạn nhập đã tồn tại trong hệ thống",StatusCodes.Status400BadRequest));
+                }
+                var isIdentityCardExist = await _context.Doctors.FirstOrDefaultAsync(d => d.IdentityCardNumber == request.IdentityCardNumber);
+                if (isIdentityCardExist != null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "CCCD bạn nhập đã tồn tại trong hệ thống", StatusCodes.Status400BadRequest));
+                }
+                var isPhonenumberIsxist = await _context.Doctors.FirstOrDefaultAsync(d => d.Phone == request.PhoneNumber); 
+                if(isPhonenumberIsxist != null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Số điện thoại bạn nhập đã tồn tại trong hệ thống", StatusCodes.Status400BadRequest));
+                }
+                var position = await _context.Positions.FirstOrDefaultAsync(p => p.Id == request.PositionId);
+               if(position == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Vai trò không hợp lệ", StatusCodes.Status400BadRequest));
+                }
+                var department = await _context.Departments.FirstOrDefaultAsync(p => p.DepartmentId == request.DepartmentId);
+                if (department == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest,ResponseFactory.Error<Object>(Request.Path,"Phòng ban không hợp lệ",StatusCodes.Status400BadRequest));
                 }
 
-                // Trả về dữ liệu với mã trạng thái 200 (OK)
-                return StatusCode(StatusCodes.Status200OK,
-                    ResponseFactory.Success(Request.Path, result, "Lấy dữ liệu thành công.", StatusCodes.Status200OK));
-            }
-            catch (Exception e)
-            {
-                // Log lỗi nếu xảy ra ngoại lệ và trả về mã trạng thái 500 (Internal Server Error)
-                _logger.LogError(e, "Một ngoại lệ đã xảy ra trong khi tìm nạp các bác sĩ");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<List<DoctorDto>>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
-            }
-        }
-
-        // API GET: Lấy danh sách bác sĩ chi tiết với các tiêu chí tìm kiếm
-        [HttpGet("detail")]
-        public async Task<ActionResult<ApiResponse<List<DoctorDetailDto>>>> GetDetailAll(string? searchKeyword, DateTime? startDate, DateTime? endDate, int? status, string? specialty, string? phone, string? email, string? gender)
-        {
-            try
-            {
-                // Gọi service để lấy danh sách bác sĩ chi tiết với các tham số tìm kiếm
-                var result = await _service.GetDetailAllAsync(searchKeyword, status, startDate, endDate, specialty, phone, email, gender);
-
-                // Nếu danh sách rỗng, trả về thông báo lỗi với mã trạng thái 404
-                if (result == null || !result.Any())
+                if ( !position.Name.StartsWith("Bác Sĩ"))
                 {
-                    return StatusCode(StatusCodes.Status404NotFound,
-                        ResponseFactory.Error<List<DoctorDetailDto>>(Request.Path, "Chưa có dữ liệu nào.", StatusCodes.Status404NotFound));
+                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Vai trò không đúng hợp lệ", StatusCodes.Status400BadRequest));
+                }
+                if(!department.Name.StartsWith("Phòng khám")&&!department.Name.StartsWith("Phòng siêu âm"))
+                {
+                    return BadRequest(
+               ResponseFactory.Error<object>(
+                   Request.Path,
+                   "Phòng khám và vai trò không hợp lệ",
+                   StatusCodes.Status400BadRequest));
+                }
+                // Kiểm tra position và department có phù hợp với nhau không
+                if (position.Name == "Bác Sĩ Phòng Khám" && !department.Name.StartsWith("Phòng khám"))
+                {
+                    return BadRequest(
+                        ResponseFactory.Error<object>(
+                            Request.Path,
+                            "Bác sĩ phòng khám chỉ có thể được phân vào phòng khám",
+                            StatusCodes.Status400BadRequest));
                 }
 
-                // Trả về dữ liệu với mã trạng thái 200 (OK)
-                return StatusCode(StatusCodes.Status200OK,
-                    ResponseFactory.Success(Request.Path, result, "Lấy dữ liệu thành công.", StatusCodes.Status200OK));
-            }
-            catch (Exception e)
-            {
-                // Log lỗi nếu xảy ra ngoại lệ và trả về mã trạng thái 500 (Internal Server Error)
-                _logger.LogError(e, "Một ngoại lệ đã xảy ra trong khi tìm nạp các bác sĩ");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<List<DoctorDetailDto>>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
-            }
-        }
-        // API GET: Lấy thông tin bác sĩ theo ID
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ApiResponse<DoctorDto>>> GetById(int id)
-        {
-            try
-            {
-                // Gọi service để lấy thông tin chi tiết bác sĩ theo ID
-                var result = await _service.GetByIdAsync(id);
-
-                // Nếu không tìm thấy bác sĩ, trả về thông báo lỗi với mã trạng thái 404
-                if (result == null)
+                if (position.Name == "Bác Sĩ Siêu Âm" && !department.Name.StartsWith("Phòng siêu âm"))
                 {
-                    return StatusCode(StatusCodes.Status404NotFound,
-                        ResponseFactory.Error<DoctorDto>(Request.Path, "Bác sĩ không tồn tại.", StatusCodes.Status404NotFound));
+                    return BadRequest(
+                        ResponseFactory.Error<object>(
+                            Request.Path,
+                            "Bác sĩ siêu âm chỉ có thể được phân vào phòng siêu âm",
+                            StatusCodes.Status400BadRequest));
                 }
+                var doctor = await _fixDoctorRepository.CreateDoctorAsync(request);
+                if (doctor == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Email của bạn đã tồn tại trong hệ thống", StatusCodes.Status400BadRequest));
+                }
+                var data = _mapper.Map<DoctorDto>(doctor);
 
-                // Trả về dữ liệu bác sĩ với mã trạng thái 200 (OK)
-                return StatusCode(StatusCodes.Status200OK,
-                    ResponseFactory.Success(Request.Path, result, "Lấy thông tin bác sĩ thành công.", StatusCodes.Status200OK));
+                return StatusCode(StatusCodes.Status200OK,ResponseFactory.Success(Request.Path, data));
             }
             catch (Exception e)
             {
-                // Log lỗi nếu xảy ra ngoại lệ và trả về mã trạng thái 500 (Internal Server Error)
-                _logger.LogError(e, "Một ngoại lệ xảy ra trong khi tìm nạp bác sĩ bằng ID");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<DoctorDto>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+                _logger.LogError(e, "An exception occured while creating a new doctor");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, "Một ngoại lệ đã xảy ra khi tạo một bác sĩ mới",StatusCodes.Status500InternalServerError));
             }
         }
-
-        // API POST: Tạo mới bác sĩ
-        [HttpPost]
-        public async Task<ActionResult<ApiResponse<DoctorDto>>> Create([FromBody] DoctorCreateUpdateDto dto)
+        [HttpGet("Get-AllDoctors")]
+        public async Task<ActionResult<ApiResponse<List<DoctorDto?>>>> GetDoctors([FromQuery]Parameters parameters)
         {
             try
             {
-                // Gọi service để tạo mới một bác sĩ dựa trên dữ liệu từ client
-                var result = await _service.CreateAsync(dto);
-
-                // Trả về dữ liệu bác sĩ vừa được tạo với mã trạng thái 201 (Created)
-                return StatusCode(StatusCodes.Status201Created,
-                    ResponseFactory.Success(Request.Path, result, "Tạo mới bác sĩ thành công.", StatusCodes.Status201Created));
+                var doctors = await _fixDoctorRepository.GetDoctorsAsync(parameters);
+                
+                var data = _mapper.Map<List<DoctorDto?>>(doctors);
+                return StatusCode(StatusCodes.Status200OK,ResponseFactory.Success<Object>(Request.Path,data,"Lấy danh sách bác sĩ thành công"));
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                // Log lỗi nếu xảy ra ngoại lệ và trả về mã trạng thái 500 (Internal Server Error)
-                _logger.LogError(e, "Một ngoại lệ đã xảy ra trong khi tạo bác sĩ");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<DoctorDto>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+                _logger.LogError(e, $"Error occurred while creating doctor: {e.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, "Một ngoại lệ đã xảy ra khi lấy danh sách bác sĩ"));
             }
         }
-
-        // API PUT: Cập nhật thông tin bác sĩ
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ApiResponse<string>>> Update(int id, [FromBody] DoctorCreateUpdateDto dto)
+        [HttpGet]
+        [Route("{id:int}")]
+        public async Task<ActionResult<ApiResponse<DoctorDto?>>> GetDoctorById(int id)
         {
             try
             {
-                // Gọi service để cập nhật thông tin bác sĩ dựa trên ID và dữ liệu từ client
-                await _service.UpdateAsync(id, dto);
-
-                // Trả về thông báo thành công với mã trạng thái 200 (OK)
-                return StatusCode(StatusCodes.Status200OK,
-                    ResponseFactory.Success(Request.Path, "Cập nhật thành công!", "Cập nhật thành công!", StatusCodes.Status200OK));
+                var doctor = await _fixDoctorRepository.GetDoctorByIdAsycn(id);
+                if(doctor == null)
+                {
+                    return NotFound(ResponseFactory.Error<Object>(Request.Path, "Thông tin chi tiết của bác sĩ rỗng"));
+                }
+                var data = _mapper.Map<DoctorDto>(doctor);
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, data, "Lấy thông tin chi tiết của bác sĩ thành công"));
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                // Log lỗi nếu xảy ra ngoại lệ và trả về mã trạng thái 500 (Internal Server Error)
-                _logger.LogError(e, "Một ngoại lệ đã xảy ra trong khi cập nhật bác sĩ");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra. Bác sĩ không tông tại với ID " + id, StatusCodes.Status500InternalServerError));
+                _logger.LogError(e, $"Error occurred while getting doctor: {e.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, "Một ngoại lệ đã xảy ra khi lấy chi tiết thông tin bác sĩ"));
             }
         }
-
-        // API DELETE: Xóa mềm bác sĩ
-        [HttpDelete("soft_delete/{id}")]
-        public async Task<ActionResult<ApiResponse<string>>> Delete(int id)
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<ActionResult<ApiResponse<DoctorDto?>>> DeleteDoctorById(int id)
         {
             try
             {
-                // Gọi service để xóa mềm bác sĩ theo ID
-                await _service.DeleteAsync(id);
-
-                // Trả về thông báo thành công với mã trạng thái 200 (OK)
-                return StatusCode(StatusCodes.Status200OK,
-                    ResponseFactory.Success(Request.Path, "Xóa mềm thành công!", "Xóa mềm thành công!", StatusCodes.Status200OK));
+                var doctor = await _fixDoctorRepository.DeleteDoctorByIdAsync(id);
+                if(doctor == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<Object>(Request.Path, "Xóa bác sĩ thất bại", StatusCodes.Status404NotFound));
+                }
+                var data = _mapper.Map<DoctorDto>(doctor);
+                return StatusCode(StatusCodes.Status200OK,ResponseFactory.Success(Request.Path, data,"Bác sĩ đã được xóa thành công",StatusCodes.Status200OK));
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                // Log lỗi nếu xảy ra ngoại lệ và trả về mã trạng thái 500 (Internal Server Error)
-                _logger.LogError(e, "Một ngoại lệ đã xảy ra trong khi xóa bác sĩ");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra. Bác sĩ không tông tại với ID " + id, StatusCodes.Status500InternalServerError));
+                _logger.LogError(e, $"Error occurred while getting doctor: {e.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, "Một ngoại lệ đã xảy ra khi xóa bác sĩ"));
             }
         }
+
     }
 }

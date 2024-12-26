@@ -2,6 +2,7 @@
 {
     public class DoctorDto
     {
+        public int DoctorId { get; set; }
         public string? IdentityCardNumber { get; set; } // Số CMND/CCCD ktra trùng lặp
         public string? Name { get; set; } // Tên bác sĩ
         public string? Specialty { get; set; } // chuyên ngành và chuyên môn

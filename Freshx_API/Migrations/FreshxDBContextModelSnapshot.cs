@@ -30,6 +30,9 @@ namespace Freshx_API.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("AvatarId")
                         .HasColumnType("int");
 
@@ -57,6 +60,9 @@ namespace Freshx_API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdentityCardNumber")
