@@ -128,7 +128,7 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
             .Select(e => new ValidationError
             {
                 Field = e.Key,
-                Message = e.Value?.Errors.First().ErrorMessage ?? "Invalid input value"
+                Message = e.Value?.Errors.First().ErrorMessage ?? "Dữ liệu đầu vào không hợp lệ"
             })
             .ToList();
 
@@ -136,7 +136,7 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
         {
             Status = false,
             Path = context.HttpContext.Request.Path,
-            Message = "Validation failed",
+            Message ="Dữ liệu đầu vào không hợp lệ",
             StatusCode = StatusCodes.Status400BadRequest,
             Data = errors,
             Timestamp = DateTime.UtcNow
@@ -304,6 +304,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
 builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
+builder.Services.AddScoped<NumberGeneratorService>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

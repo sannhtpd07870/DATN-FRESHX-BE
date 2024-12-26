@@ -59,7 +59,7 @@ namespace Freshx_API.Repository.UserAccount
                     PhoneNumber = request.PhoneNumber,
                    
                     IdentityCardNumber = request.IdentityCardNumber,
-                    Age = request.DateOfBirth?.Year == null ? null : (DateTime.Now.Year - request.DateOfBirth.Value.Year),   
+                  //  Age = request.DateOfBirth?.Year == null ? null : (DateTime.Now.Year - request.DateOfBirth.Value.Year),   
                     ProvinceId = request.ProvinceId,
                     WardId = request.WardId,
                     DistrictId = request.DistrictId,
@@ -125,66 +125,49 @@ namespace Freshx_API.Repository.UserAccount
             }
         }
 
-        public async Task<CustomPageResponse<IEnumerable<UserResponse?>>> GetUsersAsync(PaginationParameters parameters)
+        public async Task<CustomPageResponse<IEnumerable<UserResponse?>>> GetUsersAsync(Parameters parameters)
         {
-                try
+            /*try
+            {
+                var query = _userManager.Users
+                .Include(u => u.Ward)
+                .Include(u => u.District)
+            //    .Include(u => u.Province).Where(u => u.PositionId != null) // Thêm điều kiện lọc mặc định
+                .AsQueryable();
+
+                // Apply search filter
+                if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
                 {
-                    var query = _userManager.Users
-                    .Include(u => u.Ward)
-                    .Include(u => u.District)
-                    .Include(u => u.Province).Where(u => u.PositionId != null) // Thêm điều kiện lọc mặc định
-                    .AsQueryable();
+                query = query.Where(u =>
+                    (u.FullName != null && u.FullName.Contains(parameters.SearchTerm)));
 
-                    // Apply search filter
-                    if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
-                    {
-                    query = query.Where(u =>
-                        (u.FullName != null && u.FullName.Contains(parameters.SearchTerm)));
-                           
-                    }
-
-                    // Apply sorting
-                    if (parameters.SortOrderAsc ?? true)
-                    {
-                        query = query.OrderBy(u => u.FullName ?? string.Empty);
-                    }
-                    else
-                    {
-                        query = query.OrderByDescending(u => u.FullName ?? string.Empty);
-                    }
-
-                    // Get total count before pagination
-                    var totalRecords = await query.CountAsync();
-
-                    // Apply pagination
-                    var items = await query
-                        .Skip((parameters.PageNumber - 1) * parameters.PageSize)
-                        .Take(parameters.PageSize)
-                        .Select(u => new UserResponse
-                        {
-                            FullName = u.FullName,
-                            Age = u.Age,
-                            DateOfBirth = u.DateOfBirth,
-                            
-                            IdentityCardNumber = u.IdentityCardNumber,
-                            Email = u.Email,
-                            PhoneNumber = u.PhoneNumber,
-                            Ward = u.Ward,
-                            District = u.District,
-                            Province = u.Province,                     
-                        }).ToListAsync();
-
-                    return new CustomPageResponse<IEnumerable<UserResponse?>>(
-                        items,
-                        parameters.PageNumber,
-                        parameters.PageSize,
-                        totalRecords);
                 }
-                catch (Exception e)
+
+                // Apply sorting
+                if (parameters.SortOrderAsc ?? true)
                 {
-                    _logger.LogError(e, "An excepton occured while getting users");
-                    throw;
-                }         
+                    query = query.OrderBy(u => u.FullName ?? string.Empty);
+                }
+                else
+                {
+                    query = query.OrderByDescending(u => u.FullName ?? string.Empty);
+                }
+
+                // Get total count before pagination
+
+
+                return new CustomPageResponse<IEnumerable<UserResponse?>>(
+                    items,
+                    parameters.PageNumber,
+                    parameters.PageSize,
+                    totalRecords);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An excepton occured while getting users");
+                throw;
+            }         */
+            return null;
         }
         public async Task<AppUser?> UpdateUserByIdAsync(string id, UpdatingUserRequest request)
         {
@@ -216,12 +199,12 @@ namespace Freshx_API.Repository.UserAccount
                     if (request.DateOfBirth != null)
                     {
                         user.DateOfBirth = request.DateOfBirth;
-                        user.Age = (int)(DateTime.Now.Year - user.DateOfBirth.Value.Year);
+                      //  user.Age = (int)(DateTime.Now.Year - user.DateOfBirth.Value.Year);
                     }
                     else
                     {
                         user.DateOfBirth = null;
-                        user.Age = null;
+                      //  user.Age = null;
                     }
                     user.UpdatedAt = DateTime.UtcNow;
                     user.WardId = request?.WardId;
