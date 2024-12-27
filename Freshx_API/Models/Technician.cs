@@ -10,7 +10,9 @@ public partial class Technician
 
     public string? Name { get; set; } // Tên kỹ thuật viên
     public string? IdentityCardNumber { get; set; } // Số CMND/CCCD ktra trùng lặp
-
+    public string? Gender { get; set; }
+    public string? PhoneNumber { get; set; }
+    public int? AvataId { get; set; } // ảnh
     public string? Email {  get; set; }
     public int? IsSuspended { get; set; } // Trạng thái tạm ngưng
 
@@ -21,7 +23,7 @@ public partial class Technician
     public string? UpdatedBy { get; set; } // Người cập nhật
 
     public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
-
+    public DateTime? DateOfBirth { get; set; } // Ngày sinh nhân viên
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
     public string? WardId { get; set; } // ID phường/xã
 
@@ -54,6 +56,7 @@ public partial class Technician
     public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
     public virtual AppUser? AppUser { get; set; }
     public virtual Position? Position { get; set; }
+    public virtual Savefile? Avata { get; set; }
     //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
 
     //public virtual ICollection<LabResult> LabResults { get; set; } = new List<LabResult>(); // Danh sách kết quả xét nghiệm

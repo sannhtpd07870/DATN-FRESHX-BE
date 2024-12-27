@@ -161,6 +161,93 @@ namespace Freshx_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, "Một ngoại lệ đã xảy ra khi xóa bác sĩ"));
             }
         }
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<ActionResult<ApiResponse<DoctorDto?>>> UpdateDoctorById(int id, [FromForm]DoctorCreateUpdateDto request)
+        {
+            try
+            {
+                var doctorById = await _context.Doctors.FirstOrDefaultAsync(p => p.DoctorId == id);
+                var doctorByEmail = await _context.Doctors.FirstOrDefaultAsync(p => p.Email == request.Email);
+                var doctorByIdentityCard = await _context.Doctors.FirstOrDefaultAsync(p => p.IdentityCardNumber == request.IdentityCardNumber);
+                var doctorByPhoneNumber = await _context.Doctors.FirstOrDefaultAsync(p => p.Phone == request.PhoneNumber);
+                if (doctorByEmail != null)
+                {
+                    if (!doctorByEmail.Email.ToLower().Equals(doctorById.Email.ToLower()))
+                    {
+                        return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Email đã thực sự tồn tại trong hệ thống"));
+                    }
+                }
+                if (doctorByIdentityCard != null)
+                {
+                    if (!doctorByIdentityCard.IdentityCardNumber.ToLower().Equals(doctorById.IdentityCardNumber.ToLower()))
+                    {
+                        return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "CCCD đã thực sự tồn tại trong hệ thống"));
+                    }
+                }
+                if (doctorByPhoneNumber != null)
+                {
+                    if (!doctorByPhoneNumber.Phone.ToLower().Equals(doctorById.Phone.ToLower()))
+                    {
+                        return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Số điện thoại đã tồn tại trong hệ thống"));
+                    }
+                }
+                var position = await _context.Positions.FirstOrDefaultAsync(p => p.Id == request.PositionId);
+                if (position == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Vai trò không hợp lệ", StatusCodes.Status400BadRequest));
+                }
+                var department = await _context.Departments.FirstOrDefaultAsync(p => p.DepartmentId == request.DepartmentId);
+                if (department == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Phòng ban không hợp lệ", StatusCodes.Status400BadRequest));
+                }
+
+                if (!position.Name.StartsWith("Bác Sĩ"))
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Vai trò không đúng hợp lệ", StatusCodes.Status400BadRequest));
+                }
+                if (!department.Name.StartsWith("Phòng khám") && !department.Name.StartsWith("Phòng siêu âm"))
+                {
+                    return BadRequest(
+               ResponseFactory.Error<object>(
+                   Request.Path,
+                   "Phòng khám và vai trò không hợp lệ",
+                   StatusCodes.Status400BadRequest));
+                }
+                // Kiểm tra position và department có phù hợp với nhau không
+                if (position.Name == "Bác Sĩ Phòng Khám" && !department.Name.StartsWith("Phòng khám"))
+                {
+                    return BadRequest(
+                        ResponseFactory.Error<object>(
+                            Request.Path,
+                            "Bác sĩ phòng khám chỉ có thể được phân vào phòng khám",
+                            StatusCodes.Status400BadRequest));
+                }
+
+                if (position.Name == "Bác Sĩ Siêu Âm" && !department.Name.StartsWith("Phòng siêu âm"))
+                {
+                    return BadRequest(
+                        ResponseFactory.Error<object>(
+                            Request.Path,
+                            "Bác sĩ siêu âm chỉ có thể được phân vào phòng siêu âm",
+                            StatusCodes.Status400BadRequest));
+                }
+                var doctor = await _fixDoctorRepository.UpdateDoctorByIdAsync(id, request);
+                if (doctor == null) 
+                {
+                    return BadRequest(ResponseFactory.Error<Object>(Request.Path, "Cập nhật bác sĩ thất bại",StatusCodes.Status400BadRequest));
+                }
+                var data = _mapper.Map<DoctorDto>(doctor);
+                return Ok(ResponseFactory.Success(Request.Path, data, "Bác sĩ đã được cập nhật thành công"));
+            }
+            catch(Exception e)
+            {
+
+                _logger.LogError(e, $"Error occurred while getting doctor: {e.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, "Một ngoại lệ đã xảy ra khi cập nhật bác sĩ"));
+            }
+        }
 
     }
 }

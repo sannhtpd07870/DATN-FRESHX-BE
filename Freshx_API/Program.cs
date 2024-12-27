@@ -305,6 +305,8 @@ builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
 builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 builder.Services.AddScoped<NumberGeneratorService>();
 builder.Services.AddScoped<IFixDoctorRepository, FixDoctorRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<ITechnicianRepository,TechnicianRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

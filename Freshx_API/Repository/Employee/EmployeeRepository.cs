@@ -1,26 +1,25 @@
 ﻿using AutoMapper;
-using Freshx_API.Dtos;
 using Freshx_API.Dtos.CommonDtos;
-using Freshx_API.Dtos.Patient;
+using Freshx_API.Dtos.Employee;
 using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.Auth;
 using Freshx_API.Models;
-using Freshx_API.Services.CommonServices;
 using Freshx_API.Utilities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Freshx_API.Repository
-{
-    public class FixDoctorRepository : IFixDoctorRepository
+{ 
+    public class EmployeeRepository : IEmployeeRepository
     {
         private readonly FreshxDBContext _context;
-        private readonly ILogger<PatientRepository> _logger;
+        private readonly ILogger<EmployeeRepository> _logger;
         private readonly ITokenRepository _tokenRepository;
         private readonly IFileService _fileService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IEmailService _emailService;
-        public FixDoctorRepository(FreshxDBContext context, IMapper mapper, ILogger<PatientRepository> logger, ITokenRepository tokenRepository, IFileService fileService,UserManager<AppUser> userManager,IEmailService emailService)
+        public EmployeeRepository(FreshxDBContext context,ILogger<EmployeeRepository> logger, ITokenRepository tokenRepository, IFileService fileService, UserManager<AppUser> userManager, IEmailService emailService)
         {
             _context = context;
             _logger = logger;
@@ -30,7 +29,7 @@ namespace Freshx_API.Repository
             _emailService = emailService;
         }
 
-        public async Task<Doctor?> CreateDoctorAsync(DoctorCreateUpdateDto request)
+        public async Task<Employee?> CreateEmployeeAsync(EmployeeRequest request)
         {
             try
             {
@@ -50,9 +49,18 @@ namespace Freshx_API.Repository
                 // Determine role name
                 string? roleName = request.PositionId switch
                 {
-                    1 => "Bác Sĩ Phòng Khám",
-                    5 => "Bác Sĩ Siêu Âm",                  
+                    3 => "Tiếp Nhận",
+                    4 => "Thu Ngân",
                 };
+                string? employeeCode = null;
+                if(roleName.StartsWith("Tiếp Nhận"))
+                {
+                    employeeCode = await GenerateEmployeeCode.GenerateCode(_context);
+                }
+                else
+                {
+                    employeeCode = await GenerateEmployeeCode.GenerateCode(_context, "NVKT");
+                }
                 // Load địa chỉ trước khi tạo user
                 var ward = await _context.Wards
                     .AsNoTracking()
@@ -91,18 +99,18 @@ namespace Freshx_API.Repository
                 }
                 result = await _userManager.AddToRoleAsync(appUser, roleName);
                 if (!result.Succeeded)
-                {               
+                {
                     // Clean up created user
                     await _userManager.DeleteAsync(appUser);
                     return null;
                 }
-               await _emailService.SendEmailAsync(request.Email, "Tài khoản đăng nhập", $"Email: {request.Email}, Password: {passWord}");
+                await _emailService.SendEmailAsync(request.Email, "Tài khoản đăng nhập", $"Email: {request.Email}, Password: {passWord}");
                 // Create and save Doctor entity
-                var doctor = new Doctor
+                var employee = new Employee
                 {
                     AccountId = appUser.Id,
                     PositionId = request.PositionId,
-                    Specialty = request.Specialty,
+                    EmployeeCode = employeeCode,
                     DateOfBirth = request.DateOfBirth,
                     CreatedDate = DateTime.UtcNow,
                     DepartmentId = request.DepartmentId,
@@ -112,82 +120,63 @@ namespace Freshx_API.Repository
                     CreatedBy = _tokenRepository.GetUserIdFromToken(),
                     Address = formattedAddress,
                     Gender = request.Gender,
-                    Name = request.Name,
+                    FullName = request.Name,
                     IsSuspended = 0,
                     IsDeleted = 0,
                     IdentityCardNumber = request.IdentityCardNumber,
-                    Phone = request.PhoneNumber,
+                    PhoneNumber = request.PhoneNumber,
                     Email = request.Email,
                     AvataId = avatarId
                 };
-           
-              //  await _context.Entry(doctor).Reference(d => d.Position).LoadAsync();
-              //  await _context.Entry(doctor).Reference(d => d.Department).LoadAsync();            
-                _context.Doctors.Add(doctor);
+
+                //  await _context.Entry(employee).Reference(d => d.Position).LoadAsync();
+                //  await _context.Entry(employee).Reference(d => d.Department).LoadAsync();            
+                _context.Employees.Add(employee);
                 await _context.SaveChangesAsync();
-                return doctor;
+                return employee;
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An exception occured while creating a new doctor");
+                _logger.LogError(e, "An exception occured while creating a new employee");
                 throw;
             }
         }
 
-        public async Task<Doctor?> DeleteDoctorByIdAsync(int id)
+        public async Task<Employee?> DeleteEmployeeByIdAsync(int id)
         {
             try
             {
-                var doctor = await _context.Doctors.Include(d => d.Position).Include(d => d.Department).FirstOrDefaultAsync(d => d.DoctorId == id);
-                if (doctor != null)
+                var employee = await _context.Employees.Include(d => d.Position).Include(d => d.Department).FirstOrDefaultAsync(d => d.EmployeeId == id);
+                if (employee != null)
                 {
-                    var account = await _userManager.FindByEmailAsync(doctor.Email);
-                    account.IsActive = false;                 
-                    doctor.IsDeleted = 1;
+                    var account = await _userManager.FindByEmailAsync(employee.Email);
+                    account.IsActive = false;
+                    employee.IsDeleted = 1;
                     var result = await _context.SaveChangesAsync();
                     if (result > 0)
                     {
-                        return doctor;
+                        return employee;
                     }
                 }
                 return null;
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"An exception occured while deleting doctor by id: {id}");
+                _logger.LogError(e, $"An exception occured while deleting product by id: {id}");
                 throw;
             }
         }
 
-        public async Task<Doctor?> GetDoctorByIdAsycn(int id)
+        public async Task<List<Employee?>> GetAllEmployeesAsync(Parameters parameters)
         {
-            try
-            {
-                var doctor = await _context.Doctors.Include(d => d.Position).Include(d => d.Department).FirstOrDefaultAsync(d => d.DoctorId == id);
-                if (doctor == null || doctor.IsDeleted == 1)
-                {                   
-                    return null;
-                }             
-                return doctor;
-
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "An exception occured while getting products");
-                throw;
-            }
-        }
-
-        public async Task<List<Doctor?>> GetDoctorsAsync(Parameters parameters)
-        {
-            var query = _context.Doctors. Include(d => d.Position).Include(d => d.Department).Where(p => p.IsDeleted == 0 && p.Name!=null && p.Address!=null).AsQueryable();
+            var query = _context.Employees.Include(d => d.Position).Include(d => d.Department).Where(p => p.IsDeleted == 0 && p.FullName != null && p.Address != null).AsQueryable();
 
             // Apply search filter
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
                 query = query.Where(u =>
-                    (u.Name != null && u.Name.Contains(parameters.SearchTerm)) ||
-                    (u.Address != null && u.Address.Contains(parameters.SearchTerm) || (u.Specialty !=null && u.Specialty.Contains(parameters.SearchTerm))));
+                    (u.FullName != null && u.FullName.Contains(parameters.SearchTerm)) ||
+                    (u.Address != null && u.Address.Contains(parameters.SearchTerm) || (u.EmployeeCode != null && u.EmployeeCode.Contains(parameters.SearchTerm))));
             }
 
             // Apply sorting
@@ -198,24 +187,43 @@ namespace Freshx_API.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<Doctor?> UpdateDoctorByIdAsync(int id, DoctorCreateUpdateDto request)
+        public async Task<Employee?> GetEmployeeByIdAsync(int id)
         {
             try
-            { // Start transaction to ensure both doctor and account updates succeed or fail together
+            {
+                var employee = await _context.Employees.Include(d => d.Position).Include(d => d.Department).FirstOrDefaultAsync(d => d.EmployeeId == id);
+                if (employee == null || employee.IsDeleted == 1)
+                {
+                    return null;
+                }
+                return employee;
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An exception occured while getting employee");
+                throw;
+            }
+        }
+
+        public async Task<Employee?> UpdateEmployeeByIdAsync(int id, EmployeeRequest request)
+        {
+            try
+            { // Start transaction to ensure both employee and account updates succeed or fail together
                 using var transaction = await _context.Database.BeginTransactionAsync();
 
-                var doctor = await _context.Doctors
+                var employee = await _context.Employees
                     .Include(d => d.AppUser).Include(d => d.Position).Include(d => d.Department) // Include the associated account
-                    .FirstOrDefaultAsync(d => d.DoctorId == id);
+                    .FirstOrDefaultAsync(d => d.EmployeeId == id);
 
-                if (doctor == null)
+                if (employee == null)
                 {
                     return null;
                 }
 
                 // Update avatar
-                int? avatarId = doctor.AvataId;
-                if (doctor.AvataId == null)
+                int? avatarId = employee.AvataId;
+                if (employee.AvataId == null)
                 {
                     if (request.AvatarFile != null)
                     {
@@ -226,13 +234,13 @@ namespace Freshx_API.Repository
                             listFiles
                         );
                         avatarId = avatar[0].Id;
-                        doctor.AvataId = avatarId;
-                        doctor.AppUser.AvatarId = avatarId;
+                        employee.AvataId = avatarId;
+                        employee.AppUser.AvatarId = avatarId;
                     }
                 }
                 else if (request.AvatarFile != null)
                 {
-                    await _fileService.UpdateFileAsync(doctor.AvataId, request.AvatarFile);
+                    await _fileService.UpdateFileAsync(employee.AvataId, request.AvatarFile);
                 }
 
                 // Load địa chỉ trước khi tạo cap nhat
@@ -247,68 +255,77 @@ namespace Freshx_API.Repository
                     .FirstOrDefaultAsync(p => p.Code == request.ProvinceId);
                 string? formattedAddress = $"{ward?.FullName}, {district?.FullName}, {province?.FullName}";
 
-                // Update doctor information
+                // Update employee information
 
-                doctor.Name = request.Name;
-                doctor.Phone = request.PhoneNumber;
-                doctor.DateOfBirth = request.DateOfBirth;
-                doctor.Gender = request.Gender;
-                doctor.PositionId = request.PositionId;
-                doctor.DepartmentId = request.DepartmentId;
-                doctor.Specialty = request.Specialty;
-                doctor.IdentityCardNumber = request.IdentityCardNumber;
-                doctor.WardId = request.WardId;
-                doctor.DistrictId = request.DistrictId;
-                doctor.ProvinceId = request.ProvinceId;
-                doctor.Email = request.Email;
-                doctor.Address = formattedAddress;
-                doctor.UpdatedBy = _tokenRepository.GetUserIdFromToken();
-                doctor.UpdatedDate = DateTime.UtcNow;
-
-                // Update account information if it exists
-                if (doctor.AppUser != null)
-                {
-                    doctor.AppUser.FullName = request.Name;
-                    doctor.AppUser.PhoneNumber = request.PhoneNumber;
-                    doctor.AppUser.Gender = request.Gender;
-                    doctor.AppUser.Email = request.Email;
-                    doctor.AppUser.UserName = request.Email;
-                    doctor.AppUser.WardId = request.WardId;
-                    doctor.AppUser.DistrictId = request.DistrictId;
-                    doctor.AppUser.ProvinceId = request.ProvinceId;
-                    doctor.AppUser.IdentityCardNumber = request.IdentityCardNumber;
-                    doctor.AppUser.DateOfBirth = request.DateOfBirth;
-                    doctor.AppUser.Address = formattedAddress;       
-                    doctor.AppUser.UpdatedAt = DateTime.UtcNow;
-                }
+                employee.FullName = request.Name;
+                employee.PhoneNumber = request.PhoneNumber;
+                employee.DateOfBirth = request.DateOfBirth;
+                employee.Gender = request.Gender;
+                employee.PositionId = request.PositionId;
+                employee.DepartmentId = request.DepartmentId;
+                employee.IdentityCardNumber = request.IdentityCardNumber;
+                employee.WardId = request.WardId;
+                employee.DistrictId = request.DistrictId;
+                employee.ProvinceId = request.ProvinceId;
+                employee.Email = request.Email;
+                employee.Address = formattedAddress;
+                employee.UpdatedBy = _tokenRepository.GetUserIdFromToken();
+                employee.UpdatedDate = DateTime.UtcNow;
+                // Determine role name
                 string? roleName = request.PositionId switch
                 {
-                    1 => "Bác Sĩ Phòng Khám",
-                    5 => "Bác Sĩ Siêu Âm",
+                    3 => "Tiếp Nhận",
+                    4 => "Thu Ngân",
                 };
+                string employeeCode;
+                if (roleName.StartsWith("Tiếp Nhận"))
+                {
+                    employeeCode = await GenerateEmployeeCode.GenerateCode(_context);
+                }
+                else
+                {
+                    employeeCode = await GenerateEmployeeCode.GenerateCode(_context, "NVKT");
+                }
+                employee.EmployeeCode = employeeCode;
+                // Update account information if it exists
+                if (employee.AppUser != null)
+                {
+                    employee.AppUser.FullName = request.Name;
+                    employee.AppUser.PhoneNumber = request.PhoneNumber;
+                    employee.AppUser.Gender = request.Gender;
+                    employee.AppUser.Email = request.Email;
+                    employee.AppUser.UserName = request.Email;
+                    employee.AppUser.WardId = request.WardId;
+                    employee.AppUser.DistrictId = request.DistrictId;
+                    employee.AppUser.ProvinceId = request.ProvinceId;
+                    employee.AppUser.IdentityCardNumber = request.IdentityCardNumber;
+                    employee.AppUser.DateOfBirth = request.DateOfBirth;
+                    employee.AppUser.Address = formattedAddress;
+                    employee.AppUser.UpdatedAt = DateTime.UtcNow;
+                }             
                 //cập nhật lại role mới
                 if (!string.IsNullOrEmpty(roleName))
-                {
-                    // Get current roles
-                    var userRoles = await _userManager.GetRolesAsync(doctor.AppUser);
-
-                    // Remove all current roles
-                    if (userRoles.Any())
                     {
-                        await _userManager.RemoveFromRolesAsync(doctor.AppUser, userRoles);
-                    }
+                        // Get current roles
+                        var userRoles = await _userManager.GetRolesAsync(employee.AppUser);
 
-                    // Add new role
-                    await _userManager.AddToRoleAsync(doctor.AppUser, roleName);
-                }
+                        // Remove all current roles
+                        if (userRoles.Any())
+                        {
+                            await _userManager.RemoveFromRolesAsync(employee.AppUser, userRoles);
+                        }
+
+                        // Add new role
+                        await _userManager.AddToRoleAsync(employee.AppUser, roleName);
+                    }
                 await _context.SaveChangesAsync();
                 await transaction.CommitAsync();
 
-                return doctor;           
+                return employee;
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"An exception occured while updating doctor by id: {id}");
+                _logger.LogError(e, $"An exception occured while updating employee by id: {id}");
                 throw;
             }
         }

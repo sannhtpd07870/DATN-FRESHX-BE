@@ -44,11 +44,7 @@ namespace Freshx_API.Dtos
         public string? DistrictId { get; set; } // ID quận/huyện
 
         [Required(ErrorMessage = "Tỉnh/Thành phố là bắt buộc")]
-        public string? ProvinceId { get; set; } // ID tỉnh/thành phố
-        [Required(ErrorMessage ="Dân tộc là bắt buộc")]
-        [StringLength(50, ErrorMessage = "Dân tộc không được vượt quá 50 ký tự")]
-        [RegularExpression(@"^[a-zA-ZÀ-ỹ\s]*$", ErrorMessage = "Dân tộc chỉ được chứa chữ cái và khoảng trắng")]
-        public string? Ethnicity { get; set; } // Dân tộc của bệnh nhân
+        public string? ProvinceId { get; set; } // ID tỉnh/thành phố       
         [AvatarValidation(MaxSizeInMb = 5,
         AllowedExtensions = new[] { ".jpg", ".jpeg", ".png" },
         ErrorMessage = "File ảnh không hợp lệ")]

@@ -21,6 +21,7 @@ using Freshx_API.Dtos.DrugCatalog;
 using Freshx_API.Dtos.Payments;
 using Freshx_API.Dtos.UserAccount;
 using Freshx_API.Dtos.Patient;
+using Freshx_API.Dtos.Employee;
 
 namespace Freshx_API.Mappers
 {
@@ -156,6 +157,17 @@ namespace Freshx_API.Mappers
             //Mapping Patient Model to PatientResponseDto
             CreateMap<Patient,PatientResponseDto>();
 
+            //Mapping Employee to EmployeeDto
+            CreateMap<Employee, EmployeeDto>()
+            // Chỉ map những trường có tên khác nhau
+            .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name))
+            .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
+
+            //Mapping TechnicianModel to TechnicianDto
+            CreateMap<Technician,TechnicianDto>()
+           // Chỉ map những trường có tên khác nhau
+           .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name))
+           .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
 
         }
     }
