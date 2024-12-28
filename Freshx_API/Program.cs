@@ -304,6 +304,10 @@ builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
 builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 builder.Services.AddScoped<NumberGeneratorService>();
+builder.Services.AddScoped<IFixDoctorRepository, FixDoctorRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<ITechnicianRepository,TechnicianRepository>();
+builder.Services.AddScoped<IUserAccountManagementRepository,UserAccountManagementRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

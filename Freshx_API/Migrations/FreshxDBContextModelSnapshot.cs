@@ -30,6 +30,9 @@ namespace Freshx_API.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("AvatarId")
                         .HasColumnType("int");
 
@@ -57,6 +60,9 @@ namespace Freshx_API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdentityCardNumber")
@@ -1194,20 +1200,11 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("IsSuspended")
                         .HasColumnType("int");
 
-                    b.Property<DateOnly?>("IssuanceDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("IssuancePlace")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PositionId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ProfessionalCertificate")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProvinceId")
                         .HasColumnType("nvarchar(20)");
@@ -2450,10 +2447,16 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("AvataId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("DepartmentId")
@@ -2463,6 +2466,9 @@ namespace Freshx_API.Migrations
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdentityCardNumber")
@@ -2475,6 +2481,9 @@ namespace Freshx_API.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("PositionId")
@@ -2497,6 +2506,8 @@ namespace Freshx_API.Migrations
                     b.HasIndex("AccountId")
                         .IsUnique()
                         .HasFilter("[AccountId] IS NOT NULL");
+
+                    b.HasIndex("AvataId");
 
                     b.HasIndex("DepartmentId");
 
@@ -3401,6 +3412,10 @@ namespace Freshx_API.Migrations
                         .HasForeignKey("Freshx_API.Models.Technician", "AccountId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Freshx_API.Models.Savefile", "Avata")
+                        .WithMany()
+                        .HasForeignKey("AvataId");
+
                     b.HasOne("Freshx_API.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId");
@@ -3422,6 +3437,8 @@ namespace Freshx_API.Migrations
                         .HasForeignKey("WardId");
 
                     b.Navigation("AppUser");
+
+                    b.Navigation("Avata");
 
                     b.Navigation("Department");
 
