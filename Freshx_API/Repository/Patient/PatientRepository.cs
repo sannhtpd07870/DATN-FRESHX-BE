@@ -156,7 +156,7 @@ namespace Freshx_API.Repository
                         }
                         patient.ImageId = avartarId;
                     }
-                    else
+                    else if(updatingPatientRequest.AvatarFile!= null) 
                     {
                         await _fileService.UpdateFileAsync(patient.ImageId, updatingPatientRequest.AvatarFile);
                     }                  

@@ -22,6 +22,7 @@ using Freshx_API.Dtos.Payments;
 using Freshx_API.Dtos.UserAccount;
 using Freshx_API.Dtos.Patient;
 using Freshx_API.Dtos.Employee;
+using Freshx_API.Dtos.UserAccountManagement;
 
 namespace Freshx_API.Mappers
 {
@@ -168,6 +169,9 @@ namespace Freshx_API.Mappers
            // Chỉ map những trường có tên khác nhau
            .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name))
            .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
+
+            //Mapping AppUserModel to UserAccountManagementDto
+            CreateMap<AppUser, UserAccountResponse>();
 
         }
     }
