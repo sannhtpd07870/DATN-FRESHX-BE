@@ -20,6 +20,7 @@ using Freshx_API.Dtos.Country;
 using Freshx_API.Dtos.DrugCatalog;
 using Freshx_API.Dtos.Payments;
 using Freshx_API.Dtos.UserAccount;
+using Freshx_API.Dtos.LabResult;
 
 namespace Freshx_API.Mappers
 {
@@ -148,6 +149,8 @@ namespace Freshx_API.Mappers
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             CreateMap<AppUser, UserResponse>().ReverseMap();
+
+            CreateMap<LabResult, LabResultDto>().ReverseMap();
         }
     }
 }
