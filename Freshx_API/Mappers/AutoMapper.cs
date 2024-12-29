@@ -129,15 +129,14 @@ namespace Freshx_API.Mappers
             CreateMap<Ward, WardDto>();
 
             // Mapping Bill to BillDto
-            CreateMap<Bill, BillDto>()
-                .ForMember(dest => dest.BillDetails, opt => opt.MapFrom(src => src.BillDetails));
-
-            // Mapping BillDto to Bill
-            CreateMap<BillDto, Bill>()
-                .ForMember(dest => dest.BillDetails, opt => opt.MapFrom(src => src.BillDetails));
-
+            CreateMap<Bill, BillDto>().ReverseMap();
+            //Mapping Payment to PaymentDto
+            CreateMap<Payment, PaymentDto>().ReverseMap();
             // Mapping BillDetail to BillDetailDto
             CreateMap<BillDetail, BillDetailDto>().ReverseMap();
+
+            CreateMap<Bill,BillDtoUpdate>().ReverseMap();
+            CreateMap<BillDetail,BillDetailDtoUpdate>().ReverseMap();
 
             //
 
