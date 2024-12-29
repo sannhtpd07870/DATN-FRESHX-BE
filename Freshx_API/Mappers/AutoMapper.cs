@@ -71,7 +71,8 @@ namespace Freshx_API.Mappers
             CreateMap<Pharmacy, PharmacyDto>();
 
             // Ánh xạ PharmacyCreateUpdateDto sang Pharmacy (dùng cho tạo mới hoặc cập nhật)
-            CreateMap<PharmacyCreateUpdateDto, Pharmacy>();
+            CreateMap<PharmacyUpdateDto, Pharmacy>();
+            CreateMap<PharmacyCreateDto, Pharmacy>();
 
             // Ánh xạ Pharmacy sang PharmacyDetailDto (chi tiết của nhà thuốc)
             CreateMap<Pharmacy, PharmacyDetailDto>();

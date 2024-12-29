@@ -3,6 +3,8 @@ using Freshx_API.Dtos.Pharmacy;
 using Freshx_API.Interfaces.Auth;
 using Freshx_API.Interfaces;
 using Freshx_API.Models;
+using Microsoft.EntityFrameworkCore;
+using Freshx_API.Repository;
 
 namespace Freshx_API.Services
 {
@@ -47,8 +49,15 @@ namespace Freshx_API.Services
         }
 
         // Tạo mới nhà thuốc
-        public async Task<PharmacyDto> CreateAsync(PharmacyCreateUpdateDto dto)
+        public async Task<PharmacyDto> CreateAsync(PharmacyCreateDto dto)
         {
+            string code = GenerateUniqueCode();
+            var existingPharmacy = await _repository.GetPharmacyByCodeAsync(code);
+            if (existingPharmacy != null)
+            {
+                throw new Exception("Mã nhà thuốc đã tồn tại.");
+            }
+
             var inventoryType = await _repository.GetInventoryTypeByIdAsync(dto.InventoryTypeId);
 
             if (inventoryType == null)
@@ -57,7 +66,7 @@ namespace Freshx_API.Services
             }
 
             var entity = _mapper.Map<Pharmacy>(dto);
-
+            entity.Code = code;
             entity.IsDeleted = 0;
             entity.CreatedDate = DateTime.UtcNow;
             entity.CreatedBy = _tokenRepository.GetUserIdFromToken();
@@ -68,27 +77,40 @@ namespace Freshx_API.Services
         }
 
         // Cập nhật nhà thuốc
-        public async Task UpdateAsync(int id, PharmacyCreateUpdateDto dto)
+        public async Task UpdateAsync(int id, PharmacyUpdateDto dto)
         {
+            // Lấy thông tin nhà thuốc cần cập nhật
             var existingEntity = await _repository.GetByIdAsync(id);
 
             if (existingEntity == null || existingEntity.IsDeleted == 1)
                 throw new KeyNotFoundException("Nhà thuốc không tồn tại.");
 
-            var inventoryType = await _repository.GetInventoryTypeByIdAsync(dto.InventoryTypeId);
+            // Kiểm tra nếu mã code thay đổi
+            if (existingEntity.Code != dto.Code)
+            {
+                // Kiểm tra xem có nhà thuốc nào có mã code giống nhau không
+                var existingPharmacyWithCode = await _repository.GetPharmacyByCodeAsync(dto.Code);
+                if (existingPharmacyWithCode != null && existingPharmacyWithCode.IsDeleted == 0)  // Nếu nhà thuốc trùng mã và chưa bị xóa
+                {
+                    throw new InvalidOperationException("Mã nhà thuốc đã tồn tại."); // Ném ra exception InvalidOperationException
+                }
+            }
 
+            // Kiểm tra tính hợp lệ của InventoryType
+            var inventoryType = await _repository.GetInventoryTypeByIdAsync(dto.InventoryTypeId);
             if (inventoryType == null)
             {
                 throw new Exception("InventoryType không hợp lệ.");
             }
 
+            // Cập nhật entity
             _mapper.Map(dto, existingEntity);
-
             existingEntity.UpdatedDate = DateTime.UtcNow;
             existingEntity.UpdatedBy = _tokenRepository.GetUserIdFromToken();
 
             await _repository.UpdateAsync(existingEntity);
         }
+
 
         // Xóa mềm nhà thuốc
         public async Task DeleteAsync(int id)
@@ -104,5 +126,17 @@ namespace Freshx_API.Services
 
             await _repository.UpdateAsync(entity);
         }
+
+        public async Task<Pharmacy> GetPharmacyByCodeAsync(string code)
+        {
+            return await _repository.GetPharmacyByCodeAsync(code);
+        }
+
+        // Hàm tạo mã duy nhất từ GUID
+        private string GenerateUniqueCode()
+        {
+            return Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper(); // Mã gồm 8 ký tự
+        }
+
     }
 }

@@ -118,5 +118,12 @@ namespace Freshx_API.Repository
             return await _context.InventoryTypes
                 .FirstOrDefaultAsync(it => it.InventoryTypeId == inventoryTypeId);
         }
+
+        public async Task<Pharmacy> GetPharmacyByCodeAsync(string code)
+        {
+            return await _context.Pharmacies
+                .Where(p => p.Code == code && p.IsDeleted == 0)  // Kiểm tra mã và trạng thái không bị xóa
+                .FirstOrDefaultAsync();  // Trả về nhà thuốc đầu tiên hoặc null nếu không tìm thấy
+        }
     }
 }
