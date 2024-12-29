@@ -100,11 +100,17 @@ namespace Freshx_API.Services
         // Cập nhật đơn vị đo lường theo ID
         public async Task UpdateAsyncId(int id, UnitOfMeasureCreateUpdateDto dto)
         {
+            
             // Lấy entity hiện tại
             var existingEntity = await _repository.GetByIdAsync(id);
             if (existingEntity == null)
                 throw new KeyNotFoundException("Đơn vị đo lường không tồn tại.");
-
+            var existingEntityname = await _repository.GetNameAsync(dto.Name);
+            if (existingEntityname != null)
+            {
+                // Nếu tên đã tồn tại, ném lỗi hoặc trả về thông báo lỗi
+                throw new InvalidOperationException($"Đơn vị đo lường với tên '{dto.Name}' đã tồn tại.");
+            }
             // Ánh xạ dữ liệu từ DTO vào entity hiện tại
             _mapper.Map(dto, existingEntity);
 
@@ -123,7 +129,12 @@ namespace Freshx_API.Services
             var existingEntity = await _repository.GetByCodeAsync(code);
             if (existingEntity == null)
                 throw new KeyNotFoundException("Đơn vị đo lường không tồn tại.");
-
+            var existingEntityname = await _repository.GetNameAsync(dto.Name);
+            if (existingEntityname != null)
+            {
+                // Nếu tên đã tồn tại, ném lỗi hoặc trả về thông báo lỗi
+                throw new InvalidOperationException($"Đơn vị đo lường với tên '{dto.Name}' đã tồn tại.");
+            }
             // Ánh xạ dữ liệu từ DTO vào entity hiện tại
             _mapper.Map(dto, existingEntity);
 

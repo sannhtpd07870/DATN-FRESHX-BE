@@ -171,11 +171,18 @@ namespace Freshx_API.Controllers
                 return StatusCode(StatusCodes.Status200OK,
                     ResponseFactory.Success(Request.Path, "Cập nhật thành công!", "Cập nhật thành công!", StatusCodes.Status200OK));
             }
-            catch (Exception e)
+            catch (InvalidOperationException ex) // Lỗi khi tên trùng
             {
-                _logger.LogError(e, "Một ngoại lệ đã xảy ra trong khi cập nhật đơn vị đo");
+                // Ghi log và trả về lỗi 400 nếu tên đã tồn tại
+                _logger.LogError(ex, "Lỗi tên đơn vị đo lường đã tồn tại.");
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex) // Xử lý các lỗi khác (lỗi hệ thống)
+            {
+                // Ghi log và trả về lỗi 500 cho các lỗi hệ thống không xác định
+                _logger.LogError(ex, "Một ngoại lệ đã xảy ra trong khi tạo đơn vị đo.");
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra hoặc dữ liệu không tồn tại.", StatusCodes.Status500InternalServerError));
+                    ResponseFactory.Error<UnitOfMeasureDetailDto>(Request.Path, "Một lỗi đã xảy ra hoặc dữ liệu không tồn tại.", StatusCodes.Status500InternalServerError));
             }
         }
 
@@ -192,11 +199,18 @@ namespace Freshx_API.Controllers
                 return StatusCode(StatusCodes.Status200OK,
                     ResponseFactory.Success(Request.Path, "Cập nhật thành công!", "Cập nhật thành công!", StatusCodes.Status200OK));
             }
-            catch (Exception e)
+            catch (InvalidOperationException ex) // Lỗi khi tên trùng
             {
-                _logger.LogError(e, "Một ngoại lệ đã xảy ra trong khi cập nhật đơn vị đo");
+                // Ghi log và trả về lỗi 400 nếu tên đã tồn tại
+                _logger.LogError(ex, "Lỗi tên đơn vị đo lường đã tồn tại.");
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex) // Xử lý các lỗi khác (lỗi hệ thống)
+            {
+                // Ghi log và trả về lỗi 500 cho các lỗi hệ thống không xác định
+                _logger.LogError(ex, "Một ngoại lệ đã xảy ra trong khi tạo đơn vị đo.");
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra hoặc dữ liệu không tồn tại.", StatusCodes.Status500InternalServerError));
+                    ResponseFactory.Error<UnitOfMeasureDetailDto>(Request.Path, "Một lỗi đã xảy ra hoặc dữ liệu không tồn tại.", StatusCodes.Status500InternalServerError));
             }
         }
 
