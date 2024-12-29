@@ -4,7 +4,6 @@ using DotNetEnv;
 using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.Auth;
-
 using Freshx_API.Interfaces.UserAccount;
 using Freshx_API.Mappers;
 using Freshx_API.Models;
@@ -29,7 +28,8 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.SignalR;
 using Freshx_API.Interfaces.Payments;
-using Freshx_API.Repository.Payments;
+using Freshx_API.Repositories;
+using Freshx_API.Repositories.Payments;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -380,7 +380,9 @@ builder.Services.AddScoped<DrugCatalogService>();
 //Dăng kí Reponsitory và service cho địa chỉ
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
-
+// Đăng ký PdfRepository và PdfService
+builder.Services.AddScoped<IPdfRepository, PdfRepository>();
+builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<ChatService>();
 
 //đăng kí service
@@ -388,9 +390,8 @@ builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 
 
 //Đăng ký Repository và service cho payments
-builder.Services.AddScoped<IBillRepository, BillRepository>();
-builder.Services.AddScoped<IBillService, BillService>();
-
+builder.Services.AddScoped<IBillingRepository, BillingRepository>();
+builder.Services.AddScoped<IBillingService, BillingService>();
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
