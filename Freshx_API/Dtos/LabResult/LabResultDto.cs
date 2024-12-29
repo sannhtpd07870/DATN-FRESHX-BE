@@ -1,26 +1,35 @@
 ﻿using Freshx_API.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace Freshx_API.Dtos.LabResult
 {
     public class LabResultDto
     {
         // Mã kết quả xét nghiệm
+        [Required(ErrorMessage = "Mã kết quả xét nghiệm không được để trống.")]
         public int LabResultId { get; set; }
         // Ngày thực hiện
+        [Required(ErrorMessage = "Vui lòng điền ngày thực hiện.")]
         public DateTime? ExecutionDate { get; set; }
         // Thời gian thực hiện
         public DateTime? ExecutionTime { get; set; }
         // ID tiếp nhận
+        [Required(ErrorMessage = "Vui lòng điền ID người tiếp nhận.")]
         public int? ReceptionId { get; set; }
         // ID bệnh nhân
+        [Required(ErrorMessage = "Vui lòng điền ID bệnh nhân.")]
         public int? PatientId { get; set; }
         // ID kỹ thuật viên thực hiện
+        [Required(ErrorMessage = "Vui lòng điền ID bệnh nhân.")]
         public int? TechnicianId { get; set; }
         // ID bác sĩ kết luận
+        [Required(ErrorMessage = "Vui lòng điền ID bệnh nhân.")]
         public int? ConcludingDoctorId { get; set; }
         // Kết luận
+        [Required(ErrorMessage = "Vui lòng điền ID bệnh nhân.")]
         public string? Conclusion { get; set; }
         // Kết quả
+        [Required(ErrorMessage = "Vui lòng điền ID bệnh nhân.")]
         public string? Result { get; set; }
         // Mô tả
         public string? Description { get; set; }

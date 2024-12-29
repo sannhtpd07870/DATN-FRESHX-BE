@@ -85,7 +85,7 @@ namespace Freshx_API.Services
             var labResult = await _repository.GetByIdAsync(id);
             if (labResult == null)
                 throw new KeyNotFoundException("Kết quả xét nghiệm không tồn tại.");
-            await _repository.DeleteAsync(labResult);
+            await _repository.DeleteAsync(id);
         }
     }
 }
