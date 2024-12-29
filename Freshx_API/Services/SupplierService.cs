@@ -63,10 +63,12 @@ namespace Freshx_API.Services
         }
 
         // Tạo mới nhà cung cấp
-        public async Task<SupplierDetailDto> CreateAsync(SupplierCreateUpdateDto dto)
+        public async Task<SupplierDetailDto> CreateAsync(SupplierCreateDto dto)   
         {
+            string code = GenerateUniqueCode();
             var entity = _mapper.Map<Supplier>(dto);
 
+            entity.Code = code;
             entity.IsDeleted = 0;
             entity.CreatedDate = DateTime.UtcNow;
             entity.CreatedBy = _tokenRepository.GetUserIdFromToken();
@@ -77,7 +79,22 @@ namespace Freshx_API.Services
         }
 
         // Cập nhật nhà cung cấp
-        public async Task UpdateAsync(int id, SupplierCreateUpdateDto dto)
+        public async Task UpdateAsyncByCode(string code, SupplierUpdateDto dto)
+        {
+            var existingEntity = await _repository.GetSupplierByCodeAsync(code);
+
+            if (existingEntity == null)
+                throw new KeyNotFoundException("Nhà cung cấp không tồn tại.");
+
+            _mapper.Map(dto, existingEntity);
+
+            existingEntity.UpdatedDate = DateTime.UtcNow;
+            existingEntity.UpdatedBy = _tokenRepository.GetUserIdFromToken();
+
+            await _repository.UpdateAsync(existingEntity);
+        }
+
+        public async Task UpdateAsyncbyID(int id, SupplierUpdateDto dto)
         {
             var existingEntity = await _repository.GetByIdAsync(id);
 
@@ -93,14 +110,46 @@ namespace Freshx_API.Services
         }
 
         // Xóa mềm nhà cung cấp
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsyncId(int id)
         {
             var entity = await _repository.GetByIdAsync(id);
 
             if (entity == null)
                 throw new KeyNotFoundException("Nhà cung cấp không tồn tại.");
 
-            await _repository.DeleteAsync(id);
+            await _repository.DeleteAsyncId(id);
+        }
+
+        public async Task DeleteAsyncCode(string code)
+        {
+            var entity = await _repository.GetSupplierByCodeAsync(code);
+
+            if (entity == null)
+                throw new KeyNotFoundException("Nhà cung cấp không tồn tại.");
+
+            await _repository.DeleteAsyncCode(code);
+        }
+
+
+
+
+        // Lấy thông tin nhà cung cấp theo code
+
+        public async Task<SupplierDetailDto?> GetSupplierByCodeAsync(string code)
+        {
+            
+            var entity = await _repository.GetSupplierByCodeAsync(code);
+
+            if (entity == null)
+                return null;
+
+            return _mapper.Map<SupplierDetailDto>(entity);
+        }
+
+        // Hàm tạo mã duy nhất từ GUID
+        private string GenerateUniqueCode()
+        {
+            return Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper(); // Mã gồm 8 ký tự
         }
     }
 }

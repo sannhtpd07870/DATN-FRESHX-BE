@@ -111,7 +111,10 @@ namespace Freshx_API.Mappers
             CreateMap<Supplier, SupplierDetailDto>();
 
             // Map SupplierCreateUpdateDto -> Supplier
-            CreateMap<SupplierCreateUpdateDto, Supplier>()
+            CreateMap<SupplierUpdateDto, Supplier>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<SupplierCreateDto, Supplier>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Map country -> CountryDto
