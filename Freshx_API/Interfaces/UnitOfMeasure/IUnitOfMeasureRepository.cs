@@ -14,10 +14,16 @@ namespace Freshx_API.Interfaces
 
         Task<UnitOfMeasure?> GetByIdAsync(int id); // Lấy thông tin đơn vị đo lường theo ID
 
+        Task<UnitOfMeasure?> GetByCodeAsync(string code);
+
+        Task<UnitOfMeasure?> GetNameAsync(string name);
+
         Task<UnitOfMeasure> CreateAsync(UnitOfMeasure entity); // Tạo mới đơn vị đo lường
 
         Task UpdateAsync(UnitOfMeasure entity); // Cập nhật đơn vị đo lường
 
         Task DeleteAsync(int id); // Xóa mềm đơn vị đo lường
+
+        Task DeleteAsyncCode(string code); // Xóa mềm nhà cung cấp
     }
 }

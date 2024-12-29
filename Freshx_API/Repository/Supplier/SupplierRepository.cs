@@ -85,7 +85,7 @@ namespace Freshx_API.Repository
             return entity;
         }
 
-        public async Task<Supplier> GetSupplierByCodeAsync(string code)
+        public async Task<Supplier?> GetSupplierByCodeAsync(string code)
         {
             try
             {
