@@ -9,5 +9,11 @@ namespace Freshx_API.Interfaces
         Task<InventoryType> CreateAsync(InventoryType entity); // Tạo mới loại tồn kho
         Task<bool> UpdateAsync(InventoryType entity); // Cập nhật thông tin loại tồn kho, trả về true/false
         Task<bool> DeleteAsync(int id); // Xóa loại tồn kho, trả về true/false
+
+        Task<InventoryType?> GetNameAsync(string name);
+
+        Task<InventoryType?> GetByCodeAsync(string code);
+
+        Task DeleteAsyncCode(string code); // Xóa mềm nhà cung cấp
     }
 }
