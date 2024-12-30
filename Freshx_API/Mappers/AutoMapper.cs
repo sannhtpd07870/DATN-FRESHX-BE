@@ -19,6 +19,7 @@ using Freshx_API.Dtos.Country;
 using Freshx_API.Dtos.DrugCatalog;
 using Freshx_API.Dtos.Payments;
 using Freshx_API.Dtos.UserAccount;
+using Freshx_API.Dtos.LabResult;
 using Freshx_API.Dtos.Patient;
 using Freshx_API.Dtos.Employee;
 using Freshx_API.Dtos.UserAccountManagement;
@@ -161,6 +162,7 @@ namespace Freshx_API.Mappers
 
             CreateMap<AppUser, UserResponse>().ReverseMap();
 
+            CreateMap<LabResult, LabResultDto>().ReverseMap();
             //Mapping Patient Model to PatientResponseDto
             CreateMap<Patient,PatientResponseDto>();
 
@@ -178,7 +180,6 @@ namespace Freshx_API.Mappers
 
             //Mapping AppUserModel to UserAccountManagementDto
             CreateMap<AppUser, UserAccountResponse>();
-
         }
     }
 }
