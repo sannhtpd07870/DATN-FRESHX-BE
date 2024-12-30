@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using System.Xml;
 
 namespace Freshx_API.Models;
 
@@ -104,6 +105,13 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .HasMany(b => b.Payments)
             .WithOne(p => p.Bill)
             .HasForeignKey(p => p.BillId);
+
+
+        modelBuilder.Entity<LabResult>(b =>
+        {
+            b.HasKey(e => e.LabResultId);
+            b.Property(e => e.LabResultId).ValueGeneratedOnAdd();
+        });
 
         modelBuilder.Entity<AppUser>()
         .HasOne(u => u.Doctor)
