@@ -5,15 +5,15 @@ using System.IO;
 
 namespace Freshx_API.Models;
 
-public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,string>
+public partial class FreshxDBContext : IdentityDbContext<AppUser, IdentityRole, string>
 {
     public FreshxDBContext(DbContextOptions<FreshxDBContext> options)
         : base(options)
     {
     }
-   
+
     public DbSet<Appointment> Appointments { get; set; }
-    public DbSet<AppUser> AppUsers { get; set; }  // Or perhaps a more descriptive name like "ApplicationUsers"
+    public DbSet<AppUser> AppUsers { get; set; }
     public DbSet<ConclusionDictionary> ConclusionDictionaries { get; set; }
     public DbSet<Country> Countries { get; set; }
     public DbSet<Department> Departments { get; set; }
@@ -28,8 +28,8 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<EmailContent> EmailContents { get; set; }
     public DbSet<Employee> Employees { get; set; }
     public DbSet<Clinic> Hospitals { get; set; }
-    public DbSet<ICDCatalog> ICDcatalogs { get; set; } // Follow C# capitalization conventions: IcdCatalogs
-    public DbSet<Icdchapter> Icdchapters { get; set; } // IcdChapters
+    public DbSet<ICDCatalog> ICDcatalogs { get; set; }
+    public DbSet<Icdchapter> Icdchapters { get; set; }
     public DbSet<InventoryType> InventoryTypes { get; set; }
     public DbSet<Examine> Examines { get; set; }
     public DbSet<LabResult> LabResults { get; set; }
@@ -40,7 +40,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Pharmacy> Pharmacies { get; set; }
     public DbSet<Prescription> Prescriptions { get; set; }
     public DbSet<Reception> Receptions { get; set; }
-    public DbSet<Savefile> Savefiles { get; set; } // Consider a more descriptive name
+    public DbSet<Savefile> Savefiles { get; set; }
     public DbSet<ServiceCatalog> ServiceCatalogs { get; set; }
     public DbSet<ServiceGroup> ServiceGroups { get; set; }
     public DbSet<ServiceStandardValue> ServiceStandardValues { get; set; }
@@ -52,25 +52,27 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<District> Districts { get; set; }
     public DbSet<Province> Provinces { get; set; }
     public DbSet<Ward> Wards { get; set; }
- 
+
     public DbSet<ChatMessage> ChatMessages { get; set; }
     public DbSet<Conversation> Conversations { get; set; }
 
-    public DbSet<Bill> Bills { get; set; } // Bảng hóa đơn
-    public DbSet<BillDetail> BillDetails { get; set; } // Bảng chi tiết hóa đơn
-    public DbSet<Payment> Payments { get; set; } // Bảng thanh toán
+    public DbSet<Bill> Bills { get; set; }
+    public DbSet<BillDetail> BillDetails { get; set; }
+    public DbSet<Payment> Payments { get; set; }
 
     public DbSet<Position> Positions { get; set; }
+
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
 
-        // Configure foreign keys and relationships
-        //  ICDCatalog
-        modelBuilder.Entity< ICDCatalog>()
-            .HasOne(i => i. ICDCatalogGroup)
+        // ICDCatalog
+        modelBuilder.Entity<ICDCatalog>()
+            .HasOne(i => i.ICDCatalogGroup)
             .WithMany()
-            .HasForeignKey(i => i. ICDCatalogGroupId)
+            .HasForeignKey(i => i.ICDCatalogGroupId)
             .OnDelete(DeleteBehavior.Restrict);
 
         // ConclusionDictionary
@@ -80,7 +82,6 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .HasForeignKey(c => c.ServiceCatalogId)
             .OnDelete(DeleteBehavior.Restrict);
 
-      
         // ServiceCatalog
         modelBuilder.Entity<ServiceCatalog>()
             .HasOne(s => s.ServiceGroup)
@@ -94,11 +95,10 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .HasForeignKey(s => s.ParentServiceId)
             .OnDelete(DeleteBehavior.Restrict);
 
-
         modelBuilder.Entity<Bill>()
-                .HasMany(b => b.BillDetails)
-                .WithOne(d => d.Bill)
-                .HasForeignKey(d => d.BillId);
+            .HasMany(b => b.BillDetails)
+            .WithOne(d => d.Bill)
+            .HasForeignKey(d => d.BillId);
 
         modelBuilder.Entity<Bill>()
             .HasMany(b => b.Payments)
@@ -106,39 +106,65 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .HasForeignKey(p => p.BillId);
 
         modelBuilder.Entity<AppUser>()
-        .HasOne(u => u.Doctor)
-        .WithOne(d => d.AppUser)
-        .HasForeignKey<Doctor>(d => d.AccountId)
-        .IsRequired(false)                          // FK không được null
-        .OnDelete(DeleteBehavior.Cascade)      // Xóa cascade
-        .OnDelete(DeleteBehavior.SetNull)      // Set null khi xóa
-        .OnDelete(DeleteBehavior.Restrict);    // Ngăn xóa nếu có quan hệ
+            .HasOne(u => u.Doctor)
+            .WithOne(d => d.AppUser)
+            .HasForeignKey<Doctor>(d => d.AccountId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull); // OnDelete cascade or restrict is corrected
 
         modelBuilder.Entity<AppUser>()
-       .HasOne(u => u.Patient)
-       .WithOne(p => p.AppUser)
-       .HasForeignKey<Patient>(p => p.AccountId)
-       .IsRequired(false)                          // FK được null
-       .OnDelete(DeleteBehavior.Cascade)      // Xóa cascade
-       .OnDelete(DeleteBehavior.SetNull)      // Set null khi xóa
-       .OnDelete(DeleteBehavior.Restrict);    // Ngăn xóa nếu có quan hệ
+            .HasOne(u => u.Patient)
+            .WithOne(p => p.AppUser)
+            .HasForeignKey<Patient>(p => p.AccountId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<AppUser>()
-       .HasOne(u => u.Technician)
-       .WithOne(t => t.AppUser)
-       .HasForeignKey<Technician>(t => t.AccountId)
-       .IsRequired(false)                          // FK không được null
-       .OnDelete(DeleteBehavior.Cascade)      // Xóa cascade
-       .OnDelete(DeleteBehavior.SetNull)      // Set null khi xóa
-       .OnDelete(DeleteBehavior.Restrict);    // Ngăn xóa nếu có quan hệ
+            .HasOne(u => u.Technician)
+            .WithOne(t => t.AppUser)
+            .HasForeignKey<Technician>(t => t.AccountId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
 
         modelBuilder.Entity<AppUser>()
-       .HasOne(u => u.Employee)
-       .WithOne(e => e.AppUser)
-       .HasForeignKey<Employee>(e => e.AccountId)
-       .IsRequired(false)                          // FK được null
-       .OnDelete(DeleteBehavior.Cascade)      // Xóa cascade
-       .OnDelete(DeleteBehavior.SetNull)      // Set null khi xóa
-       .OnDelete(DeleteBehavior.Restrict);    // Ngăn xóa nếu có quan hệ
+            .HasOne(u => u.Employee)
+            .WithOne(e => e.AppUser)
+            .HasForeignKey<Employee>(e => e.AccountId)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // DrugCatalog relationships
+        modelBuilder.Entity<DrugCatalog>()
+            .HasOne(d => d.UnitOfMeasure)
+            .WithMany()
+            .HasForeignKey(d => d.UnitOfMeasureId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<DrugCatalog>()
+            .HasOne(d => d.Manufacturer)
+            .WithMany()
+            .HasForeignKey(d => d.ManufacturerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<DrugCatalog>()
+            .HasOne(d => d.Country)
+            .WithMany()
+            .HasForeignKey(d => d.CountryId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<DrugCatalog>()
+            .HasOne(d => d.DrugType)
+            .WithMany()
+            .HasForeignKey(d => d.DrugTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // Configure precision for decimal properties
+        modelBuilder.Entity<MedicalServiceRequest>()
+            .Property(m => m.ServiceTotalAmount)
+            .HasColumnType("decimal(18,2)");
+
+        modelBuilder.Entity<UnitOfMeasure>()
+            .Property(u => u.ConversionValue)
+            .HasColumnType("decimal(18,4)");
     }
 }

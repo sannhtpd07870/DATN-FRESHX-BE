@@ -35,4 +35,6 @@ public partial class Supplier
     public virtual District? District { get; set; } // Đơn vị hành chính quận/huyện
     public virtual Province? Province { get; set; } // Đơn vị hành chính tỉnh/thành phố
     public virtual Ward? Ward { get; set; } // Đơn vị hành chính phường/xã
+
+    public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>();
 }

@@ -160,5 +160,40 @@ namespace Freshx_API.Repository.Drugs
             return await _context.Countries
                 .FirstOrDefaultAsync(c => c.CountryId == countryId);
         }
+
+        public async Task<DrugCatalog?> GetNameAsync(string name)
+        {
+            try
+            {
+                return await _context.DrugCatalogs
+                    .FirstOrDefaultAsync(s => s.Name == name && (s.IsDeleted == 0 || s.IsDeleted == null));
+            }
+            catch (Exception ex)
+            {
+                // Log exception hoặc xử lý thêm
+                throw new Exception("Error retrieving UnitOfMeasure", ex);
+            }
+        }
+
+        public async Task<bool> UnitOfMeasureExistsAsync(int unitOfMeasureId)
+        {
+            return await _context.UnitOfMeasures.AnyAsync(u => u.UnitOfMeasureId == unitOfMeasureId);
+        }
+
+        public async Task<bool> ManufacturerExistsAsync(int manufacturerId)
+        {
+            return await _context.Suppliers.AnyAsync(m => m.SupplierId == manufacturerId);
+        }
+
+        public async Task<bool> CountryExistsAsync(int countryId)
+        {
+            return await _context.Countries.AnyAsync(c => c.CountryId == countryId);
+        }
+
+        public async Task<bool> DrugTypeExistsAsync(int drugTypeId)
+        {
+            return await _context.DrugTypes
+                                   .AnyAsync(dt => dt.DrugTypeId == drugTypeId);
+        }
     }
 }

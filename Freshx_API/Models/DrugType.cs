@@ -23,6 +23,6 @@ public partial class DrugType
 
     public int? UpdatedBy { get; set; } // Người cập nhật
 
- //   public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>(); // Danh sách danh mục thuốc liên quan
+    public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>(); // Danh sách danh mục thuốc liên quan
 }
     

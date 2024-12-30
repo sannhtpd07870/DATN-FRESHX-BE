@@ -41,31 +41,72 @@ namespace Freshx_API.Services.Drugs
             return _mapper.Map<DrugCatalogDetailDto>(entity);
         }
 
+        // Cập nhật danh mục thuốc
+
+        public async Task<DrugCatalogDetailDto> UpdateAsync(DrugCatalogCreateUpdateDto dto, int id)
+        {
+            // Lấy đối tượng DrugCatalog từ repository
+            var entity = await _repository.GetByIdAsync(id);
+            if (entity == null)
+            {
+                throw new InvalidOperationException("Danh mục thuốc không tồn tại.");
+            }
+
+            // Cập nhật thông tin của entity từ dto
+            _mapper.Map(dto, entity);
+
+            // Cập nhật ngày sửa đổi và người sửa
+            entity.UpdatedDate = DateTime.UtcNow;
+            entity.UpdatedBy = _tokenRepository.GetUserIdFromToken();
+
+            // Cập nhật trong database
+            await _repository.UpdateAsync(entity);
+
+            // Trả về đối tượng đã cập nhật dưới dạng DTO
+            return _mapper.Map<DrugCatalogDetailDto>(entity);
+        }
+
+
         // Tạo mới danh mục thuốc
         public async Task<DrugCatalogDetailDto> CreateAsync(DrugCatalogCreateUpdateDto dto)
         {
-            // Kiểm tra sự tồn tại của danh mục thuốc, nếu cần kiểm tra logic
+            // Kiểm tra sự tồn tại của các đối tượng liên quan
+            if (dto.UnitOfMeasureId.HasValue && !await _repository.UnitOfMeasureExistsAsync(dto.UnitOfMeasureId.Value))
+            {
+                throw new InvalidOperationException("Đơn vị đo lường không tồn tại.");
+            }
+
+            if (dto.ManufacturerId.HasValue && !await _repository.ManufacturerExistsAsync(dto.ManufacturerId.Value))
+            {
+                throw new InvalidOperationException("Nhà sản xuất không tồn tại.");
+            }
+
+            if (dto.CountryId.HasValue && !await _repository.CountryExistsAsync(dto.CountryId.Value))
+            {
+                throw new InvalidOperationException("Quốc gia không tồn tại.");
+            }
+
+            if (dto.DrugTypeId.HasValue && !await _repository.DrugTypeExistsAsync(dto.DrugTypeId.Value))
+            {
+                throw new InvalidOperationException("Loại thuốc không tồn tại.");
+            }
+
+            // Tiếp tục tạo mới danh mục thuốc
+            string code = GenerateUniqueCode();
             var entity = _mapper.Map<DrugCatalog>(dto);
-            // Thiết lập giá trị mặc định
+
+            entity.Code = code;
             entity.IsDeleted = 0;
             entity.CreatedDate = DateTime.UtcNow;
             entity.CreatedBy = _tokenRepository.GetUserIdFromToken();
+
             var createdEntity = await _repository.CreateAsync(entity);
             return _mapper.Map<DrugCatalogDetailDto>(createdEntity);
         }
 
-        // Cập nhật danh mục thuốc
-        public async Task UpdateAsync(int id, DrugCatalogCreateUpdateDto dto)
-        {
-            var existingEntity = await _repository.GetByIdAsync(id);
-            if (existingEntity == null)
-                throw new KeyNotFoundException("Danh mục thuốc không tồn tại.");
-            // Sử dụng AutoMapper để cập nhật dữ liệu từ DTO sang Entity
-            _mapper.Map(dto, existingEntity);
-            existingEntity.UpdatedDate = DateTime.UtcNow;
-            existingEntity.UpdatedBy = _tokenRepository.GetUserIdFromToken();
-            await _repository.UpdateAsync(existingEntity);
-        }
+
+
+
 
         // Xóa mềm danh mục thuốc
         public async Task DeleteAsync(int id)
@@ -105,6 +146,19 @@ namespace Freshx_API.Services.Drugs
             var drugType = await _repository.GetDrugTypeByIdAsync(drugTypeId);
             if (drugType == null) return null;
             return _mapper.Map<DrugTypeDto>(drugType);
+        }
+
+        private string GenerateUniqueCode()
+        {
+            return Guid.NewGuid().ToString("N").Substring(0, 8).ToUpper(); // Mã gồm 8 ký tự
+        }
+
+        public async Task<DrugTypeDto?> GetNameAsync(string name)
+        {
+            var entity = await _repository.GetNameAsync(name);
+            if (entity == null)
+                return null;
+            return _mapper.Map<DrugTypeDto>(entity);
         }
     }
 }

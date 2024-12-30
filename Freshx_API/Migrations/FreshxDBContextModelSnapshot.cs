@@ -989,6 +989,9 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CountryId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -1005,6 +1008,9 @@ namespace Freshx_API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("DrugTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("DrugTypeId1")
                         .HasColumnType("int");
 
                     b.Property<string>("Effect")
@@ -1055,7 +1061,13 @@ namespace Freshx_API.Migrations
                     b.Property<DateTime?>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("int");
+
                     b.Property<int?>("UnitOfMeasureId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UnitOfMeasureId1")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("UnitPrice")
@@ -1074,11 +1086,19 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("CountryId");
 
+                    b.HasIndex("CountryId1");
+
                     b.HasIndex("DrugTypeId");
+
+                    b.HasIndex("DrugTypeId1");
 
                     b.HasIndex("ManufacturerId");
 
+                    b.HasIndex("SupplierId");
+
                     b.HasIndex("UnitOfMeasureId");
+
+                    b.HasIndex("UnitOfMeasureId1");
 
                     b.ToTable("DrugCatalogs");
                 });
@@ -2574,7 +2594,7 @@ namespace Freshx_API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal?>("ConversionValue")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18,4)");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -2966,7 +2986,7 @@ namespace Freshx_API.Migrations
                     b.HasOne("Freshx_API.Models.AppUser", "AppUser")
                         .WithOne("Doctor")
                         .HasForeignKey("Freshx_API.Models.Doctor", "AccountId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Freshx_API.Models.Savefile", "Avata")
                         .WithMany()
@@ -3032,7 +3052,12 @@ namespace Freshx_API.Migrations
                 {
                     b.HasOne("Freshx_API.Models.Country", "Country")
                         .WithMany()
-                        .HasForeignKey("CountryId");
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Freshx_API.Models.Country", null)
+                        .WithMany("DrugCatalogs")
+                        .HasForeignKey("CountryId1");
 
                     b.HasOne("Freshx_API.Models.TemplatePrescription", null)
                         .WithMany("DrugCatalogs")
@@ -3042,15 +3067,30 @@ namespace Freshx_API.Migrations
 
                     b.HasOne("Freshx_API.Models.DrugType", "DrugType")
                         .WithMany()
-                        .HasForeignKey("DrugTypeId");
+                        .HasForeignKey("DrugTypeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Freshx_API.Models.DrugType", null)
+                        .WithMany("DrugCatalogs")
+                        .HasForeignKey("DrugTypeId1");
 
                     b.HasOne("Freshx_API.Models.Supplier", "Manufacturer")
                         .WithMany()
-                        .HasForeignKey("ManufacturerId");
+                        .HasForeignKey("ManufacturerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Freshx_API.Models.Supplier", null)
+                        .WithMany("DrugCatalogs")
+                        .HasForeignKey("SupplierId");
 
                     b.HasOne("Freshx_API.Models.UnitOfMeasure", "UnitOfMeasure")
                         .WithMany()
-                        .HasForeignKey("UnitOfMeasureId");
+                        .HasForeignKey("UnitOfMeasureId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Freshx_API.Models.UnitOfMeasure", null)
+                        .WithMany("DrugCatalogs")
+                        .HasForeignKey("UnitOfMeasureId1");
 
                     b.Navigation("Country");
 
@@ -3075,7 +3115,7 @@ namespace Freshx_API.Migrations
                     b.HasOne("Freshx_API.Models.AppUser", "AppUser")
                         .WithOne("Employee")
                         .HasForeignKey("Freshx_API.Models.Employee", "AccountId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Freshx_API.Models.Savefile", "Avata")
                         .WithMany()
@@ -3249,7 +3289,7 @@ namespace Freshx_API.Migrations
                     b.HasOne("Freshx_API.Models.AppUser", "AppUser")
                         .WithOne("Patient")
                         .HasForeignKey("Freshx_API.Models.Patient", "AccountId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Freshx_API.Models.District", "District")
                         .WithMany()
@@ -3410,7 +3450,7 @@ namespace Freshx_API.Migrations
                     b.HasOne("Freshx_API.Models.AppUser", "AppUser")
                         .WithOne("Technician")
                         .HasForeignKey("Freshx_API.Models.Technician", "AccountId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Freshx_API.Models.Savefile", "Avata")
                         .WithMany()
@@ -3536,9 +3576,19 @@ namespace Freshx_API.Migrations
                     b.Navigation("Messages");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Country", b =>
+                {
+                    b.Navigation("DrugCatalogs");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Doctor", b =>
                 {
                     b.Navigation("Receptions");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.DrugType", b =>
+                {
+                    b.Navigation("DrugCatalogs");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Examine", b =>
@@ -3573,7 +3623,17 @@ namespace Freshx_API.Migrations
                     b.Navigation("ServiceCatalogs");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Supplier", b =>
+                {
+                    b.Navigation("DrugCatalogs");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.TemplatePrescription", b =>
+                {
+                    b.Navigation("DrugCatalogs");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.UnitOfMeasure", b =>
                 {
                     b.Navigation("DrugCatalogs");
                 });

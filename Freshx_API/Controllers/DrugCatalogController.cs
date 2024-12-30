@@ -78,6 +78,11 @@ namespace Freshx_API.Controllers
                 return StatusCode(StatusCodes.Status201Created,
                     ResponseFactory.Success(Request.Path, result, "Danh mục thuốc tạo thành công.", StatusCodes.Status201Created));
             }
+            catch (InvalidOperationException ex)
+            {
+                // Return 409 Conflict when the name already exists
+                return Conflict(new { message = ex.Message });
+            }
             catch (Exception e)
             {
                 _logger.LogError(e, "Một lỗi đã xảy ra khi tạo danh mục thuốc.");
@@ -92,9 +97,14 @@ namespace Freshx_API.Controllers
         {
             try
             {
-                await _service.UpdateAsync(id, dto);
+                await _service.UpdateAsync(dto, id);
                 return StatusCode(StatusCodes.Status200OK,
                     ResponseFactory.Success(Request.Path, "Cập nhật thành công.", "Danh mục thuốc đã được cập nhật.", StatusCodes.Status200OK));
+            }
+            catch (InvalidOperationException ex)
+            {
+                // Return 409 Conflict when the name already exists
+                return Conflict(new { message = ex.Message });
             }
             catch (Exception e)
             {
@@ -103,6 +113,9 @@ namespace Freshx_API.Controllers
                     ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
             }
         }
+
+
+
 
         // Xóa danh mục thuốc
         [HttpDelete("{id}")]
