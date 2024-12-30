@@ -38,12 +38,12 @@ public partial class Employee
 
     public string? PhoneNumber { get; set; } // Số điện thoại nhân viên
     public string? Email { get; set; }
-    /*   public string? ProfessionalCertificate { get; set; } // Chứng chỉ nghề nghiệp
+ /*   public string? ProfessionalCertificate { get; set; } // Chứng chỉ nghề nghiệp
 
-       public DateOnly? IssuanceDate { get; set; } // Ngày cấp chứng chỉ
+    public DateOnly? IssuanceDate { get; set; } // Ngày cấp chứng chỉ
 
-       public string? IssuancePlace { get; set; } // Nơi cấp chứng chỉ*/
-    public string? AccountId { get; set; }
+    public string? IssuancePlace { get; set; } // Nơi cấp chứng chỉ*/
+    public string? AccountId {  get; set; }
     public int? PositionId { get; set; }
     public string? CreatedBy { get; set; } // Người tạo
 

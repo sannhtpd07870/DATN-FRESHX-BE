@@ -86,21 +86,21 @@ namespace Freshx_API.Controllers
                 var patientByPhoneNumber = await _context.Patients.FirstOrDefaultAsync(p => p.PhoneNumber == request.PhoneNumber);
                 if (patientByEmail != null)
                 {
-                    if (!patientByEmail.Email.ToLower().Equals(request.Email.ToLower()))
+                    if (!patientByEmail.Email.ToLower().Equals(patientById.Email.ToLower()))
                     {
                         return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Email đã thực sự tồn tại trong hệ thống"));
                     }
                 }
                 if (patientByIdentityCard != null)
                 {
-                    if (!patientByIdentityCard.IdentityCardNumber.ToLower().Equals(request.IdentityCardNumber.ToLower()))
+                    if (!patientByIdentityCard.IdentityCardNumber.ToLower().Equals(patientById.IdentityCardNumber.ToLower()))
                     {
                         return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "CCCD đã thực sự tồn tại trong hệ thống"));
                     }
                 }
                 if (patientByPhoneNumber != null)
                 {
-                    if (!patientByPhoneNumber.PhoneNumber.ToLower().Equals(request.PhoneNumber.ToLower()))
+                    if (!patientByPhoneNumber.PhoneNumber.ToLower().Equals(patientById.PhoneNumber.ToLower()))
                     {
                         return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Số điện thoại đã tồn tại trong hệ thống"));
                     }

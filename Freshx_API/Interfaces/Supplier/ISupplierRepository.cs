@@ -21,6 +21,10 @@ namespace Freshx_API.Interfaces
 
         Task UpdateAsync(Supplier entity); // Cập nhật nhà cung cấp
 
-        Task DeleteAsync(int id); // Xóa mềm nhà cung cấp
+        Task DeleteAsyncId(int id); // Xóa mềm nhà cung cấp
+
+        Task DeleteAsyncCode(string code); // Xóa mềm nhà cung cấp
+
+        Task<Supplier> GetSupplierByCodeAsync(string code);
     }
 }

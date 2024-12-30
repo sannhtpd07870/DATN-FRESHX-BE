@@ -1,24 +1,70 @@
-﻿namespace Freshx_API.Dtos.Supplier
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Freshx_API.Dtos.Supplier
 {
     // DTO để nhận dữ liệu từ client khi tạo hoặc cập nhật nhà cung cấp
-    public class SupplierCreateUpdateDto
+    public class SupplierCreateDto
     {
-        public string? Code { get; set; } // Mã nhà cung cấp
-        public string? Name { get; set; } // Tên nhà cung cấp
-        public string? NameEnglish { get; set; } // Tên tiếng Anh
-        public string? NameRussian { get; set; } // Tên tiếng Nga
-        public string? Address { get; set; } // Địa chỉ nhà cung cấp
-        public string? PhoneNumber { get; set; } // Số điện thoại
-        public string? Fax { get; set; } // Số fax
-        public string? Email { get; set; } // Địa chỉ email
-        public string? TaxCode { get; set; } // Mã số thuế
-        public string? Director { get; set; } // Giám đốc
-        public string? ContactPerson { get; set; } // Người liên hệ
-        public bool? IsForeign { get; set; } // Trạng thái nhà cung cấp nước ngoài
-        public bool IsStateOwned { get; set; } // Trạng thái nhà cung cấp nhà nước
-        public bool IsSuspended { get; set; } // Trạng thái tạm ngưng
-        public bool IsPharmaceuticalSupplier { get; set; } // Nhà cung cấp dược phẩm
-        public bool IsMedicalConsumableSupplier { get; set; } // Nhà cung cấp vật tư y tế
-        public bool IsAssetSupplier { get; set; } // Nhà cung cấp tài sản
+        [Required(ErrorMessage = "Tên nhà cung cấp là bắt buộc.")]
+        public string? Name { get; set; }
+
+        [StringLength(100, ErrorMessage = "Tên nhà cung cấp tiếng Anh không được vượt quá 100 ký tự.")]
+        public string? NameEnglish { get; set; }
+
+        [StringLength(100, ErrorMessage = "Tên nhà cung cấp tiếng Nga không được vượt quá 100 ký tự.")]
+        public string? NameRussian { get; set; }
+
+        [Required(ErrorMessage = "Địa chỉ nhà cung cấp là bắt buộc.")]
+        public string? Address { get; set; }
+
+        [Phone(ErrorMessage = "Số điện thoại không hợp lệ.")]
+        public string? PhoneNumber { get; set; }
+
+        [Phone(ErrorMessage = "Số fax không hợp lệ.")]
+        public string? Fax { get; set; }
+
+        [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ.")]
+        public string? Email { get; set; }
+
+        public string? TaxCode { get; set; }
+        public string? Director { get; set; }
+        public string? ContactPerson { get; set; }
+        public bool? IsForeign { get; set; }
+        public bool IsStateOwned { get; set; }
+        public bool IsSuspended { get; set; }
+        public bool IsPharmaceuticalSupplier { get; set; }
+        public bool IsMedicalConsumableSupplier { get; set; }
+        public bool IsAssetSupplier { get; set; }
+    }
+
+    public class SupplierUpdateDto
+    {
+        [Required(ErrorMessage = "Tên nhà cung cấp là bắt buộc.")]
+        public string? Name { get; set; }
+
+        public string? NameEnglish { get; set; }
+        public string? NameRussian { get; set; }
+
+        [Required(ErrorMessage = "Địa chỉ nhà cung cấp là bắt buộc.")]
+        public string? Address { get; set; }
+
+        [Phone(ErrorMessage = "Số điện thoại không hợp lệ.")]
+        public string? PhoneNumber { get; set; }
+
+        [Phone(ErrorMessage = "Số fax không hợp lệ.")]
+        public string? Fax { get; set; }
+
+        [EmailAddress(ErrorMessage = "Địa chỉ email không hợp lệ.")]
+        public string? Email { get; set; }
+
+        public string? TaxCode { get; set; }
+        public string? Director { get; set; }
+        public string? ContactPerson { get; set; }
+        public bool? IsForeign { get; set; }
+        public bool IsStateOwned { get; set; }
+        public bool IsSuspended { get; set; }
+        public bool IsPharmaceuticalSupplier { get; set; }
+        public bool IsMedicalConsumableSupplier { get; set; }
+        public bool IsAssetSupplier { get; set; }
     }
 }

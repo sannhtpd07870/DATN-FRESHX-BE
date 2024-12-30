@@ -29,6 +29,7 @@ using System.Text;
 using Microsoft.AspNetCore.SignalR;
 using Freshx_API.Interfaces.Payments;
 using Freshx_API.Repository.Payments;
+using Freshx_API.Repository.Payments;
 using Freshx_API.Interfaces.IReception;
 // Tải biến môi trường từ tệp .env
 Env.Load();
@@ -304,6 +305,11 @@ builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
 builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 builder.Services.AddScoped<NumberGeneratorService>();
+builder.Services.AddScoped<IFixDoctorRepository, FixDoctorRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<ITechnicianRepository,TechnicianRepository>();
+builder.Services.AddScoped<IUserAccountManagementRepository,UserAccountManagementRepository>();
+builder.Services.AddScoped<IFixDepartmentTypeRepository, FixDepartmentTypeRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -375,7 +381,9 @@ builder.Services.AddScoped<DrugCatalogService>();
 //Dăng kí Reponsitory và service cho địa chỉ
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<IAddressService, AddressService>();
-
+// Đăng ký PdfRepository và PdfService
+builder.Services.AddScoped<IPdfRepository, PdfRepository>();
+builder.Services.AddScoped<IPdfService, PdfService>();
 builder.Services.AddScoped<ChatService>();
 
 //đăng kí service
@@ -383,16 +391,8 @@ builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 
 
 //Đăng ký Repository và service cho payments
-builder.Services.AddScoped<IBillRepository, BillRepository>();
-builder.Services.AddScoped<IBillService, BillService>();
-
-// đăng kí DI cho meducalService
-builder.Services.AddScoped<IMedicalServiceRequestRepository, MedicalServiceRequestRepository>();
-builder.Services.AddScoped<IMedicalServiceRequestService, MedicalServiceRequestService>();
-
-// Đăng kí Di cho recetion
-builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
-builder.Services.AddScoped<IReceptionService, ReceptionService>();
+builder.Services.AddScoped<IBillingRepository, BillingRepository>();
+builder.Services.AddScoped<IBillingService, BillingService>();
 
 
 // Thêm DefaultAzureCredential

@@ -35,7 +35,7 @@ namespace Freshx_API.Dtos.Patient
 
         [Required(ErrorMessage = "Tỉnh/Thành phố là bắt buộc")]
         public string? ProvinceId { get; set; } // ID tỉnh/thành phố
-
+        [Required(ErrorMessage = "Dân tộc là bắt buộc")]
         [StringLength(50, ErrorMessage = "Dân tộc không được vượt quá 50 ký tự")]
         [RegularExpression(@"^[a-zA-ZÀ-ỹ\s]*$", ErrorMessage = "Dân tộc chỉ được chứa chữ cái và khoảng trắng")]
         public string? Ethnicity { get; set; } // Dân tộc của bệnh nhân
