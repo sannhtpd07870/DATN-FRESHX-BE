@@ -1,7 +1,11 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Freshx_API.Dtos;
+using Freshx_API.Dtos.Patient;
+using Freshx_API.Interfaces;
+using Freshx_API.Interfaces.Auth;
 using Freshx_API.Interfaces.IReception;
 using Freshx_API.Models;
+using Microsoft.Extensions.Azure;
 
 namespace Freshx_API.Services
 {
@@ -9,46 +13,79 @@ namespace Freshx_API.Services
     {
         private readonly IReceptionRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IPatientRepository _patientRepository;
+        private readonly IMedicalServiceRequestRepository _requestRepository;
+        private readonly ITokenRepository _tokenRepository;
 
-        public ReceptionService(IReceptionRepository repository, IMapper mapper)
+        public ReceptionService(IReceptionRepository repository, IMapper mapper, IPatientRepository patientRepository, IMedicalServiceRequestRepository requestRepository, ITokenRepository tokenRepository)
         {
             _repository = repository;
             _mapper = mapper;
+            _patientRepository = patientRepository;
+            _requestRepository = requestRepository;
+            _tokenRepository = tokenRepository;
         }
 
-        public async Task<CreateReceptionDto?> GetByIdAsync(int id)
+        public async Task<ReceptionDto?> GetByIdAsync(int id)
         {
             var reception = await _repository.GetByIdAsync(id);
-            return _mapper.Map<CreateReceptionDto>(reception);
+            return _mapper.Map<ReceptionDto>(reception);
         }
 
-        public async Task<IEnumerable<CreateReceptionDto>> GetAllAsync()
+        public async Task<IEnumerable<ReceptionDto>> GetAllAsync()
         {
             var receptions = await _repository.GetAllAsync();
-            return _mapper.Map<IEnumerable<CreateReceptionDto>>(receptions);
+            var data = _mapper.Map<IEnumerable<ReceptionDto>>(receptions);
+            Console.WriteLine(data);
+            return data;
         }
 
-        public async Task AddAsync(CreateReceptionDto dto)
+        public async Task<ReceptionDto> AddAsync(CreateReceptionDto dto)
         {
             var reception = _mapper.Map<Reception>(dto);
-
-            // �nh x? c�c MedicalServiceRequests (n?u c�)
-            if (dto.MedicalServiceRequests != null)
+            if (dto.PatientId != null)
             {
-                reception.MedicalServiceRequest = _mapper.Map<List<MedicalServiceRequest>>(dto.MedicalServiceRequests);
+                var patien = await _patientRepository.CreatePatientAsync(dto.AddingPatient);
+                reception.PatientId = patien.PatientId;
+            }
+            else
+            {
+                var UpdatePatient = _mapper.Map<UpdatingPatientRequest>(dto.AddingPatient);
+                var patien = await _patientRepository.UpdatePatientByIdAsync(reception.PatientId ?? 0, UpdatePatient);
             }
 
-            await _repository.AddAsync(reception);
+            reception.IsDeleted = 0;
+            reception.ReceptionDate = DateTime.Now.Date;
+            reception.CreatedDate = DateTime.UtcNow;
+            reception.CreatedBy = _tokenRepository.GetUserIdFromToken();
+            
+            var Addreception = await _repository.AddAsync(reception);
+
+            // Ánh xạ các MedicalServiceRequests (nếu có)
+            if (dto.MedicalServiceRequest != null)
+            {
+                foreach (var request in dto.MedicalServiceRequest)
+                {
+                    request.ReceptionId = Addreception.ReceptionId;
+                    var serviceRequest = _mapper.Map<MedicalServiceRequest>(request);
+                    var SaveService = await _requestRepository.AddAsync(serviceRequest);
+                    reception.MedicalServiceRequest.Add(SaveService);
+                }
+
+            }
+
+            await _repository.UpdateAsync(reception);
+            return _mapper.Map<ReceptionDto>(reception);
         }
 
         public async Task UpdateAsync(CreateReceptionDto dto)
         {
             var reception = _mapper.Map<Reception>(dto);
 
-            // C?p nh?t MedicalServiceRequests
-            if (dto.MedicalServiceRequests != null)
+            // Cập nhật MedicalServiceRequests
+            if (dto.MedicalServiceRequest != null)
             {
-                reception.MedicalServiceRequest = _mapper.Map<List<MedicalServiceRequest>>(dto.MedicalServiceRequests);
+                reception.MedicalServiceRequest = _mapper.Map<List<MedicalServiceRequest>>(dto.MedicalServiceRequest);
             }
 
             await _repository.UpdateAsync(reception);

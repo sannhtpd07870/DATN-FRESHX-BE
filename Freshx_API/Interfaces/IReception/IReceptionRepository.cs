@@ -6,7 +6,7 @@ namespace Freshx_API.Interfaces.IReception
     {
         Task<Reception?> GetByIdAsync(int id);
         Task<IEnumerable<Reception>> GetAllAsync();
-        Task AddAsync(Reception reception);
+        Task<Reception?> AddAsync(Reception reception);
         Task UpdateAsync(Reception reception);
         Task DeleteAsync(int id);
     }

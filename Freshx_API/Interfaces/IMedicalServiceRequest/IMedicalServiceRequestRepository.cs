@@ -4,10 +4,10 @@ namespace Freshx_API.Interfaces
 {
     public interface IMedicalServiceRequestRepository
     {
-        Task<MedicalServiceRequest?> GetByIdAsync(int id);
+        Task<MedicalServiceRequest> GetByIdAsync(int id);
         Task<IEnumerable<MedicalServiceRequest>> GetAllAsync();
-        Task AddAsync(MedicalServiceRequest entity);
-        Task UpdateAsync(MedicalServiceRequest entity);
+        Task<MedicalServiceRequest> AddAsync(MedicalServiceRequest medicalServiceRequest);
+        Task<MedicalServiceRequest> UpdateAsync(MedicalServiceRequest medicalServiceRequest);
         Task DeleteAsync(int id);
     }
 

@@ -38,12 +38,12 @@ public partial class Employee
 
     public string? PhoneNumber { get; set; } // Số điện thoại nhân viên
     public string? Email { get; set; }
-    public string? ProfessionalCertificate { get; set; } // Chứng chỉ nghề nghiệp
+    /*   public string? ProfessionalCertificate { get; set; } // Chứng chỉ nghề nghiệp
 
-    public DateOnly? IssuanceDate { get; set; } // Ngày cấp chứng chỉ
+       public DateOnly? IssuanceDate { get; set; } // Ngày cấp chứng chỉ
 
-    public string? IssuancePlace { get; set; } // Nơi cấp chứng chỉ
-    public string? AccountId {  get; set; }
+       public string? IssuancePlace { get; set; } // Nơi cấp chứng chỉ*/
+    public string? AccountId { get; set; }
     public int? PositionId { get; set; }
     public string? CreatedBy { get; set; } // Người tạo
 
@@ -56,7 +56,7 @@ public partial class Employee
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
     public virtual Department? Department { get; set; } // Phòng ban của nhân viên
 
-  //  public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
+    //  public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
 
     public virtual District? District { get; set; } // Đơn vị hành chính quận/huyện
 

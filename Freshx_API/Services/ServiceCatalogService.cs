@@ -20,7 +20,7 @@ namespace Freshx_API.Services
         }
 
         // Lấy danh sách dịch vụ với các bộ lọc
-        public async Task<IEnumerable<ServiceCatalogDto>> GetAllAsync(string? searchKeyword,
+        public async Task<IEnumerable<ServiceCatalogDetailDto>> GetAllAsync(string? searchKeyword,
             DateTime? createdDate, DateTime? updatedDate, int? status)
         {
             var entities = await _repository.GetAllAsync(searchKeyword, createdDate, updatedDate, status);
@@ -35,7 +35,7 @@ namespace Freshx_API.Services
             }
 
             // Sử dụng AutoMapper để chuyển đổi từ Model sang DTO
-            return _mapper.Map<IEnumerable<ServiceCatalogDto>>(entities);
+            return _mapper.Map<IEnumerable<ServiceCatalogDetailDto>>(entities);
         }
 
         // Lấy thông tin chi tiết dịch vụ theo ID

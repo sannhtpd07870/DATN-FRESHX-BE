@@ -7,51 +7,59 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Freshx_API.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class MedicalServiceRequestController : ControllerBase
+    [ApiController]
+    public class MedicalServiceRequestsController : ControllerBase
     {
         private readonly IMedicalServiceRequestService _service;
 
-        public MedicalServiceRequestController(IMedicalServiceRequestService service)
+        public MedicalServiceRequestsController(IMedicalServiceRequestService service)
         {
             _service = service;
         }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var result = await _service.GetByIdAsync(id);
-            return result == null ? NotFound() : Ok(result);
-        }
-
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<MedicalServiceRequestDto>> GetById()
         {
             var result = await _service.GetAllAsync();
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<MedicalServiceRequestDto>> GetById(int id)
+        {
+            var result = await _service.GetByIdAsync(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
             return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add(MedicalServiceRequestDto dto)
+        public async Task<ActionResult<MedicalServiceRequestDto>> Create(CreateMedicalServiceRequestDto dto)
         {
-            await _service.AddAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = dto.MedicalServiceRequestId }, dto);
+            var result = await _service.AddAsync(dto);
+            return CreatedAtAction(nameof(GetById), new { id = result.MedicalServiceRequestId }, result);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> Update(MedicalServiceRequestDto dto)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<MedicalServiceRequestDto>> Update(int id, CreateMedicalServiceRequestDto dto)
         {
-            await _service.UpdateAsync(dto);
-            return NoContent();
+            var result = await _service.UpdateAsync(dto);
+            return Ok(result);
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
             await _service.DeleteAsync(id);
             return NoContent();
         }
     }
+
 
 }

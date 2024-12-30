@@ -1,6 +1,7 @@
 ﻿using NuGet.LibraryModel;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Freshx_API.Models;
@@ -13,12 +14,9 @@ public partial class TemplatePrescription
 
     public string? Name { get; set; } // Tên mẫu đơn thuốc
 
-    public int DrugCatalogId { get; set; }
+    public int? MedicalExaminationId { get; set; } // ID khám bệnh
 
-    [ForeignKey("DrugCatalogId")]
-    public virtual ICollection<DrugCatalog>? DrugCatalogs { get; set; } = new List<DrugCatalog>(); 
-    public int? IsSuspended { get; set; } // Trạng thái tạm ngưng
-
+    [Column(TypeName = "decimal(18, 2)")]
     public int? CreatedBy { get; set; } // Người tạo
 
     public DateTime? CreatedDate { get; set; } // Ngày tạo
@@ -28,6 +26,13 @@ public partial class TemplatePrescription
     public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
+
+    [StringLength(500)]
+    public string? Note { get; set; } // Ghi chú chung
+
+    // Quan hệ
+    public virtual ICollection<PrescriptionDetail> PrescriptionDetails { get; set; }
+        = new List<PrescriptionDetail>(); // Chi tiết toa thuốc
 
     //public virtual ICollection<TemplatePrescriptionDrugMapping> TemplatePrescriptionDrugMappings { get; set; } = new List<TemplatePrescriptionDrugMapping>(); // Danh sách ánh xạ thuốc trong mẫu đơn
 }

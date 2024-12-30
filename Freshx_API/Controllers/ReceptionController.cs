@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Freshx_API.Dtos;
+using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.IReception;
 using Freshx_API.Models;
 using Freshx_API.Repository;
+using Freshx_API.Services.CommonServices;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -14,47 +16,99 @@ namespace Freshx_API.Controllers
     public class ReceptionController : ControllerBase
     {
         private readonly IReceptionService _service;
+        private readonly ILogger<ReceptionController> _logger;
 
-        public ReceptionController(IReceptionService service)
+        public ReceptionController(IReceptionService service, ILogger<ReceptionController> logger)
         {
             _service = service;
+            _logger = logger;
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<ActionResult<ApiResponse<ReceptionDto?>>> GetById(int id)
         {
-            var reception = await _service.GetByIdAsync(id);
-            return reception == null ? NotFound() : Ok(reception);
+            try
+            {
+                var reception = await _service.GetByIdAsync(id);
+                if (reception == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<ReceptionDto?>(Request.Path, "Reception not found"));
+                }
+
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, reception));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An exceptional occurred while fetching the reception by ID");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<ReceptionDto?>(Request.Path, "An error occurred while processing your request"));
+            }
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<ApiResponse<IEnumerable<ReceptionDto>>>> GetAll()
         {
-            var receptions = await _service.GetAllAsync();
-            return Ok(receptions);
+            try
+            {
+                var receptions = await _service.GetAllAsync();
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, receptions));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An exceptional occurred while fetching all receptions");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<IEnumerable<ReceptionDto>>(Request.Path, "An error occurred while processing your request"));
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromForm] CreateReceptionDto dto)
+        public async Task<ActionResult<ApiResponse<ReceptionDto>>> Add([FromForm] CreateReceptionDto dto)
         {
-            await _service.AddAsync(dto);
-            return CreatedAtAction(nameof(GetById), dto);
+            try
+            {
+                var reception = await _service.AddAsync(dto);
+                if (reception == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<ReceptionDto>(Request.Path, "Invalid data provided"));
+                }
+
+                return StatusCode(StatusCodes.Status201Created, ResponseFactory.Success(Request.Path, reception));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An exceptional occurred while adding a new reception");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<ReceptionDto>(Request.Path, "An error occurred while processing your request"));
+            }
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(CreateReceptionDto dto)
+        public async Task<ActionResult<ApiResponse<object>>> Update([FromForm] CreateReceptionDto dto)
         {
-            await _service.UpdateAsync(dto);
-            return NoContent();
+            try
+            {
+                await _service.UpdateAsync(dto);
+                return StatusCode(StatusCodes.Status204NoContent, ResponseFactory.Success<object>(Request.Path, null, "Update successful"));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An exceptional occurred while updating a reception");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "An error occurred while processing your request"));
+            }
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult<ApiResponse<object>>> Delete(int id)
         {
-            await _service.DeleteAsync(id);
-            return NoContent();
+            try
+            {
+                await _service.DeleteAsync(id);
+                return StatusCode(StatusCodes.Status204NoContent, ResponseFactory.Success<object>(Request.Path, null, "Delete successful"));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An exceptional occurred while deleting a reception");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "An error occurred while processing your request"));
+            }
         }
     }
-
+    
 
 }

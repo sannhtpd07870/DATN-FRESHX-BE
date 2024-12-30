@@ -6,33 +6,69 @@ namespace Freshx_API.Models;
 
 public partial class MedicalServiceRequest
 {
-    public int MedicalServiceRequestId { get; set; } // mã yc dịch vụ
-    public DateTime? RequestTime { get; set; } // thời gian yc
-    public int? ReceptionId { get; set; } //id tiếp nhận
-    public int? ServiceId { get; set; } // id dịch vụ
-    public int? Quantity { get; set; } // số lượng
-    public decimal? ServiceTotalAmount { get; set; } // tổng tiền dịch vụ
-    public bool? IsApproved { get; set; } // có được phép thực hiện?
-    public bool? Status { get; set; } // trạng thái?
-    public int? AssignedById { get; set; } // người chỉ định
-    public int? CreatedBy { get; set; } // tạo bởi
+    public int MedicalServiceRequestId { get; set; } // ID của yêu cầu dịch vụ y tế
 
-    public DateTime? CreatedDate { get; set; } // Ngày tạo
+    public DateTime? RequestTime { get; set; } // Thời gian yêu cầu
 
-    public string? UpdatedBy { get; set; } // Cập nhật bởi
+    // ID của lễ tân
+    public int? ReceptionId { get; set; }
 
-    public DateTime? UpdatedDate { get; set; } // ngày cập nhật
+    // Số lượng dịch vụ
+    public int? Quantity { get; set; }
 
-    public int? IsDeleted { get; set; } // đã xóa?
+    // ID của dịch vụ
+    public int? ServiceId { get; set; }
 
+    // Tổng số tiền của dịch vụ
+    public decimal? ServiceTotalAmount { get; set; }
+    
+    //chiết khấu
+    public decimal? discount { get; set; }
+
+    // Trạng thái phê duyệt
+    public bool? IsApproved { get; set; }
+
+    //phòng thực hiện
+    public int? DepartmentId { get; set; }
+
+    // Trạng thái của yêu cầu
+    public bool? Status { get; set; }
+
+    // ID của người được giao nhiệm vụ
+    public int? AssignedById { get; set; }
+
+    // ID của người tạo yêu cầu
+    public int? CreatedBy { get; set; }
+
+    // Ngày tạo yêu cầu
+    public DateTime? CreatedDate { get; set; }
+
+    // Người cập nhật yêu cầu
+    public string? UpdatedBy { get; set; }
+
+    // Ngày cập nhật yêu cầu
+    public DateTime? UpdatedDate { get; set; }
+
+    // Trạng thái xóa yêu cầu
+    public int? IsDeleted { get; set; }
+
+    // Nhân viên được giao nhiệm vụ
     public virtual Employee? AssignedByEmployee { get; set; }
+
+    // Bác sĩ được giao nhiệm vụ
     public virtual Doctor? AssignedByDoctor { get; set; }
 
+    // Yêu cầu dịch vụ y tế cha
     public virtual MedicalServiceRequest? ParentMedicalServiceRequest { get; set; }
-    
+
+    // Bệnh nhân
     public virtual Patient? Patient { get; set; }
 
+    // Lễ tân
     public virtual Reception? Reception { get; set; }
 
+    public virtual Department? Department { get; set; }
+
+    // Mối quan hệ 1 MedicalServiceRequest có thể có nhiều dịch vụ
     public virtual ServiceCatalog? Service { get; set; }
 }

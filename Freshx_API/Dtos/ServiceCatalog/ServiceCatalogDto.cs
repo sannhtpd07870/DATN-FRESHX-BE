@@ -8,4 +8,6 @@
         public string? Name { get; set; } // Tên danh mục dịch vụ
         public decimal? Price { get; set; } // Giá dịch vụ
     }
+
+   
 }

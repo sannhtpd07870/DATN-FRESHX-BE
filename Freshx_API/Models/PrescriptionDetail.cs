@@ -39,7 +39,8 @@ namespace Freshx_API.Models
         public string? Note { get; set; } // Ghi chú riêng
 
         // Quan hệ
-        public virtual Prescription Prescription { get; set; } // Toa thuốc
+        public virtual Prescription? Prescription { get; set; } // Toa thuốc
+        public virtual TemplatePrescription? TemplatePrescription { get; set; }
         public virtual DrugCatalog DrugCatalog { get; set; } // Danh mục thuốc
     }
 

@@ -1,9 +1,12 @@
-﻿using Freshx_API.Interfaces;
+﻿using AutoMapper;
+using Freshx_API.Dtos;
+using Freshx_API.Interfaces;
 using Freshx_API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Freshx_API.Repository
 {
+
     public class MedicalServiceRequestRepository : IMedicalServiceRequestRepository
     {
         private readonly FreshxDBContext _context;
@@ -13,12 +16,10 @@ namespace Freshx_API.Repository
             _context = context;
         }
 
-        public async Task<MedicalServiceRequest?> GetByIdAsync(int id)
+        public async Task<MedicalServiceRequest> GetByIdAsync(int id)
         {
             return await _context.MedicalServiceRequests
-                                 .Include(m => m.AssignedByEmployee)
-                                 .Include(m => m.Patient)
-                                 .FirstOrDefaultAsync(m => m.MedicalServiceRequestId == id);
+                .FirstOrDefaultAsync(msr => msr.MedicalServiceRequestId == id);
         }
 
         public async Task<IEnumerable<MedicalServiceRequest>> GetAllAsync()
@@ -26,21 +27,23 @@ namespace Freshx_API.Repository
             return await _context.MedicalServiceRequests.ToListAsync();
         }
 
-        public async Task AddAsync(MedicalServiceRequest entity)
+        public async Task<MedicalServiceRequest> AddAsync(MedicalServiceRequest medicalServiceRequest)
         {
-            _context.MedicalServiceRequests.Add(entity);
+            _context.MedicalServiceRequests.Add(medicalServiceRequest);
             await _context.SaveChangesAsync();
+            return medicalServiceRequest;
         }
 
-        public async Task UpdateAsync(MedicalServiceRequest entity)
+        public async Task<MedicalServiceRequest> UpdateAsync(MedicalServiceRequest medicalServiceRequest)
         {
-            _context.MedicalServiceRequests.Update(entity);
+            _context.MedicalServiceRequests.Update(medicalServiceRequest);
             await _context.SaveChangesAsync();
+            return medicalServiceRequest;
         }
 
         public async Task DeleteAsync(int id)
         {
-            var entity = await _context.MedicalServiceRequests.FindAsync(id);
+            var entity = await GetByIdAsync(id);
             if (entity != null)
             {
                 _context.MedicalServiceRequests.Remove(entity);
@@ -48,5 +51,6 @@ namespace Freshx_API.Repository
             }
         }
     }
+
 
 }

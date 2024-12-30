@@ -24,22 +24,25 @@ namespace Freshx_API.Repository
                 .Include(r => r.Patient)
                 .Include(r => r.Receptionist)
                 .FirstOrDefaultAsync(r => r.ReceptionId == id);
+           
         }
 
         public async Task<IEnumerable<Reception>> GetAllAsync()
         {
             return await _context.Receptions
-                .Include(r => r.MedicalServiceRequest)
-                .Include(r => r.AssignedDoctor)
-                .Include(r => r.Patient)
-                .Include(r => r.Receptionist)
+                .Include(r => r.MedicalServiceRequest) // Bao gồm các yêu cầu dịch vụ y tế
+                .Include(r => r.AssignedDoctor) // Bao gồm thông tin bác sĩ được chỉ định
+                .Include(r => r.Patient) // Bao gồm thông tin bệnh nhân
+                .Include(r => r.Receptionist) // Bao gồm thông tin lễ tân
                 .ToListAsync();
         }
 
-        public async Task AddAsync(Reception reception)
+
+        public async Task<Reception?> AddAsync(Reception Addreception)
         {
-            _context.Receptions.Add(reception);
+            _context.Receptions.Add(Addreception);
             await _context.SaveChangesAsync();
+            return Addreception;
         }
 
         public async Task UpdateAsync(Reception reception)
