@@ -1,5 +1,4 @@
-﻿
-using Freshx_API.Models;
+﻿using Freshx_API.Models;
 
 namespace Freshx_API.Interfaces
 {
@@ -11,7 +10,7 @@ namespace Freshx_API.Interfaces
             string? searchKeyword,
             DateTime? startDate,
             DateTime? endDate,
-            int? status);
+            int? IsDeleted);
 
         // Lấy thông tin danh mục thuốc theo ID
         Task<DrugCatalog?> GetByIdAsync(int id);
@@ -36,5 +35,12 @@ namespace Freshx_API.Interfaces
 
         // Lấy thông tin quốc gia theo ID (giúp kiểm tra thông tin quốc gia trước khi thực hiện các thao tác)
         Task<Country?> GetCountryByIdAsync(int? countryId);
+
+        Task<bool> UnitOfMeasureExistsAsync(int unitOfMeasureId);
+        Task<bool> ManufacturerExistsAsync(int manufacturerId);
+        Task<bool> CountryExistsAsync(int countryId);
+
+        Task<bool> DrugTypeExistsAsync(int drugTypeId);
+        Task<DrugCatalog?> GetNameAsync(string name);
     }
 }

@@ -26,4 +26,6 @@ public partial class UnitOfMeasure
     public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
 
     public string? UpdatedBy { get; set; } // Người cập nhật
+
+    public virtual ICollection<DrugCatalog> DrugCatalogs { get; set; } = new List<DrugCatalog>();
 }
