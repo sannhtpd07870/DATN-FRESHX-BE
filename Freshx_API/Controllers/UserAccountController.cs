@@ -22,8 +22,7 @@ namespace Freshx_API.Controllers
             _mapper = mapper;
             _logger = logger;
         }
-        //quản lý nhân viên 
-        //quản lý thông tin tài khoản cá nhân
+        //quản lý thông tin tài khoản người dùng hệ thống
         [HttpPost("Create-NewUser")]
         public async Task<ActionResult<ApiResponse<UserResponse>>> CreateNewUser([FromForm] AddingUserRequest request)
         {
@@ -44,7 +43,7 @@ namespace Freshx_API.Controllers
             }
         }
         [HttpGet("Get-AllUsers")]
-        public async Task<ActionResult<ApiResponse<Object>>> GetAllUsers([FromQuery] PaginationParameters parameters)
+        public async Task<ActionResult<ApiResponse<Object>>> GetAllUsers([FromQuery] Parameters parameters)
         {
             try
             {

@@ -57,8 +57,8 @@ namespace Freshx_API.Controllers
             }
         }
 
-        // GET: api/Supplier/{id}
-        [HttpGet("{id}")]
+        // GET: api/Supplier/id/{id}
+        [HttpGet("id/{id}")]
         public async Task<ActionResult<ApiResponse<SupplierDetailDto>>> GetSupplierById(int id)
         {
             try
@@ -82,9 +82,34 @@ namespace Freshx_API.Controllers
             }
         }
 
+        // GET: api/Supplier/code/{code}
+        [HttpGet("code/{code}")]
+        public async Task<ActionResult<ApiResponse<SupplierDetailDto>>> GetSupplierByCodeAsync(string code)
+        {
+            try
+            {
+                var result = await _service.GetSupplierByCodeAsync(code);
+
+                if (result == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound,
+                        ResponseFactory.Error<SupplierDetailDto>(Request.Path, "Nhà cung cấp không tồn tại.", StatusCodes.Status404NotFound));
+                }
+
+                return StatusCode(StatusCodes.Status200OK,
+                    ResponseFactory.Success(Request.Path, result, "Lấy thông tin nhà cung cấp thành công.", StatusCodes.Status200OK));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Một ngoại lệ đã xảy ra trong khi tìm nạp nhà cung cấp bởi ID");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ResponseFactory.Error<SupplierDetailDto>(Request.Path, "Một lỗi đã xảy ra,", StatusCodes.Status500InternalServerError));
+            }
+        }
+
         // POST: api/Supplier
         [HttpPost]
-        public async Task<ActionResult<ApiResponse<SupplierDetailDto>>> CreateSupplier([FromBody] SupplierCreateUpdateDto SupplierDetailDto)
+        public async Task<ActionResult<ApiResponse<SupplierDetailDto>>> CreateSupplier([FromBody] SupplierCreateDto SupplierDetailDto)
         {
             try
             {
@@ -104,16 +129,38 @@ namespace Freshx_API.Controllers
             }
         }
 
-        // PUT: api/Supplier/{id}
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ApiResponse<string>>> UpdateSupplier(int id, [FromBody] SupplierCreateUpdateDto SupplierDetailDto)
+        // PUT: api/Supplier/code/{code}
+        [HttpPut("code/{code}")]
+        public async Task<ActionResult<ApiResponse<string>>> UpdateSupplier(string code, [FromBody] SupplierUpdateDto SupplierDetailDto)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
 
-                await _service.UpdateAsync(id, SupplierDetailDto);
+                await _service.UpdateAsyncByCode(code, SupplierDetailDto);
+
+                return StatusCode(StatusCodes.Status200OK,
+                    ResponseFactory.Success(Request.Path, "Cập nhật thành công!", "Cập nhật thành công!", StatusCodes.Status200OK));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Một ngoại lệ đã xảy ra trong khi cập nhật nhà cung cấp");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra hoặc dữ liệu không tồn tại.", StatusCodes.Status500InternalServerError));
+            }
+        }
+
+        // PUT: api/Supplier/{id}
+        [HttpPut("id/{id}")]
+        public async Task<ActionResult<ApiResponse<string>>> UpdateSupplier(int id, [FromBody] SupplierUpdateDto SupplierDetailDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+
+                await _service.UpdateAsyncbyID(id, SupplierDetailDto);
 
                 return StatusCode(StatusCodes.Status200OK,
                     ResponseFactory.Success(Request.Path, "Cập nhật thành công!", "Cập nhật thành công!", StatusCodes.Status200OK));
@@ -127,12 +174,31 @@ namespace Freshx_API.Controllers
         }
 
         // DELETE: api/Supplier/{id}
-        [HttpDelete("{id}")]
+        [HttpDelete("id/{id}")]
         public async Task<ActionResult<ApiResponse<string>>> DeleteSupplier(int id)
         {
             try
             {
-                await _service.DeleteAsync(id);
+                await _service.DeleteAsyncId(id);
+
+                return StatusCode(StatusCodes.Status200OK,
+                    ResponseFactory.Success(Request.Path, "Xóa thành công!", "Xóa thành công!", StatusCodes.Status200OK));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Một ngoại lệ đã xảy ra trong khi xóa nhà cung cấp");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra hoặc dữ liệu không tồn tại", StatusCodes.Status500InternalServerError));
+            }
+        }
+
+        // DELETE: api/Supplier/code/{code}
+        [HttpDelete("code/{code}")]
+        public async Task<ActionResult<ApiResponse<string>>> DeleteSupplierCode(string code)
+        {
+            try
+            {
+                await _service.DeleteAsyncCode(code);
 
                 return StatusCode(StatusCodes.Status200OK,
                     ResponseFactory.Success(Request.Path, "Xóa thành công!", "Xóa thành công!", StatusCodes.Status200OK));

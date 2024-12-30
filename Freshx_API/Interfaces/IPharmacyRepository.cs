@@ -1,4 +1,5 @@
 ﻿using Freshx_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Freshx_API.Interfaces
 {
@@ -31,5 +32,8 @@ namespace Freshx_API.Interfaces
 
         // Lấy thông tin InventoryType theo ID
         Task<InventoryType?> GetInventoryTypeByIdAsync(int? inventoryTypeId);
+
+        Task<Pharmacy> GetPharmacyByCodeAsync(string code);
+        
     }
 }

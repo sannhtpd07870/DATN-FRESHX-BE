@@ -21,6 +21,9 @@ using Freshx_API.Dtos.DrugCatalog;
 using Freshx_API.Dtos.Payments;
 using Freshx_API.Dtos.UserAccount;
 using Freshx_API.Dtos.LabResult;
+using Freshx_API.Dtos.Patient;
+using Freshx_API.Dtos.Employee;
+using Freshx_API.Dtos.UserAccountManagement;
 
 namespace Freshx_API.Mappers
 {
@@ -43,7 +46,10 @@ namespace Freshx_API.Mappers
             CreateMap<DepartmentTypeCreateUpdateDto, DepartmentType>();
 
             // Doctor Mappings
-            CreateMap<Doctor, DoctorDto>();
+            CreateMap<Doctor, DoctorDto>()
+             // Chỉ map những trường có tên khác nhau
+             .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name))
+             .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
             CreateMap<Doctor, DoctorDetailDto>();
             CreateMap<DoctorCreateUpdateDto, Doctor>();
 
@@ -66,7 +72,8 @@ namespace Freshx_API.Mappers
             CreateMap<Pharmacy, PharmacyDto>();
 
             // Ánh xạ PharmacyCreateUpdateDto sang Pharmacy (dùng cho tạo mới hoặc cập nhật)
-            CreateMap<PharmacyCreateUpdateDto, Pharmacy>();
+            CreateMap<PharmacyUpdateDto, Pharmacy>();
+            CreateMap<PharmacyCreateDto, Pharmacy>();
 
             // Ánh xạ Pharmacy sang PharmacyDetailDto (chi tiết của nhà thuốc)
             CreateMap<Pharmacy, PharmacyDetailDto>();
@@ -105,7 +112,10 @@ namespace Freshx_API.Mappers
             CreateMap<Supplier, SupplierDetailDto>();
 
             // Map SupplierCreateUpdateDto -> Supplier
-            CreateMap<SupplierCreateUpdateDto, Supplier>()
+            CreateMap<SupplierUpdateDto, Supplier>()
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<SupplierCreateDto, Supplier>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Map country -> CountryDto
@@ -130,15 +140,14 @@ namespace Freshx_API.Mappers
             CreateMap<Ward, WardDto>();
 
             // Mapping Bill to BillDto
-            CreateMap<Bill, BillDto>()
-                .ForMember(dest => dest.BillDetails, opt => opt.MapFrom(src => src.BillDetails));
-
-            // Mapping BillDto to Bill
-            CreateMap<BillDto, Bill>()
-                .ForMember(dest => dest.BillDetails, opt => opt.MapFrom(src => src.BillDetails));
-
+            CreateMap<Bill, BillDto>().ReverseMap();
+            //Mapping Payment to PaymentDto
+            CreateMap<Payment, PaymentDto>().ReverseMap();
             // Mapping BillDetail to BillDetailDto
             CreateMap<BillDetail, BillDetailDto>().ReverseMap();
+
+            CreateMap<Bill,BillDtoUpdate>().ReverseMap();
+            CreateMap<BillDetail,BillDetailDtoUpdate>().ReverseMap();
 
             //
 
@@ -151,6 +160,23 @@ namespace Freshx_API.Mappers
             CreateMap<AppUser, UserResponse>().ReverseMap();
 
             CreateMap<LabResult, LabResultDto>().ReverseMap();
+            //Mapping Patient Model to PatientResponseDto
+            CreateMap<Patient,PatientResponseDto>();
+
+            //Mapping Employee to EmployeeDto
+            CreateMap<Employee, EmployeeDto>()
+            // Chỉ map những trường có tên khác nhau
+            .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name))
+            .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
+
+            //Mapping TechnicianModel to TechnicianDto
+            CreateMap<Technician,TechnicianDto>()
+           // Chỉ map những trường có tên khác nhau
+           .ForMember(dest => dest.PositionName, opt => opt.MapFrom(src => src.Position.Name))
+           .ForMember(dest => dest.DepartmentName, opt => opt.MapFrom(src => src.Department.Name));
+
+            //Mapping AppUserModel to UserAccountManagementDto
+            CreateMap<AppUser, UserAccountResponse>();
         }
     }
 }

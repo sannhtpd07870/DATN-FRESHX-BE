@@ -85,6 +85,21 @@ namespace Freshx_API.Repository
             return entity;
         }
 
+        public async Task<Supplier?> GetSupplierByCodeAsync(string code)
+        {
+            try
+            {
+                return await _context.Suppliers
+                    .FirstOrDefaultAsync(s => s.Code == code && (s.IsDeleted == 0 || s.IsDeleted == null));
+            }
+            catch (Exception ex)
+            {
+                // Log exception hoặc xử lý thêm
+                throw new Exception("Error retrieving supplier", ex);
+            }
+        }
+
+
         // Cập nhật nhà cung cấp
         public async Task UpdateAsync(Supplier entity)
         {
@@ -93,7 +108,7 @@ namespace Freshx_API.Repository
         }
 
         // Xóa mềm nhà cung cấp
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsyncId(int id)
         {
             var entity = await _context.Suppliers.FindAsync(id);
             if (entity != null)
@@ -102,5 +117,24 @@ namespace Freshx_API.Repository
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task DeleteAsyncCode(string code)
+        {
+            // Tìm nhà cung cấp theo code
+            var entity = await _context.Suppliers.FirstOrDefaultAsync(s => s.Code == code && (s.IsDeleted == null || s.IsDeleted == 0));
+
+            if (entity == null)
+            {
+                // Nếu không tìm thấy, ném ngoại lệ hoặc xử lý theo cách khác
+                throw new KeyNotFoundException("Nhà cung cấp không tồn tại hoặc đã bị xóa.");
+            }
+
+            // Đánh dấu là đã xóa (soft delete) thay vì xóa thật
+            entity.IsDeleted = 1; // Hoặc bạn có thể set IsDeleted = true tùy thuộc vào kiểu dữ liệu của bạn
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

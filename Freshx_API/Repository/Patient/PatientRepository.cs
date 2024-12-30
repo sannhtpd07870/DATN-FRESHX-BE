@@ -1,8 +1,11 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Dtos.Patient;
 using Freshx_API.Interfaces;
+using Freshx_API.Interfaces.Auth;
 using Freshx_API.Models;
+using Freshx_API.Services.CommonServices;
 using Microsoft.EntityFrameworkCore;
 
 namespace Freshx_API.Repository
@@ -12,39 +15,87 @@ namespace Freshx_API.Repository
         private readonly FreshxDBContext _context;
         private readonly IMapper _mapper;
         private readonly ILogger<PatientRepository> _logger;
-        public PatientRepository(FreshxDBContext context, IMapper mapper, ILogger<PatientRepository> logger)
+        private readonly NumberGeneratorService _numberGenerator;
+        private readonly ITokenRepository _tokenRepository;
+        private readonly IFileService _fileService;
+        public PatientRepository(FreshxDBContext context, IMapper mapper, ILogger<PatientRepository> logger,NumberGeneratorService generatorService,ITokenRepository tokenRepository,IFileService fileService)
         {
             _context = context;
             _mapper = mapper;
             _logger = logger;
+            _numberGenerator = generatorService;
+            _tokenRepository = tokenRepository;
+            _fileService = fileService;
         }
         public async Task<Patient?> CreatePatientAsync(AddingPatientRequest addingPatientRequest)
         {
             try
-            {
-                var patient = new Patient()
+            {               
+                int? avartarId;
+                var listfiles = new List<IFormFile> { addingPatientRequest.AvatarFile };
+                if (addingPatientRequest.AvatarFile == null)
                 {
-                    MedicalRecordNumber = addingPatientRequest?.MedicalRecordNumber,
-                    AdmissionNumber = addingPatientRequest?.AdmissionNumber,
+                    avartarId = null;                
+                }
+                else
+                {
+                    var avartar = await _fileService.SaveFileAsync(_tokenRepository.GetUserIdFromToken(), "avarta", listfiles);
+                    avartarId = avartar[0].Id;
+                }
+                var user = await _context.Users.FindAsync(addingPatientRequest.Email);
+                string? accountId = null;
+                if( user != null)
+                {
+                    accountId = user.Id;
+                }
+                // Generate numbers
+                string medicalRecordNumber = await _numberGenerator.GenerateMedicalRecordNumber();
+                string admissionNumber = await _numberGenerator.GenerateAdmissionNumber(DateTime.UtcNow);
+
+
+                var patient = new Patient
+                {
+                    MedicalRecordNumber = medicalRecordNumber,
+                    AdmissionNumber = admissionNumber,
                     Name = addingPatientRequest?.Name,
                     Gender = addingPatientRequest?.Gender,
                     DateOfBirth = addingPatientRequest?.DateOfBirth,
                     PhoneNumber = addingPatientRequest?.PhoneNumber,
                     IdentityCardNumber = addingPatientRequest?.IdentityCardNumber,
-                    Address = addingPatientRequest?.Address,
-                    CreatedBy = addingPatientRequest?.CreatedBy,
-                    CreatedDate = DateTime.UtcNow,
-                    UpdatedDate = DateTime.UtcNow,
+                    CreatedBy = _tokenRepository.GetUserIdFromToken(),
+                    CreatedDate = DateTime.UtcNow,                
                     IsDeleted = 0,
-                    Ethnicity = addingPatientRequest?.Ethnicity
-                };
+                    IsSuspended = 0,
+                    Ethnicity = addingPatientRequest?.Ethnicity,
+                    WardId = addingPatientRequest?.WardId,
+                    DistrictId = addingPatientRequest?.DistrictId,
+                    ProvinceId = addingPatientRequest?.ProvinceId,
+                    AccountId = accountId,
+                    ImageId = avartarId,
+                    Email = addingPatientRequest?.Email,                                 
+                };              
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
                     try
                     {
+                        
                         await _context.Patients.AddAsync(patient);
                         await _context.SaveChangesAsync();
+                        // Load related entities to generate address
+                        await _context.Entry(patient)
+                            .Reference(p => p.Ward)
+                            .LoadAsync();
+                        await _context.Entry(patient)
+                            .Reference(p => p.District)
+                            .LoadAsync();
+                        await _context.Entry(patient)
+                            .Reference(p => p.Province)
+                            .LoadAsync();
+                        patient.Address = patient.FormattedAddress;
+                        await _context.SaveChangesAsync();
+
                         await transaction.CommitAsync();
+
                         return patient;
                     }
                     catch (Exception)
@@ -65,7 +116,13 @@ namespace Freshx_API.Repository
         {
             try
             {
-                return await _context.Patients.FindAsync(id);
+                var patient = await _context.Patients.FindAsync(id);
+                if (patient == null || patient.IsDeleted == 1)
+                {
+                    return null;
+                }
+                return patient;
+                
             }
             catch(Exception e)
             {
@@ -78,27 +135,64 @@ namespace Freshx_API.Repository
             try
             {
                 var patient = await _context.Patients.FindAsync(id);
-                if(patient != null)
+                if (patient == null)
                 {
-                    patient.MedicalRecordNumber = updatingPatientRequest.MedicalRecordNumber;
-                    patient.AdmissionNumber = updatingPatientRequest.AdmissionNumber;
+                    return null;
+                }
+                else 
+                {
+                    int? avartarId;
+                    if (patient.ImageId == null)
+                    {
+                        var listFiles = new List<IFormFile> { updatingPatientRequest.AvatarFile};
+                        if(updatingPatientRequest.AvatarFile == null)
+                        {
+                            avartarId = null;                                  
+                        }
+                        else
+                        {
+                            var avartar = await _fileService.SaveFileAsync(_tokenRepository.GetUserIdFromToken(), "avarta", listFiles);
+                            avartarId = avartar[0].Id;
+                        }
+                        patient.ImageId = avartarId;
+                    }
+                    else if(updatingPatientRequest.AvatarFile!= null) 
+                    {
+                        await _fileService.UpdateFileAsync(patient.ImageId, updatingPatientRequest.AvatarFile);
+                    }                  
                     patient.Name = updatingPatientRequest.Name;
                     patient.Gender = updatingPatientRequest.Gender;
                     patient.PhoneNumber = updatingPatientRequest.PhoneNumber;
                     patient.IdentityCardNumber = updatingPatientRequest.IdentityCardNumber;
-                    patient.Address = updatingPatientRequest.Address;
-                    patient.CreatedBy = updatingPatientRequest.CreatedBy;
-                    patient.CreatedDate = patient.CreatedDate;
+                    patient.UpdatedBy = _tokenRepository.GetUserIdFromToken();
                     patient.UpdatedDate = DateTime.UtcNow;
-                    patient.UpdatedBy = updatingPatientRequest.UpdatedBy;
-                    patient.IsDeleted = updatingPatientRequest.IsDeleted;
                     patient.Ethnicity = updatingPatientRequest.Ethnicity;
+                    patient.WardId = updatingPatientRequest?.WardId;
+                    patient.DistrictId = updatingPatientRequest?.DistrictId;
+                    patient.ProvinceId = updatingPatientRequest?.ProvinceId;
+                    patient.Email = updatingPatientRequest?.Email;
+                    patient.DateOfBirth = updatingPatientRequest?.DateOfBirth;
+
+
+                    // Update address after loading relations
+                    await _context.Entry(patient)
+                        .Reference(p => p.Ward)
+                        .LoadAsync();
+                    await _context.Entry(patient)
+                        .Reference(p => p.District)
+                        .LoadAsync();
+                    await _context.Entry(patient)
+                        .Reference(p => p.Province)
+                        .LoadAsync();
+
+                    patient.Address = patient.FormattedAddress;
+
                     var result = await _context.SaveChangesAsync();
-                    if(result>0)
+                    if (result > 0)
                     {
                         return patient;
                     }
-                }
+                }                               
                 return null;
             }
             catch (Exception e)
@@ -114,9 +208,9 @@ namespace Freshx_API.Repository
                 var patient = await _context.Patients.FindAsync(id); 
                 if(patient != null)
                 {
-                    _context.Patients.Remove(patient);
+                    patient.IsDeleted = 1;
                     var result = await _context.SaveChangesAsync();
-                    if(result > 0)
+                    if (result > 0)
                     {
                         return patient;
                     }
@@ -129,9 +223,9 @@ namespace Freshx_API.Repository
                 throw;
             }
         }
-        public async Task<CustomPageResponse<IEnumerable<Patient?>>> GetPatientsAsync(PaginationParameters parameters)
+        public async Task<List<Patient?>> GetPatientsAsync(Parameters parameters)
         {
-            var query = _context.Patients.AsQueryable();
+            var query = _context.Patients.Where(p => p.IsDeleted == 0).AsQueryable();
 
             // Apply search filter
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
@@ -142,29 +236,12 @@ namespace Freshx_API.Repository
             }
 
             // Apply sorting
-            if (parameters.SortOrderAsc ?? true)
-            {
-                query = query.OrderBy(u => u.Name ?? string.Empty);
-            }
-            else
-            {
-                query = query.OrderByDescending(u => u.Name ?? string.Empty);
-            }
-
-            // Get total count before pagination
-            var totalRecords = await query.CountAsync();
-
-            // Apply pagination
-            var items = await query
-                .Skip((parameters.PageNumber - 1) * parameters.PageSize)
-                .Take(parameters.PageSize)
-                .ToListAsync();
-
-            return new CustomPageResponse<IEnumerable<Patient?>>(
-                items,
-                parameters.PageNumber,
-                parameters.PageSize,
-                totalRecords);
+            // Sort by created date
+            query = parameters.SortOrderAsc ?? true
+               ? query.OrderBy(p => p.CreatedDate)
+               : query.OrderByDescending(p => p.CreatedDate);
+            return await query.ToListAsync();
         }
+
     }
 }
