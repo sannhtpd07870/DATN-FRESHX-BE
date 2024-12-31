@@ -5,7 +5,7 @@ namespace Freshx_API.Models;
 
 public partial class DrugCatalog
 {
-   public int DrugCatalogId { get; set; } // ID danh mục thuốc
+    public int DrugCatalogId { get; set; } // ID danh mục thuốc
 
     public string? Code { get; set; } // Mã danh mục thuốc
 

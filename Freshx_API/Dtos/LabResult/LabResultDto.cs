@@ -1,4 +1,5 @@
-﻿using Freshx_API.Models;
+﻿
+using Freshx_API.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace Freshx_API.Dtos.LabResult
@@ -70,6 +71,6 @@ namespace Freshx_API.Dtos.LabResult
 
         public virtual Reception? Reception { get; set; }
 
-        public virtual Technician? Technician { get; set; }
+        public virtual Models.Technician? Technician { get; set; }
     }
 }

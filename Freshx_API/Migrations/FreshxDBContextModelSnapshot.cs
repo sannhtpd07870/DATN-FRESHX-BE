@@ -1726,6 +1726,49 @@ namespace Freshx_API.Migrations
                     b.ToTable("MenuPermissions");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.OnlineAppointment", b =>
+                {
+                    b.Property<int>("OnlineAppointmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OnlineAppointmentId"));
+
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReasonForVisit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TimeSlotId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("OnlineAppointmentId");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("TimeSlotId");
+
+                    b.ToTable("OnlineAppointments");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Patient", b =>
                 {
                     b.Property<int>("PatientId")
@@ -2562,6 +2605,32 @@ namespace Freshx_API.Migrations
                     b.ToTable("TemplatePrescriptions");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.TimeSlot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TimeSlots");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.UnitOfMeasure", b =>
                 {
                     b.Property<int>("UnitOfMeasureId")
@@ -3242,6 +3311,33 @@ namespace Freshx_API.Migrations
                         .HasForeignKey("ParentMenuId");
 
                     b.Navigation("ParentMenu");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.OnlineAppointment", b =>
+                {
+                    b.HasOne("Freshx_API.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Freshx_API.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Freshx_API.Models.TimeSlot", "TimeSlot")
+                        .WithMany()
+                        .HasForeignKey("TimeSlotId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("TimeSlot");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Patient", b =>

@@ -177,6 +177,15 @@ namespace Freshx_API.Mappers
 
             //Mapping AppUserModel to UserAccountManagementDto
             CreateMap<AppUser, UserAccountResponse>();
+
+            //
+            CreateMap<OnlineAppointment, OnlineAppointmentDto>()
+           .ForMember(dest => dest.DoctorName,
+               opt => opt.MapFrom(src => src.Doctor.Name))  // Giả sử Doctor có trường Name
+           .ForMember(dest => dest.DepartmentName,
+               opt => opt.MapFrom(src => src.Doctor.Department.Name))  // Giả sử Doctor có navigation property Department
+           .ForMember(dest => dest.StartTime,
+               opt => opt.MapFrom(src => src.TimeSlot.StartTime));
         }
     }
 }

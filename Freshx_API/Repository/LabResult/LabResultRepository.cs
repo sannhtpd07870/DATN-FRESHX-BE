@@ -1,7 +1,7 @@
 ﻿using Freshx_API.Interfaces;
 using Freshx_API.Models;
 using Microsoft.EntityFrameworkCore;
-using Freshx_API.Interfaces.LabResult;
+using Freshx_API.Interfaces.LabResultRepository;
 
 namespace Freshx_API.Repository.LabResults
 {
@@ -72,6 +72,16 @@ namespace Freshx_API.Repository.LabResults
 
             _context.LabResults.Remove(labResult);
             await _context.SaveChangesAsync();
+        }
+
+        public Task AddAsync(LabResult labResult)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }
