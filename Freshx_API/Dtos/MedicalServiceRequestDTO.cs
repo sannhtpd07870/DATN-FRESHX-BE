@@ -14,6 +14,7 @@
 
         // ID của dịch vụ
         public int? ServiceId { get; set; }
+        public string? Results { get; set; } // kết quả
 
         // Tổng số tiền của dịch vụ
         public decimal? ServiceTotalAmount { get; set; }
@@ -65,4 +66,21 @@
 
     }
 
+    public class UpdateMedicalServiceRequestDto
+    {
+        public DateTime? RequestTime { get; set; }
+        public int? ServiceId { get; set; }
+        public string? Results { get; set; } // kết quả
+        public int? ReceptionId { get; set; }
+        public int? Quantity { get; set; }
+        //chiết khấu
+        public decimal? discount { get; set; }
+        public decimal? ServiceTotalAmount { get; set; }
+        //phòng thực hiện
+        public int? DepartmentId { get; set; }
+        public bool? IsApproved { get; set; }
+        public bool? Status { get; set; }
+        public int? AssignedById { get; set; }
+
+    }
 }

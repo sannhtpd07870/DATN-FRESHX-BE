@@ -31,6 +31,11 @@ using Freshx_API.Interfaces.Payments;
 using Freshx_API.Repository.Payments;
 using Freshx_API.Repository.Payments;
 using Freshx_API.Interfaces.IReception;
+using Freshx_API.Repository.LabResults;
+using Freshx_API.Interfaces.Services;
+using Org.BouncyCastle.Math.EC.Multiplier;
+using Freshx_API.Interfaces.IPrescription;
+using Freshx_API.Interfaces.ServiceType;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -302,7 +307,10 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+
 builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
+builder.Services.AddScoped<IReceptionService, ReceptionService>();
+
 builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 builder.Services.AddScoped<NumberGeneratorService>();
 builder.Services.AddScoped<IFixDoctorRepository, FixDoctorRepository>();
@@ -394,6 +402,22 @@ builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 builder.Services.AddScoped<IBillingRepository, BillingRepository>();
 builder.Services.AddScoped<IBillingService, BillingService>();
 
+// Đăng kí labReSult
+builder.Services.AddScoped<ILabResultRepository, LabResultRepository>();
+builder.Services.AddScoped<ILabResultService, LabResultService>();
+
+//Đăng kí Prescription - toa thuốc - toa thuốc chi tiết
+builder.Services.AddScoped<IPrescriptionService,PrescriptionService>();
+builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+builder.Services.AddScoped<IPrescriptionDetailRepository, PrescriptionDetailRepository>();
+builder.Services.AddScoped<IPrescriptionDetailService, PrescriptionDetailService>();
+
+//Đăng kí loại dịch vụ servicetype
+builder.Services.AddScoped<IServiceTypeRepository, ServiceTypeRepository>();
+builder.Services.AddScoped<IServiceTypeService, ServiceTypeService>();
+
+// đăng kí repositorycheck dùng để check trùng lặp
+builder.Services.AddScoped<RepositoryCheck>();
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();

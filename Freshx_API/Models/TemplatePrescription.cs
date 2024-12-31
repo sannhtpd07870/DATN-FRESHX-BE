@@ -14,7 +14,7 @@ public partial class TemplatePrescription
 
     public string? Name { get; set; } // Tên mẫu đơn thuốc
 
-    public int? MedicalExaminationId { get; set; } // ID khám bệnh
+    public int? DiagnosisDictionaryId { get; set; } // từ điển chẩn đoán
 
     [Column(TypeName = "decimal(18, 2)")]
     public int? CreatedBy { get; set; } // Người tạo
@@ -34,5 +34,6 @@ public partial class TemplatePrescription
     public virtual ICollection<PrescriptionDetail> PrescriptionDetails { get; set; }
         = new List<PrescriptionDetail>(); // Chi tiết toa thuốc
 
+    public virtual ICollection<DiagnosisDictionary> DiagnosisDictionary { get; set; } // từ điển chẩn đoán
     //public virtual ICollection<TemplatePrescriptionDrugMapping> TemplatePrescriptionDrugMappings { get; set; } = new List<TemplatePrescriptionDrugMapping>(); // Danh sách ánh xạ thuốc trong mẫu đơn
 }

@@ -4,6 +4,9 @@ using Freshx_API.Dtos.ServiceCatalog;
 using Freshx_API.Services.CommonServices;
 using Freshx_API.Services;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol.Core.Types;
+using Freshx_API.Repository;
+using Freshx_API.Models;
 
 namespace Freshx_API.Controllers
 {
@@ -13,11 +16,13 @@ namespace Freshx_API.Controllers
     {
         private readonly ServiceCatalogService _service;
         private readonly ILogger<ServiceCatalogController> _logger;
+        private readonly RepositoryCheck _check;
 
-        public ServiceCatalogController(ServiceCatalogService service, ILogger<ServiceCatalogController> logger)
+        public ServiceCatalogController(ServiceCatalogService service, ILogger<ServiceCatalogController> logger, RepositoryCheck check)
         {
             _service = service;
             _logger = logger;
+            _check = check;
         }
 
         [HttpGet()]
@@ -73,6 +78,14 @@ namespace Freshx_API.Controllers
         {
             try
             {
+                // Kiểm tra tính duy nhất của trường 'Code' trong bảng ServiceTypes
+                var isUnique = await _check.IsUniqueAsync<ServiceCatalog>("Code", dto.Code);
+                if (!isUnique)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest,
+                        ResponseFactory.Error<ServiceTypes>(Request.Path, "Mã danh mục đã tồn tại.", StatusCodes.Status400BadRequest));
+                }
+
                 var result = await _service.CreateAsync(dto);
                 return StatusCode(StatusCodes.Status201Created,
                     ResponseFactory.Success(Request.Path, result, "Danh mục dịch vụ tạo thành công.", StatusCodes.Status201Created));

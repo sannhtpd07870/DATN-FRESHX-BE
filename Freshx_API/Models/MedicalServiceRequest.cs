@@ -18,6 +18,7 @@ public partial class MedicalServiceRequest
 
     // ID của dịch vụ
     public int? ServiceId { get; set; }
+    public string? Results  { get; set; } // kết quả
 
     // Tổng số tiền của dịch vụ
     public decimal? ServiceTotalAmount { get; set; }

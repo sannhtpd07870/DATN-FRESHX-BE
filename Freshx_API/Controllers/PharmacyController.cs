@@ -159,12 +159,19 @@ namespace Freshx_API.Controllers
                 return StatusCode(StatusCodes.Status200OK,
                     ResponseFactory.Success(Request.Path, "Nhà thuốc đã xóa thành công.", "Xóa thành công.", StatusCodes.Status200OK));
             }
+            catch (InvalidOperationException opEx)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest,
+                    ResponseFactory.Error<string>(Request.Path, opEx.Message, StatusCodes.Status400BadRequest));
+            }
+            
             catch (Exception e)
             {
                 _logger.LogError(e, "Một lỗi đã xảy ra trong khi xóa nhà thuốc.");
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+                    ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra:"+e.Message, StatusCodes.Status500InternalServerError));
             }
+            
         }
     }
 }
