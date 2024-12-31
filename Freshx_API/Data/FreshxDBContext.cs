@@ -141,10 +141,27 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser, IdentityRole, 
             .IsRequired(false)
             .OnDelete(DeleteBehavior.SetNull);
 
+        // DrugCatalog
+        modelBuilder.Entity<DrugCatalog>()
+            .Property(e => e.CostPrice)
+            .HasColumnType("decimal(10,3)");
+
+        modelBuilder.Entity<DrugCatalog>()
+            .Property(e => e.QuantityImported)
+            .HasColumnType("decimal(10,3)");
+
+        modelBuilder.Entity<DrugCatalog>()
+            .Property(e => e.QuantityInStock)
+            .HasColumnType("decimal(10,3)");
+
+        modelBuilder.Entity<DrugCatalog>()
+            .Property(e => e.UnitPrice)
+            .HasColumnType("decimal(10,3)");
+
         // DrugCatalog relationships
         modelBuilder.Entity<DrugCatalog>()
             .HasOne(d => d.UnitOfMeasure)
-            .WithMany()
+            .WithMany(u => u.DrugCatalogs)
             .HasForeignKey(d => d.UnitOfMeasureId)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -156,15 +173,48 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser, IdentityRole, 
 
         modelBuilder.Entity<DrugCatalog>()
             .HasOne(d => d.Country)
-            .WithMany()
+            .WithMany(u => u.DrugCatalogs)
             .HasForeignKey(d => d.CountryId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<DrugCatalog>()
             .HasOne(d => d.DrugType)
-            .WithMany()
+            .WithMany(u => u.DrugCatalogs)
             .HasForeignKey(d => d.DrugTypeId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // DrugBooking
+        modelBuilder.Entity<DrugBooking>()
+            .Property(e => e.AfternoonDose)
+            .HasColumnType("decimal(10,3)");
+
+        modelBuilder.Entity<DrugBooking>()
+            .Property(e => e.DaysOfSupply)
+            .HasColumnType("decimal(10,3)");
+
+        modelBuilder.Entity<DrugBooking>()
+            .Property(e => e.EveningDose)
+            .HasColumnType("decimal(10,3)");
+
+        modelBuilder.Entity<DrugBooking>()
+            .Property(e => e.MorningDose)
+            .HasColumnType("decimal(10,3)");
+
+        modelBuilder.Entity<DrugBooking>()
+            .Property(e => e.NoonDose)
+            .HasColumnType("decimal(10,3)");
+
+        modelBuilder.Entity<DrugBooking>()
+            .Property(e => e.Quantity)
+            .HasColumnType("decimal(10,3)");
+
+        modelBuilder.Entity<DrugBooking>()
+            .Property(e => e.TotalAmount)
+            .HasColumnType("decimal(10,3)");
+
+        modelBuilder.Entity<DrugBooking>()
+            .Property(e => e.UnitPrice)
+            .HasColumnType("decimal(10,3)");
 
         // Configure precision for decimal properties
         modelBuilder.Entity<MedicalServiceRequest>()
