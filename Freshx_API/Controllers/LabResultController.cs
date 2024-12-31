@@ -62,6 +62,7 @@ namespace Freshx_API.Controllers
         }
 
         // GET: LabResults/Create
+        [HttpPost("create")]
         public async Task<ActionResult<ApiResponse<LabResultDto>>> CreateLabResult([FromBody] LabResultDto labResult)
         {
             try
@@ -78,7 +79,7 @@ namespace Freshx_API.Controllers
         }
 
         // POST: LabResults/Edit
-        [HttpPost]
+        [HttpPut]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult<ApiResponse<LabResultDto>>> UpdateLabResult(int id, [Bind("LabResultId,ExecutionDate,ExecutionTime,ReceptionId,PatientId,TechnicianId,ConcludingDoctorId,Conclusion,Result,Description,Note,Instruction,Diagnosis,ResultTypeId,SampleReceivedTime,SampleTypeId,SampleQualityId,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted,SpouseName,SpouseYearOfBirth,SampleCollectionLocationMedicalFacilityId,IsSampleCollectedAtHome,SampleReceivedDate,SampleCollectionDate,SampleCollectionTime")] LabResult labResult)
         {
@@ -115,6 +116,7 @@ namespace Freshx_API.Controllers
         }
 
         // GET: LabResults/Delete/5
+        [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResponse<LabResultDto>>> Delete(int? id)
         {
             if (id == null)
@@ -137,7 +139,7 @@ namespace Freshx_API.Controllers
         }
 
         // POST: LabResults/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost("delete"), ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult<ApiResponse<LabResultDto>>> DeleteConfirmed(int id)
         {

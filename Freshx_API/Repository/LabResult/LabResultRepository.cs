@@ -1,7 +1,7 @@
 ﻿using Freshx_API.Interfaces;
 using Freshx_API.Models;
 using Microsoft.EntityFrameworkCore;
-using Freshx_API.Interfaces.LabResult;
+using Freshx_API.Interfaces.LabResultRepository;
 
 namespace Freshx_API.Repository.LabResults
 {
@@ -46,7 +46,7 @@ namespace Freshx_API.Repository.LabResults
             return await _context.LabResults.ToListAsync();
         }
 
-        public async Task CreateAsync(LabResult labResult)
+        public async Task AddAsync(LabResult labResult)
         {
             await _context.LabResults.AddAsync(labResult);
             await _context.SaveChangesAsync();
@@ -61,16 +61,16 @@ namespace Freshx_API.Repository.LabResults
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(LabResult labResult)
+        public async Task DeleteAsync(int id)
         {
-            //var entity = await _context.LabResults.FindAsync(id);
-            //if (entity != null)
-            //{
-            //    entity.IsDeleted = 1;
-            //    await _context.SaveChangesAsync();
-            //}
+            var entity = await _context.LabResults.FindAsync(id);
+            if (entity != null)
+            {
+                entity.IsDeleted = 1;
+                await _context.SaveChangesAsync();
+            }
 
-            _context.LabResults.Remove(labResult);
+            _context.LabResults.Remove(entity);
             await _context.SaveChangesAsync();
         }
     }

@@ -70,6 +70,6 @@ namespace Freshx_API.Dtos.LabResult
 
         public virtual Reception? Reception { get; set; }
 
-        public virtual Technician? Technician { get; set; }
+        //public virtual Technician? Technician { get; set; }
     }
 }
