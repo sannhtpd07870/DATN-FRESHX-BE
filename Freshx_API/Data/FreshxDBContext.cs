@@ -86,13 +86,13 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser, IdentityRole, 
         // ServiceCatalog
         modelBuilder.Entity<ServiceCatalog>()
             .HasOne(s => s.ServiceGroup)
-            .WithMany()
+            .WithMany(g => g.ServiceCatalogs)
             .HasForeignKey(s => s.ServiceGroupId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<ServiceCatalog>()
             .HasOne(s => s.ParentService)
-            .WithMany()
+            .WithMany(s => s.ChildServices)
             .HasForeignKey(s => s.ParentServiceId)
             .OnDelete(DeleteBehavior.Restrict);
 
