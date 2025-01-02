@@ -15,7 +15,7 @@ namespace Freshx_API.Models
         public int DrugCatalogId { get; set; } // ID danh mục thuốc (FK)
 
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal? MorningDose { get; set; } // Liều buổi sáng
+        public decimal? MorningDose { get; set; } // Liều buổi sáng 
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? NoonDose { get; set; } // Liều buổi trưa

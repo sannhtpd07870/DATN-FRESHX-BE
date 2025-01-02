@@ -19,7 +19,6 @@ using Freshx_API.Dtos.Country;
 using Freshx_API.Dtos.DrugCatalog;
 using Freshx_API.Dtos.Payments;
 using Freshx_API.Dtos.UserAccount;
-using Freshx_API.Dtos.LabResult;
 using Freshx_API.Dtos.Patient;
 using Freshx_API.Dtos.Employee;
 using Freshx_API.Dtos.UserAccountManagement;
@@ -97,9 +96,7 @@ namespace Freshx_API.Mappers
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
 
-            //CreateMap<Patient, PatientDto>();
-            CreateMap<Reception, CreateReceptionDto>().ReverseMap();
-            
+           
 
             // Map UnitOfMeasure -> UnitOfMeasureDetailDto
             CreateMap<UnitOfMeasure, UnitOfMeasureDetailDto>().ReverseMap();
@@ -150,6 +147,7 @@ namespace Freshx_API.Mappers
             CreateMap<MedicalServiceRequest, MedicalServiceRequestDto>().ReverseMap();
             CreateMap<MedicalServiceRequest, CreateMedicalServiceRequestDto>().ReverseMap();
             // tiếp nhận
+            //CreateMap<Patient, PatientDto>();
             CreateMap<Reception, CreateReceptionDto>().ReverseMap();
             CreateMap<ReceptionDto, Reception>().ReverseMap();
 
@@ -159,6 +157,8 @@ namespace Freshx_API.Mappers
             //Examine khám bệnh
             CreateMap<Examine, ExamineResponseDto>().ReverseMap();
             CreateMap<ExamineRequestDto, Examine>().ReverseMap();
+            CreateMap<Examine, ExamineOnly>().ReverseMap();
+            CreateMap<CreateExamDto, Examine>().ReverseMap();
 
             CreateMap<AppUser, UserResponse>().ReverseMap();
 

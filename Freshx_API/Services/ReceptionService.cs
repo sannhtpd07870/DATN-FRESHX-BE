@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Freshx_API.Dtos;
+using Freshx_API.Dtos.ExamineDtos;
 using Freshx_API.Dtos.Patient;
 using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.Auth;
@@ -51,14 +52,14 @@ namespace Freshx_API.Services
         {
             var receptions = await _repository.GetAllAsync();
             var data = _mapper.Map<IEnumerable<ReceptionDto>>(receptions);
-            Console.WriteLine(data);
+            
             return data;
         }
 
         public async Task<ReceptionDto> AddAsync(CreateReceptionDto dto)
         {
             var reception = _mapper.Map<Reception>(dto);
-            if (dto.PatientId != null)
+            if (dto.PatientId == null)
             {
                 var patien = await _patientRepository.CreatePatientAsync(dto.AddingPatient);
                 reception.PatientId = patien.PatientId;
@@ -84,8 +85,27 @@ namespace Freshx_API.Services
                     request.ReceptionId = Addreception.ReceptionId;
                     var serviceRequest = _mapper.Map<MedicalServiceRequest>(request);
                     var SaveService = await _requestRepository.AddAsync(serviceRequest);
+                    var getMedical = await _requestRepository.GetByIdAsync(SaveService.MedicalServiceRequestId);
+
+
                     reception.MedicalServiceRequest.Add(SaveService);
-                    var servicetype = SaveService.Service.ServiceTypes.Code;
+                    if (getMedical != null) 
+                    { 
+                    var servicetype = getMedical.Service.ServiceTypes.Code;
+                        if (servicetype == "KB")
+                        {
+                            var examdto = new CreateExamDto()
+                            {
+                                ReceptionId = Addreception.ReceptionId,
+                                ReasonForVisit = Addreception.ReasonForVisit,
+                                CreatedTime = DateTime.Now,
+                                IsDeleted = 0,
+                                IsPaid = false
+                            };
+
+                            await _examineService.AddAsync(examdto);
+                        }
+                    }
                 }
             }
 

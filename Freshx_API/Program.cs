@@ -308,6 +308,7 @@ builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
 
+// tiếp nhận
 builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
 builder.Services.AddScoped<IReceptionService, ReceptionService>();
 
@@ -327,6 +328,9 @@ builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
+// medical service - dịch vụ y tế
+builder.Services.AddScoped<IMedicalServiceRequestRepository, MedicalServiceRequestRepository>();
+builder.Services.AddScoped<IMedicalServiceRequestService, MedicalServiceRequestService>();
 
 // Đăng ký Repository và Service với Dependency Injection
 builder.Services.AddScoped<IDepartmentTypeRepository, DepartmentTypeRepository>();
@@ -416,6 +420,9 @@ builder.Services.AddScoped<IPrescriptionDetailService, PrescriptionDetailService
 builder.Services.AddScoped<IServiceTypeRepository, ServiceTypeRepository>();
 builder.Services.AddScoped<IServiceTypeService, ServiceTypeService>();
 
+// khám bệnh
+builder.Services.AddScoped<IExamineRepository, ExamineRepository>();
+builder.Services.AddScoped<IExamineService, ExamineService>();
 // đăng kí repositorycheck dùng để check trùng lặp
 builder.Services.AddScoped<RepositoryCheck>();
 

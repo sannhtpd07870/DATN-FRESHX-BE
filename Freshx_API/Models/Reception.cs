@@ -29,4 +29,6 @@ public partial class Reception
 
     public virtual Patient? Patient { get; set; } // bệnh nhân khám
     public virtual Employee? Receptionist { get; set; } // nhân viên tiếp nhận
+    public virtual Examine? Examine { get; set; }
+    public virtual LabResult LabResult { get; set; }
 }

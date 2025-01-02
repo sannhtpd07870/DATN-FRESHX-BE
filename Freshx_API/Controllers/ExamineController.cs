@@ -19,7 +19,7 @@ namespace Freshx_API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApiResponse<ExamineResponseDto>>> CreateExamine([FromBody] ExamineRequestDto dto)
+        public async Task<ActionResult<ApiResponse<ExamineResponseDto>>> CreateExamine([FromBody] CreateExamDto dto)
         {
             try
             {

@@ -4,7 +4,7 @@ namespace Freshx_API.Interfaces
 {
     public interface IExamineService
     {
-        Task<ExamineResponseDto> AddAsync(ExamineRequestDto dto);
+        Task<ExamineResponseDto> AddAsync(CreateExamDto dto);
         Task<ExamineResponseDto?> GetByIdAsync(int id);
         Task<IEnumerable<ExamineResponseDto>> GetAllAsync();
         Task UpdateAsync(int id, ExamineRequestDto dto);

@@ -21,7 +21,7 @@ namespace Freshx_API.Services
             _prescriptionService = prescriptionService;
         }
 
-        public async Task<ExamineResponseDto> AddAsync(ExamineRequestDto dto)
+        public async Task<ExamineResponseDto> AddAsync(CreateExamDto dto)
         {
             var examine = _mapper.Map<Examine>(dto);
 

@@ -1,5 +1,4 @@
-﻿using Freshx_API.Dtos.LabResult;
-using Freshx_API.Dtos;
+﻿using Freshx_API.Dtos;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

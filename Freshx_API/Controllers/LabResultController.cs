@@ -14,7 +14,6 @@ using Freshx_API.Services;
 using Freshx_API.Services.CommonServices;
 using Microsoft.AspNetCore.Http;
 using Sprache;
-using Freshx_API.Dtos.LabResult;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Freshx_API.Controllers

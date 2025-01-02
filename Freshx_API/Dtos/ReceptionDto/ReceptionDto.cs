@@ -1,6 +1,7 @@
 ﻿using Freshx_API.Dtos;
+using Freshx_API.Dtos.ExamineDtos;
 using Freshx_API.Dtos.Patient;
-
+using Freshx_API.Models;
 namespace Freshx_API.Dtos
 {
     public class CreateReceptionDto
@@ -37,6 +38,7 @@ namespace Freshx_API.Dtos
         public DateTime? CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public ExamineOnly Examine { get; set; }
+        public LabResult LabResult { get; set; }
     }
-
 }

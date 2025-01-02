@@ -84,6 +84,4 @@ public partial class Examine
     public virtual Reception? Reception { get; set; }
     public ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; }
     public virtual Prescription? Prescription { get; set; }
-    public virtual TemplatePrescription? PrescriptionTemplate { get; set; }
-    public virtual DiagnosisDictionary? DiagnosisDictionary { get; set; }
 }

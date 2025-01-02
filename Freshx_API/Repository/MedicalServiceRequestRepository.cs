@@ -19,12 +19,17 @@ namespace Freshx_API.Repository
         public async Task<MedicalServiceRequest> GetByIdAsync(int id)
         {
             return await _context.MedicalServiceRequests
-                .FirstOrDefaultAsync(msr => msr.MedicalServiceRequestId == id);
+                            .Include(r => r.Service)
+                            .ThenInclude(s => s.ServiceTypes)
+                            .FirstOrDefaultAsync(msr => msr.MedicalServiceRequestId == id);
         }
 
         public async Task<IEnumerable<MedicalServiceRequest>> GetAllAsync()
         {
-            return await _context.MedicalServiceRequests.ToListAsync();
+            return await _context.MedicalServiceRequests
+                                 .Include(r => r.Service)
+                                 .ThenInclude(s => s.ServiceTypes)
+                                    .ToListAsync();
         }
 
         public async Task<MedicalServiceRequest> AddAsync(MedicalServiceRequest medicalServiceRequest)

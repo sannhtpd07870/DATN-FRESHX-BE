@@ -95,6 +95,12 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .WithMany()
             .HasForeignKey(s => s.ParentServiceId)
             .OnDelete(DeleteBehavior.Restrict);
+        // service group
+
+        modelBuilder.Entity<ServiceGroup>()
+           .HasMany(sg => sg.ServiceCatalogs)
+           .WithOne(sc => sc.ServiceGroup)
+           .HasForeignKey(sc => sc.ServiceCatalogId);
 
         //phamacy
         modelBuilder.Entity<Pharmacy>()

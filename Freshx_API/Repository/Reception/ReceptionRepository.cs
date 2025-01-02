@@ -34,6 +34,8 @@ namespace Freshx_API.Repository
                 .Include(r => r.AssignedDoctor) // Bao gồm thông tin bác sĩ được chỉ định
                 .Include(r => r.Patient) // Bao gồm thông tin bệnh nhân
                 .Include(r => r.Receptionist) // Bao gồm thông tin lễ tân
+                .Include(r => r.Examine)
+                .Include (r => r.LabResult)
                 .ToListAsync();
         }
 

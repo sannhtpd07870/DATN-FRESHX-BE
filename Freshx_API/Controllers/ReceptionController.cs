@@ -32,15 +32,15 @@ namespace Freshx_API.Controllers
                 var reception = await _service.GetByIdAsync(id);
                 if (reception == null)
                 {
-                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<ReceptionDto?>(Request.Path, "Reception not found"));
+                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<ReceptionDto?>(Request.Path, "Không tìm thấy tiếp nhận"));
                 }
 
                 return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, reception));
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An exceptional occurred while fetching the reception by ID");
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<ReceptionDto?>(Request.Path, "An error occurred while processing your request"));
+                _logger.LogError(e, "Xảy ra lỗi khi lấy thông tin tiếp nhận bằng ID");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<ReceptionDto?>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
             }
         }
 
@@ -54,8 +54,8 @@ namespace Freshx_API.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An exceptional occurred while fetching all receptions");
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<IEnumerable<ReceptionDto>>(Request.Path, "An error occurred while processing your request"));
+                _logger.LogError(e, "Xảy ra lỗi khi lấy dữ liệu");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<IEnumerable<ReceptionDto>>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn:"+ e.Message));
             }
         }
 
@@ -67,15 +67,15 @@ namespace Freshx_API.Controllers
                 var reception = await _service.AddAsync(dto);
                 if (reception == null)
                 {
-                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<ReceptionDto>(Request.Path, "Invalid data provided"));
+                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<ReceptionDto>(Request.Path, "Dữ liệu được cung cấp không hợp lệ"));
                 }
 
                 return StatusCode(StatusCodes.Status201Created, ResponseFactory.Success(Request.Path, reception));
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An exceptional occurred while adding a new reception");
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<ReceptionDto>(Request.Path, "An error occurred while processing your request"));
+                _logger.LogError(e, "");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<ReceptionDto>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
             }
         }
 
@@ -85,12 +85,12 @@ namespace Freshx_API.Controllers
             try
             {
                 await _service.UpdateAsync(dto);
-                return StatusCode(StatusCodes.Status204NoContent, ResponseFactory.Success<object>(Request.Path, null, "Update successful"));
+                return StatusCode(StatusCodes.Status204NoContent, ResponseFactory.Success<object>(Request.Path, null, "Cập nhật thành công"));
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An exceptional occurred while updating a reception");
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "An error occurred while processing your request"));
+                _logger.LogError(e, "Xảy ra lỗi khi cập nhật tiếp nhận");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
             }
         }
 
@@ -100,12 +100,12 @@ namespace Freshx_API.Controllers
             try
             {
                 await _service.DeleteAsync(id);
-                return StatusCode(StatusCodes.Status204NoContent, ResponseFactory.Success<object>(Request.Path, null, "Delete successful"));
+                return StatusCode(StatusCodes.Status204NoContent, ResponseFactory.Success<object>(Request.Path, null, "Xóa thành công"));
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "An exceptional occurred while deleting a reception");
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "An error occurred while processing your request"));
+                _logger.LogError(e, "Xảy ra lỗi khi xóa tiếp nhận");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
             }
         }
     }

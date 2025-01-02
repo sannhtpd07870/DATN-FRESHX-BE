@@ -2,6 +2,14 @@
 
 namespace Freshx_API.Dtos.ExamineDtos
 {
+    public class CreateExamDto {
+        public int? ReceptionId { get; set; } // ID tiếp nhận
+        public string? ReasonForVisit { get; set; } // Lý do khám bệnh
+        public DateTime? CreatedTime { get; set; } // Thời gian tạo
+        public bool IsPaid { get; set; } // Đổi trạng thái khi khám xong
+        public int? IsDeleted { get; set; } // Trạng thái đã xóa
+
+    }
     public class ExamineRequestDto
     {
         public int ExamineId { get; set; } // ID Khám bệnh
@@ -157,6 +165,12 @@ namespace Freshx_API.Dtos.ExamineDtos
         public ReceptionDto? Reception { get; set; } // Thông tin tiếp nhận
         public PrescriptionDto? Prescriptions { get; set; } // Danh sách đơn thuốc
 
+    }
+
+    public class ExamineOnly
+    {
+        public int ExamineId { get; set; } // ID Khám bệnh
+        public bool IsPaid { get; set; } // Đổi trạng thái khi khám xong
     }
 
 }

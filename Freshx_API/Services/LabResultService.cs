@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Freshx_API.Dtos;
-using Freshx_API.Dtos.LabResult;
 using Freshx_API.Models;
 using Freshx_API.Interfaces.Auth;
 using Freshx_API.Interfaces;
@@ -54,5 +53,4 @@ namespace Freshx_API.Services
             await _repository.DeleteAsync(id);
         }
     }
-
 }

@@ -1,7 +1,7 @@
 ﻿using Freshx_API.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace Freshx_API.Dtos.LabResult
+namespace Freshx_API.Dtos
 {
     public class CreateLabResultDto
     {
