@@ -144,6 +144,7 @@ namespace Freshx_API.Repository
                 departmentType.UpdatedBy = _tokenRepository.GetUserIdFromToken();
                 departmentType.Code = DepartmentTypeCodeGenerator.GenerateCode(_context, request.Name);
                 departmentType.Name = request.Name;
+                departmentType.IsSuspended = request.IsSuspended;
                 await _context.SaveChangesAsync();
                 return departmentType;
             }
