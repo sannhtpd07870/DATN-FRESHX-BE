@@ -4,12 +4,14 @@ using Freshx_API.Dtos.Auth.Account;
 using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Interfaces.Auth;
 using Freshx_API.Models;
+using Freshx_API.Services.SignalR;
 using Freshx_API.Services.CommonServices;
 using Freshx_API.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Freshx_API.Controllers
 {
@@ -23,7 +25,8 @@ namespace Freshx_API.Controllers
         private readonly ILogger<AccountController> _logger;
         private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
-        public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger, IMapper mapper, ITokenRepository token, UserManager<AppUser> userManager, IEmailService emailService)
+        private readonly IHubContext<NotificationHub> _hubContext;
+        public AccountController(IAccountRepository accountRepository, ILogger<AccountController> logger, IMapper mapper, ITokenRepository token, UserManager<AppUser> userManager, IEmailService emailService, IHubContext<NotificationHub> hubContext)
         {
             _accountRepository = accountRepository;
             _logger = logger;
@@ -31,6 +34,7 @@ namespace Freshx_API.Controllers
             _tokenRepository = token;
             _userManager = userManager;
             _emailService = emailService;
+            _hubContext = hubContext;
         }
         [HttpPost("Register")]
         public async Task<ActionResult<ApiResponse<RegisterResponse>>> CreateAccount(AddingRegister addingRegister)
@@ -59,6 +63,7 @@ namespace Freshx_API.Controllers
                 var user = await _accountRepository.LoginAccount(loginRequest);
                 if (user.Succeeded)
                 {
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", $"có một đăng nhập mới vào tài khoản ");
                     return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, user, "Login successfully", StatusCodes.Status200OK));
                 }
                 if (user.IsLockedOut)
@@ -134,7 +139,7 @@ namespace Freshx_API.Controllers
             try
             {
                 var user = await _userManager.FindByEmailAsync(verifyCodeRequest.Email);
-                if( user == null || user.RefreshToken != verifyCodeRequest.Code || user.ExpiredTime < DateTime.UtcNow)
+                if (user == null || user.RefreshToken != verifyCodeRequest.Code || user.ExpiredTime < DateTime.UtcNow)
                 {
                     return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<Object>(Request.Path, "Email or code invalid"));
                 }
@@ -143,7 +148,7 @@ namespace Freshx_API.Controllers
                     Email = verifyCodeRequest.Email,
                     Code = verifyCodeRequest.Code
                 };
-                return StatusCode (StatusCodes.Status200OK, responseVerifyCode);
+                return StatusCode(StatusCodes.Status200OK, responseVerifyCode);
             }
             catch (Exception e)
             {
@@ -151,27 +156,81 @@ namespace Freshx_API.Controllers
             }
         }
         [HttpPost("reset-password")]
-        public async Task<ActionResult<ApiResponse<Object>>> ResetPassword ([FromBody]ResetPasswordRequest resetPasswordRequest, [FromQuery] string code)
+        public async Task<ActionResult<ApiResponse<Object>>> ResetPassword([FromBody] ResetPasswordRequest resetPasswordRequest, [FromQuery] string code)
         {
             try
             {
                 var user = await _tokenRepository.RetrieveUserByRefreshToken(code);
-                if(user != null)
+                if (user != null)
                 {
                     var tokenResetPassword = await _userManager.GeneratePasswordResetTokenAsync(user);
                     var result = await _userManager.ResetPasswordAsync(user, tokenResetPassword, resetPasswordRequest.Password);
-                  
-                    if( result.Succeeded )
+
+                    if (result.Succeeded)
                     {
-                        return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success<Object>(Request.Path,user));
+                        return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success<Object>(Request.Path, user));
                     }
                 }
                 return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, "An exception occured while processing request"));
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
             }
         }
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<ActionResult<ApiResponse<AccountDto?>>> GetAccountInfoById(string id)
+        {
+            try
+            {
+                var data = await _accountRepository.GetAccountInformationByIdAsync(id);
+                if (data == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<Object>(Request.Path, $"Information by {id} not found", StatusCodes.Status404NotFound));
+                }
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success<AccountDto>(Request.Path, data));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"An exception occured while getting accountInfo by {id}");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, $"An exception occured while getting accountInfo by {id}", StatusCodes.Status500InternalServerError));
+            }
+        }
+
+        [HttpGet("Get-InformatonAccounts")]
+        public async Task<ActionResult<ApiResponse<Object>>> GetAllAccountInformations()
+        {
+            try
+            {
+                var data = await _accountRepository.GetAllAccountsAsync();
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, data));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An exception occurred while getting all account informations");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, "An exception occurred while getting all account informations", StatusCodes.Status500InternalServerError));
+            }
+        }
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<ActionResult<AccountDto?>> UpdateAccountInfoById(string id,UpdatingAccountRequest request)
+        {
+            try
+            {
+                var data = await _accountRepository.UpdateAccountAsync(id, request);
+                if(data == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<Object>(Request.Path, $"updating account by {id} fail"));
+                }
+                return StatusCode(StatusCodes.Status200OK,ResponseFactory.Success(Request.Path, data));
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, $"An exception occured while updating account by {id}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"An exception occured while updating account by {id}");
+            }
+        }
+
     }
 }

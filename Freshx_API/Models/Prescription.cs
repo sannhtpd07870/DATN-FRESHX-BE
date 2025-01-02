@@ -1,37 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using Humanizer;
 
 namespace Freshx_API.Models;
-
 public partial class Prescription
 {
+    [Key]
     public int PrescriptionId { get; set; } // ID đơn thuốc
 
     public int? MedicalExaminationId { get; set; } // ID khám bệnh
 
-    public string? PrescriptionNumber { get; set; } // Số đơn thuốc
-
-    public int? DrugCatalogId { get; set; } // ID danh mục thuốc
-
-    public decimal? MorningDose { get; set; } // Liều buổi sáng
-
-    public decimal? NoonDose { get; set; } // Liều buổi trưa
-
-    public decimal? AfternoonDose { get; set; } // Liều buổi chiều
-
-    public decimal? EveningDose { get; set; } // Liều buổi tối
-
-    public decimal? DaysOfSupply { get; set; } // Số ngày cung cấp
-
-    public decimal? Quantity { get; set; } // Số lượng
-
-    public decimal? UnitPrice { get; set; } // Giá đơn vị
-
+    [Column(TypeName = "decimal(18, 2)")]
     public decimal? TotalAmount { get; set; } // Tổng số tiền
-
-    public bool? IsDispensed { get; set; } // Trạng thái đã phát thuốc
-
-    public decimal? DispensedQuantity { get; set; } // Số lượng đã phát
 
     public bool? IsPaid { get; set; } // Trạng thái đã thanh toán
 
@@ -45,11 +27,18 @@ public partial class Prescription
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
 
-    public string? Note { get; set; } // Ghi chú
+    [StringLength(500)]
+    public string? Note { get; set; } // Ghi chú chung
 
-    //public virtual ICollection<DrugBooking> DrugBookings { get; set; } = new List<DrugBooking>(); // Danh sách đặt thuốc
+    // Quan hệ
+    public virtual ICollection<PrescriptionDetail> PrescriptionDetails { get; set; }
+        = new List<PrescriptionDetail>(); // Chi tiết toa thuốc
+    // tách phần danh mục thuốc và chi tiết toa thuốc ra
+    //Truy vấn toa thuốc:
+    //Sử dụng Include để lấy chi tiết toa thuốc kèm danh sách thuốc.
+    //var prescription = context.Prescriptions
+    //.Include(p => p.PrescriptionDetails)
+    //.ThenInclude(d => d.DrugCatalog)
+    //.FirstOrDefault(p => p.PrescriptionId == id);
 
-    public virtual DrugCatalog? DrugCatalog { get; set; } // Danh mục thuốc
-
-    public virtual Invoice? MedicalExamination { get; set; } // Khám bệnh liên quan
 }

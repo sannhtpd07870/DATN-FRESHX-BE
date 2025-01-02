@@ -1,26 +1,41 @@
-using Freshx_API.Interfaces;
-using Freshx_API.Repository;
-using Freshx_API.Models;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
 using AutoMapper;
-using Freshx_API.Services;
-using Freshx_API.Mappers;
-using System.Text;
 using Azure.Identity;
 using DotNetEnv;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Security.Claims;
-using Freshx_API.Repository.Auth.RoleRepositories;
-using Freshx_API.Repository.Auth.AccountRepositories;
 using Freshx_API.Dtos.CommonDtos;
-using Microsoft.AspNetCore.Mvc;
+using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.Auth;
-using Microsoft.Identity.Client;
+using Freshx_API.Interfaces.UserAccount;
+using Freshx_API.Mappers;
+using Freshx_API.Models;
+using Freshx_API.Repository;
+using Freshx_API.Repository.Address;
+using Freshx_API.Repository.Auth.AccountRepositories;
+using Freshx_API.Repository.Auth.RoleRepositories;
 using Freshx_API.Repository.Auth.TokenRepositories;
+using Freshx_API.Repository.Drugs;
+using Freshx_API.Repository.UserAccount;
+using Freshx_API.Services;
+using Freshx_API.Services.SignalR;
 using Freshx_API.Services.CommonServices;
+using Freshx_API.Services.Drugs;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.SignalR;
+using Freshx_API.Interfaces.Payments;
+using Freshx_API.Repository.Payments;
+using Freshx_API.Repository.Payments;
+using Freshx_API.Interfaces.IReception;
+using Freshx_API.Repository.LabResults;
+using Freshx_API.Interfaces.Services;
+using Org.BouncyCastle.Math.EC.Multiplier;
+using Freshx_API.Interfaces.IPrescription;
+using Freshx_API.Interfaces.ServiceType;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +65,7 @@ builder.Services.AddSwaggerGen(option =>
             },
             new string[]{}
         }
-    });
+            });
 });
 //Tránh lỗi StackOverflowException khi serialize
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
@@ -65,7 +80,7 @@ string saltString = Environment.GetEnvironmentVariable("ENCRYPTION_SALT")
 ?? builder.Configuration["EncryptionSettings:Salt"]
 ?? "DefaultSalt";
 //kết thúc biến môi trường
-    
+
 // Kiểm tra nếu không lấy được biến môi trường và dừng quá trình build
 if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(saltString))
 {
@@ -78,7 +93,7 @@ byte[] salt = Encoding.UTF8.GetBytes(saltString);
 
 builder.Configuration.AddConfiguration(
     new ConfigurationBuilder()
-        .Add(new EncryptedConfigurationSource( password, salt))
+        .Add(new EncryptedConfigurationSource(password, salt))
         .Build());
 
 var connectionString = builder.Configuration["ConnectionStrings:DBFreshx"];
@@ -87,9 +102,10 @@ var blobConnectionString = builder.Configuration["AzureBlobStorage:ConnectionStr
 var containerName = builder.Configuration["AzureBlobStorage:ContainerName"];
 Console.WriteLine("jkds" + builder.Configuration["FileSettings:DevicePath"]);
 // Add services to the container.
-builder.Services.AddDbContext<FreshxDBContext>(options =>{
+builder.Services.AddDbContext<FreshxDBContext>(options =>
+{
     options.UseSqlServer(connectionString);
-        });
+});
 //configure Identity Service
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
@@ -117,7 +133,7 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
             .Select(e => new ValidationError
             {
                 Field = e.Key,
-                Message = e.Value?.Errors.First().ErrorMessage ?? "Invalid input value"
+                Message = e.Value?.Errors.First().ErrorMessage ?? "Dữ liệu đầu vào không hợp lệ"
             })
             .ToList();
 
@@ -125,7 +141,7 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
         {
             Status = false,
             Path = context.HttpContext.Request.Path,
-            Message = "Validation failed",
+            Message ="Dữ liệu đầu vào không hợp lệ",
             StatusCode = StatusCodes.Status400BadRequest,
             Data = errors,
             Timestamp = DateTime.UtcNow
@@ -154,7 +170,7 @@ builder.Services.AddAuthentication(options =>
         ClockSkew = TimeSpan.Zero,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
-            System.Text.Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])
         ),
         RoleClaimType = ClaimTypes.Role
     };
@@ -283,28 +299,50 @@ builder.Services.Configure<RouteOptions>(options =>
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true; // Tùy chọn: lowercase cả query string
 });
+builder.Services.AddCors();
+builder.Services.AddSignalR();
 builder.Services.AddScoped<IFileService, FileService>();
-
-builder.Services.AddScoped<IRoleRepository,RoleRepository>();
-builder.Services.AddScoped<IAccountRepository,AccountRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
-builder.Services.AddScoped<IEmailService,EmailService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+
+// tiếp nhận
+builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
+builder.Services.AddScoped<IReceptionService, ReceptionService>();
+
+builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
+builder.Services.AddScoped<NumberGeneratorService>();
+builder.Services.AddScoped<IFixDoctorRepository, FixDoctorRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<ITechnicianRepository,TechnicianRepository>();
+builder.Services.AddScoped<IUserAccountManagementRepository,UserAccountManagementRepository>();
+builder.Services.AddScoped<IFixDepartmentTypeRepository, FixDepartmentTypeRepository>();
+builder.Services.AddScoped<IFixDepartmentRepository, FixDepartmentRepositiory>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
-builder.Services.AddScoped<IDrugCatalogService, DrugCatalogService>();
+
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
-builder.Services.AddScoped<IDocumentPurposeRepository, DocumentPurposeRepository>();
-builder.Services.AddScoped<IDocumentPurposeService, DocumentPurposeService>();
-builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
-builder.Services.AddScoped<IPharmacyService,PharmacyService>();
 
+builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
+builder.Services.AddScoped<PharmacyService>();
+
+// medical service - dịch vụ y tế
+builder.Services.AddScoped<IMedicalServiceRequestRepository, MedicalServiceRequestRepository>();
+builder.Services.AddScoped<IMedicalServiceRequestService, MedicalServiceRequestService>();
 
 // Đăng ký Repository và Service với Dependency Injection
 builder.Services.AddScoped<IDepartmentTypeRepository, DepartmentTypeRepository>();
 builder.Services.AddScoped<DepartmentTypeService>();
 
+
+builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
+builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
+
+builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
+builder.Services.AddScoped<PharmacyService>();
 
 
 // Đăng ký Repository và Service với Doctor Injection
@@ -324,16 +362,85 @@ builder.Services.AddScoped<InventoryTypeService>();
 builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
+
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IServiceGroupRepository, ServiceGroupRepository>();
+builder.Services.AddScoped<ServiceGroupService>();
+
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IServiceCatalogRepository, ServiceCatalogRepository>();
+builder.Services.AddScoped<ServiceCatalogService>();
+
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IUnitOfMeasureRepository, UnitOfMeasureRepository>();
+builder.Services.AddScoped<UnitOfMeasureService>();
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+builder.Services.AddScoped<SupplierService>();
+
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<CountryService>();
+
+// Đăng ký Repository và Service với InventoryType Injection
+builder.Services.AddScoped<IDrugCatalogRepository, DrugCatalogRepository>();
+builder.Services.AddScoped<DrugCatalogService>();
+
+//Dăng kí Reponsitory và service cho địa chỉ
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IAddressService, AddressService>();
+// Đăng ký PdfRepository và PdfService
+builder.Services.AddScoped<IPdfRepository, PdfRepository>();
+builder.Services.AddScoped<IPdfService, PdfService>();
+builder.Services.AddScoped<ChatService>();
+
+//đăng kí service
+builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
+
+
+//Đăng ký Repository và service cho payments
+builder.Services.AddScoped<IBillingRepository, BillingRepository>();
+builder.Services.AddScoped<IBillingService, BillingService>();
+
+// Đăng kí labReSult
+builder.Services.AddScoped<ILabResultRepository, LabResultRepository>();
+builder.Services.AddScoped<ILabResultService, LabResultService>();
+
+//Đăng kí Prescription - toa thuốc - toa thuốc chi tiết
+builder.Services.AddScoped<IPrescriptionService,PrescriptionService>();
+builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+builder.Services.AddScoped<IPrescriptionDetailRepository, PrescriptionDetailRepository>();
+builder.Services.AddScoped<IPrescriptionDetailService, PrescriptionDetailService>();
+
+//Đăng kí loại dịch vụ servicetype
+builder.Services.AddScoped<IServiceTypeRepository, ServiceTypeRepository>();
+builder.Services.AddScoped<IServiceTypeService, ServiceTypeService>();
+
+// khám bệnh
+builder.Services.AddScoped<IExamineRepository, ExamineRepository>();
+builder.Services.AddScoped<IExamineService, ExamineService>();
+// đăng kí repositorycheck dùng để check trùng lặp
+builder.Services.AddScoped<RepositoryCheck>();
+
+// Thêm DefaultAzureCredential
+builder.Services.AddSingleton<DefaultAzureCredential>();
+
+        // Thêm DefaultAzureCredential
+        builder.Services.AddSingleton<DefaultAzureCredential>();
+        // Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
+        builder.Services.AddHttpContextAccessor();
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
 // Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
 builder.Services.AddHttpContextAccessor();
-
-
-
-
 var app = builder.Build();
+
 
 // Cấu hình CORS để cho phép truy cập từ mọi nguồn
 // Enable CORS
@@ -341,9 +448,26 @@ app.UseCors(builder =>
 {
     builder.AllowAnyOrigin()
            .AllowAnyMethod()
-           .AllowAnyHeader();
+           .AllowAnyHeader()
+           .AllowAnyMethod();
+           
 });
 
+app.MapHub<ChatHub>("/chathub").RequireCors(policy =>
+{
+    policy.AllowAnyHeader()
+          .AllowAnyMethod()
+          .SetIsOriginAllowed(origin => true) // Tùy chọn: Chấp nhận tất cả origin
+          .AllowCredentials();                // Cho phép tín hiệu sử dụng cookie
+}); ;
+
+app.MapHub<NotificationHub>("/notificationHub").RequireCors(policy =>
+{
+    policy.AllowAnyHeader()
+          .AllowAnyMethod()
+          .SetIsOriginAllowed(origin => true) // Tùy chọn: Chấp nhận tất cả origin
+          .AllowCredentials();                // Cho phép tín hiệu sử dụng cookie
+});
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -352,7 +476,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 //xac thuc truoc khi phan quyen
 app.UseAuthentication();
 app.UseAuthorization();
@@ -360,4 +483,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-

@@ -30,6 +30,12 @@ namespace Freshx_API.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AvatarId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -39,6 +45,9 @@ namespace Freshx_API.Migrations
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("DistrictId")
+                        .HasColumnType("nvarchar(20)");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -51,6 +60,12 @@ namespace Freshx_API.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityCardNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool?>("IsActive")
@@ -79,6 +94,9 @@ namespace Freshx_API.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProvinceId")
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("RefreshToken")
                         .HasColumnType("nvarchar(max)");
 
@@ -95,7 +113,12 @@ namespace Freshx_API.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("WardId")
+                        .HasColumnType("nvarchar(20)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("DistrictId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -104,6 +127,10 @@ namespace Freshx_API.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.HasIndex("WardId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -119,7 +146,7 @@ namespace Freshx_API.Migrations
                     b.Property<DateTime?>("AppointmentTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("MedicalExaminationId")
+                    b.Property<int?>("ExaminationId")
                         .HasColumnType("int");
 
                     b.Property<int?>("PatientId")
@@ -133,13 +160,184 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("AppointmentId");
 
-                    b.HasIndex("MedicalExaminationId");
+                    b.HasIndex("ExaminationId");
 
                     b.HasIndex("PatientId");
 
                     b.HasIndex("ReceptionId");
 
                     b.ToTable("Appointments");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Bill", b =>
+                {
+                    b.Property<int>("BillId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BillId"));
+
+                    b.Property<int?>("CashierId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentStatus")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int>("ReceptionId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("BillId");
+
+                    b.HasIndex("CashierId");
+
+                    b.HasIndex("ReceptionId");
+
+                    b.ToTable("Bills");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.BillDetail", b =>
+                {
+                    b.Property<int>("BillDetailId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("BillDetailId"));
+
+                    b.Property<int>("BillId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ServiceCatalogId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.HasKey("BillDetailId");
+
+                    b.HasIndex("BillId");
+
+                    b.HasIndex("ServiceCatalogId");
+
+                    b.ToTable("BillDetails");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConversationId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("User")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConversationId");
+
+                    b.ToTable("ChatMessages");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Clinic", b =>
+                {
+                    b.Property<int>("ClinicId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ClinicId"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DistrictCode")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int?>("DistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IsDeleted")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IsSuspended")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber1")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber2")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber3")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProvinceCode")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int?>("ProvinceId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("WardCode")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int?>("WardId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ClinicId");
+
+                    b.HasIndex("DistrictCode");
+
+                    b.HasIndex("ProvinceCode");
+
+                    b.HasIndex("WardCode");
+
+                    b.ToTable("Hospitals");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ConclusionDictionary", b =>
@@ -211,6 +409,26 @@ namespace Freshx_API.Migrations
                     b.ToTable("ConclusionDictionaries");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.Conversation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Conversations");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Country", b =>
                 {
                     b.Property<int>("CountryId")
@@ -222,8 +440,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -246,8 +464,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("ShortName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -260,10 +478,7 @@ namespace Freshx_API.Migrations
             modelBuilder.Entity("Freshx_API.Models.Department", b =>
                 {
                     b.Property<int>("DepartmentId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DepartmentId"));
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
@@ -374,6 +589,9 @@ namespace Freshx_API.Migrations
                     b.Property<string>("SequenceNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TemplatePrescriptionId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -384,6 +602,8 @@ namespace Freshx_API.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("DiagnosisDictionaryId");
+
+                    b.HasIndex("TemplatePrescriptionId");
 
                     b.ToTable("DiagnosisDictionaries");
                 });
@@ -401,6 +621,9 @@ namespace Freshx_API.Migrations
 
                     b.Property<string>("Conclusion")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ConclusionDictionaryId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
@@ -502,6 +725,8 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ConcludingDoctorId");
 
+                    b.HasIndex("ConclusionDictionaryId");
+
                     b.HasIndex("MedicalServiceRequestId");
 
                     b.HasIndex("PatientId");
@@ -513,88 +738,6 @@ namespace Freshx_API.Migrations
                     b.HasIndex("TechnicianId");
 
                     b.ToTable("DiagnosticImagingResults");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.DiagnosticImagingResultImage", b =>
-                {
-                    b.Property<int>("DiagnosticImagingResultImageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DiagnosticImagingResultImageId"));
-
-                    b.Property<int?>("DiagnosticImagingResultId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IsDeleted")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("DiagnosticImagingResultImageId");
-
-                    b.HasIndex("DiagnosticImagingResultId");
-
-                    b.ToTable("DiagnosticImagingResultImages");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.Dictionary", b =>
-                {
-                    b.Property<int>("DictionaryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DictionaryId"));
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description4")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description5")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("IsDeleted")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IsSuspended")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NameId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("DictionaryId");
-
-                    b.ToTable("Dictionaries");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.DiseaseGroup", b =>
@@ -691,6 +834,15 @@ namespace Freshx_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DoctorId"));
 
+                    b.Property<string>("AccountId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AvataId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -700,10 +852,19 @@ namespace Freshx_API.Migrations
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DistrictId")
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityCardNumber")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("IsDeleted")
@@ -718,6 +879,12 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Phone")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("PositionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProvinceId")
+                        .HasColumnType("nvarchar(20)");
+
                     b.Property<string>("Specialty")
                         .HasColumnType("nvarchar(max)");
 
@@ -727,462 +894,28 @@ namespace Freshx_API.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("WardId")
+                        .HasColumnType("nvarchar(20)");
+
                     b.HasKey("DoctorId");
 
-                    b.ToTable("Doctors");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.DoctorsCommonIcd", b =>
-                {
-                    b.Property<int>("DoctorsCommonIcdid")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DoctorsCommonIcdid"));
-
-                    b.Property<int>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ICDCatalogId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DoctorsCommonIcdid");
-
-                    b.HasIndex("DoctorId");
-
-                    b.HasIndex("ICDCatalogId");
-
-                    b.ToTable("DoctorsCommonIcds");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.Document", b =>
-                {
-                    b.Property<int>("DocumentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DocumentId"));
-
-                    b.Property<string>("AccountingDocument")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ApproverId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ChiefAccountantId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CorrespondingPharmacyId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CreditAccount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CurrencyId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DebitAccount")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DeductibleRequisitionFormId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DelivererId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DeliveryUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("DiscountAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("DiscountRate")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("DoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DocumentCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DocumentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("DocumentNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DocumentPurposeId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("DocumentStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DocumentType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("DrugSourceId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("ExchangeRate")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("ExecutionPharmacyId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ForeignInvoiceDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("ForeignInvoiceNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ForeignSerialNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FormCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GeneratedTransactionDescription")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("HasReceivedMedication")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal?>("ImportVatamount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("ImportVatrate")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("InpatientPrescriptionId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("InputDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("InputterId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("InspectorId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("InvoiceNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("IsDeleted")
-                        .HasColumnType("int");
-
-                    b.Property<bool?>("IsHealthInsurance")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsHospitalFee")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("IssuingPharmacyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MaterialTypeId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("MedicalExaminationId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MedicalRecordId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("OriginalDocumentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("OriginalDocumentNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PaymentMethodId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("PaymentValue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("ReceiverId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReceivingPharmacyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReferenceDocumentCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReferenceDocumentType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ReferralDoctorId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RelatedDocumentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RequisitionFormId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SerialNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("SupplierId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TargetObjectId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("TaxAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("TaxRate")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("TotalValue")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("TransferId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TransferPaymentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TreasurerId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("UsagePharmacyId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("Vatamount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Vatrate")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("DocumentId");
-
-                    b.HasIndex("ApproverId");
-
-                    b.HasIndex("ChiefAccountantId");
-
-                    b.HasIndex("CorrespondingPharmacyId");
-
-                    b.HasIndex("DelivererId");
+                    b.HasIndex("AccountId")
+                        .IsUnique()
+                        .HasFilter("[AccountId] IS NOT NULL");
+
+                    b.HasIndex("AvataId");
 
                     b.HasIndex("DepartmentId");
 
-                    b.HasIndex("DoctorId");
+                    b.HasIndex("DistrictId");
 
-                    b.HasIndex("DocumentPurposeId");
+                    b.HasIndex("PositionId");
 
-                    b.HasIndex("ExecutionPharmacyId");
+                    b.HasIndex("ProvinceId");
 
-                    b.HasIndex("InputterId");
+                    b.HasIndex("WardId");
 
-                    b.HasIndex("InspectorId");
-
-                    b.HasIndex("IssuingPharmacyId");
-
-                    b.HasIndex("MedicalExaminationId");
-
-                    b.HasIndex("ReceiverId");
-
-                    b.HasIndex("ReceivingPharmacyId");
-
-                    b.HasIndex("ReferralDoctorId");
-
-                    b.HasIndex("RelatedDocumentId");
-
-                    b.HasIndex("SupplierId");
-
-                    b.HasIndex("TreasurerId");
-
-                    b.HasIndex("UsagePharmacyId");
-
-                    b.ToTable("Documents");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.DocumentDetail", b =>
-                {
-                    b.Property<int>("DocumentDetailId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DocumentDetailId"));
-
-                    b.Property<string>("AccountingDocumentNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("ActualQuantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("BookNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CashDocumentNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ControlNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("CostPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("CostPriceIncludingVat")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("CurrencyId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DocumentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("DrugCatalogId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("ExchangeRate")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("FreeReasonId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("HasGeneratedIssueDocument")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("HasGeneratedReturnDocument")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("ImportLotNumberId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsFree")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("IsLotSplit")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPromotion")
-                        .HasColumnType("bit");
-
-                    b.Property<decimal?>("IssuedQuantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("OriginalQuantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("OriginalUnitOfMeasureId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("PaymentPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("PurchasePrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("RequestedQuantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("SellingPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("SourceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("TotalCostAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("TotalPurchaseAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("UnitOfMeasureId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("Vatamount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("VatinvoiceNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("Vatrate")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("VisaNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("DocumentDetailId");
-
-                    b.HasIndex("DocumentId");
-
-                    b.HasIndex("DrugCatalogId");
-
-                    b.HasIndex("OriginalUnitOfMeasureId");
-
-                    b.HasIndex("UnitOfMeasureId");
-
-                    b.ToTable("DocumentDetails");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.DocumentPurpose", b =>
-                {
-                    b.Property<int>("DocumentPurposeId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DocumentPurposeId"));
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("DocumentPurposeId");
-
-                    b.ToTable("DocumentPurposes");
+                    b.ToTable("Doctors");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.DrugBooking", b =>
@@ -1208,10 +941,7 @@ namespace Freshx_API.Migrations
                     b.Property<decimal?>("EveningDose")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("LoginSessionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MedicalExaminationId")
+                    b.Property<int?>("ExamineId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("MorningDose")
@@ -1242,9 +972,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("DrugCatalogId");
 
-                    b.HasIndex("LoginSessionId");
-
-                    b.HasIndex("MedicalExaminationId");
+                    b.HasIndex("ExamineId");
 
                     b.HasIndex("PrescriptionId");
 
@@ -1271,14 +999,11 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("CountryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("DepartmentPharmacyId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
@@ -1307,9 +1032,6 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("IsSuspended")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ManagementPharmacyId")
-                        .HasColumnType("int");
-
                     b.Property<int?>("ManufacturerId")
                         .HasColumnType("int");
 
@@ -1317,9 +1039,6 @@ namespace Freshx_API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NameUnaccented")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NationalDrugCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Note1")
@@ -1352,8 +1071,8 @@ namespace Freshx_API.Migrations
                     b.Property<decimal?>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -1365,11 +1084,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.HasIndex("DepartmentPharmacyId");
-
                     b.HasIndex("DrugTypeId");
-
-                    b.HasIndex("ManagementPharmacyId");
 
                     b.HasIndex("ManufacturerId");
 
@@ -1415,78 +1130,6 @@ namespace Freshx_API.Migrations
                     b.ToTable("DrugTypes");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.EinvoiceFile", b =>
-                {
-                    b.Property<int>("EinvoiceFileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EinvoiceFileId"));
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("InvoiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("PatientId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EinvoiceFileId");
-
-                    b.HasIndex("InvoiceId");
-
-                    b.HasIndex("PatientId");
-
-                    b.ToTable("EinvoiceFiles");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.EmailAccount", b =>
-                {
-                    b.Property<int>("EmailAccountId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmailAccountId"));
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmailAddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("IsDeleted")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IsSuspended")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("EmailAccountId");
-
-                    b.ToTable("EmailAccounts");
-                });
-
             modelBuilder.Entity("Freshx_API.Models.EmailContent", b =>
                 {
                     b.Property<int>("EmailContentId")
@@ -1514,33 +1157,6 @@ namespace Freshx_API.Migrations
                     b.ToTable("EmailContents");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.EmailContentImage", b =>
-                {
-                    b.Property<int>("EmailContentImageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmailContentImageId"));
-
-                    b.Property<int?>("EmailContentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ImageName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("IsDeleted")
-                        .HasColumnType("int");
-
-                    b.HasKey("EmailContentImageId");
-
-                    b.HasIndex("EmailContentId");
-
-                    b.ToTable("EmailContentImages");
-                });
-
             modelBuilder.Entity("Freshx_API.Models.Employee", b =>
                 {
                     b.Property<int>("EmployeeId")
@@ -1549,8 +1165,20 @@ namespace Freshx_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("EmployeeId"));
 
+                    b.Property<string>("AccountId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AvataId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
@@ -1558,135 +1186,23 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("DistrictCode")
+                    b.Property<string>("DistrictId")
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("DistrictId")
-                        .HasColumnType("int");
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmployeeCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("FirstName")
+                    b.Property<string>("FullName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateOnly?>("IssuanceDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("IssuancePlace")
+                    b.Property<string>("IdentityCardNumber")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PositionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProfessionalCertificate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProvinceCode")
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int?>("ProvinceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("TitleId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("WardCode")
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<int?>("WardId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EmployeeId");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("DistrictCode");
-
-                    b.HasIndex("ProvinceCode");
-
-                    b.HasIndex("WardCode");
-
-                    b.ToTable("Employees");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.ExaminationConfirmation", b =>
-                {
-                    b.Property<int>("ExaminationConfirmationId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExaminationConfirmationId"));
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("IsDeleted")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MedicalExaminationId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("MedicalExaminationInvoiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReceptionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ExaminationConfirmationId");
-
-                    b.HasIndex("MedicalExaminationId");
-
-                    b.HasIndex("MedicalExaminationInvoiceId");
-
-                    b.HasIndex("ReceptionId");
-
-                    b.ToTable("ExaminationConfirmations");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.Hospital", b =>
-                {
-                    b.Property<int>("HospitalId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HospitalId"));
-
-                    b.Property<string>("Address1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Address2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Address3")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int?>("IsDeleted")
                         .HasColumnType("int");
@@ -1694,16 +1210,162 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("IsSuspended")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber1")
+                    b.Property<int?>("PositionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProvinceId")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber2")
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("WardId")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("EmployeeId");
+
+                    b.HasIndex("AccountId")
+                        .IsUnique()
+                        .HasFilter("[AccountId] IS NOT NULL");
+
+                    b.HasIndex("AvataId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("DistrictId");
+
+                    b.HasIndex("PositionId");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.HasIndex("WardId");
+
+                    b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Examine", b =>
+                {
+                    b.Property<int>("ExamineId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamineId"));
+
+                    b.Property<double?>("BloodPressureDiastolic")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("BloodPressureSystolic")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Bmi")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber3")
+                    b.Property<string>("Comorbidities")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ComorbidityCodes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ComorbidityNames")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Conclusion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CreatedById")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("CreatedTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Diagnosis")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("DiagnosisDictionaryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ExaminationDetails")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ExaminationNote")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FollowUpAppointment")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("FollowUpAppointmentNote")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("HeartRate")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Height")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("ICDCatalogId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IsDeleted")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LabSummary")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MedicalAdvice")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MedicalHistory")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OtherPhysicalFindings")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OxygenSaturation")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PatientId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PrescriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PrescriptionNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReasonForVisit")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ReceptionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RespiratoryRate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SkinCondition")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Symptoms")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Temperature")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("TemplatePrescriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TreatmentDetails")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UpdatedBy")
@@ -1712,9 +1374,26 @@ namespace Freshx_API.Migrations
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("HospitalId");
+                    b.Property<string>("VisionLeft")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Hospitals");
+                    b.Property<string>("VisionRight")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double?>("Weight")
+                        .HasColumnType("float");
+
+                    b.HasKey("ExamineId");
+
+                    b.HasIndex("ICDCatalogId");
+
+                    b.HasIndex("PatientId");
+
+                    b.HasIndex("PrescriptionId");
+
+                    b.HasIndex("ReceptionId");
+
+                    b.ToTable("Examines");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ICDCatalog", b =>
@@ -1806,10 +1485,10 @@ namespace Freshx_API.Migrations
                     b.Property<string>("NameEnglish")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameRussian")
+                    b.Property<string>("NameUnaccented")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameUnaccented")
+                    b.Property<string>("NameVietNamese")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UpdatedBy")
@@ -1826,10 +1505,7 @@ namespace Freshx_API.Migrations
             modelBuilder.Entity("Freshx_API.Models.InventoryType", b =>
                 {
                     b.Property<int>("InventoryTypeId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InventoryTypeId"));
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
@@ -1840,118 +1516,6 @@ namespace Freshx_API.Migrations
                     b.HasKey("InventoryTypeId");
 
                     b.ToTable("InventoryTypes");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.Invoice", b =>
-                {
-                    b.Property<int>("InvoiceId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InvoiceId"));
-
-                    b.Property<string>("Bmi")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Comorbidities")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ComorbidityCodes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ComorbidityNames")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Conclusion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Diagnosis")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExaminationDetails")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ExaminationNote")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("FollowUpAppointment")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FollowUpAppointmentNote")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ICDCatalogId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("InvoiceNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InvoiceType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("IsDeleted")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LabSummary")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MedicalAdvice")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MedicalExaminationId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MedicalHistory")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PrescriptionNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReasonForVisit")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ReceptionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("RespiratoryRate")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Symptoms")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TreatmentDetails")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("VatinvoiceNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("InvoiceId");
-
-                    b.HasIndex("ICDCatalogId");
-
-                    b.HasIndex("PatientId");
-
-                    b.HasIndex("ReceptionId");
-
-                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.LabResult", b =>
@@ -1977,23 +1541,17 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Diagnosis")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("ExecutionDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("ExecutionTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Instruction")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("IsDeleted")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IsSampleCollectedAtHome")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
@@ -2004,37 +1562,19 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("ReceptionId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Result")
+                    b.Property<string>("SampleCollectionLocation")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ResultTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("SampleCollectionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("SampleCollectionLocationMedicalFacilityId")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("SampleCollectionTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("SampleQualityId")
+                    b.Property<int?>("SampleQuality")
                         .HasColumnType("int");
-
-                    b.Property<DateTime?>("SampleReceivedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("SampleReceivedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("SampleTypeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SpouseName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("SpouseYearOfBirth")
                         .HasColumnType("int");
 
                     b.Property<int?>("TechnicianId")
@@ -2059,78 +1599,6 @@ namespace Freshx_API.Migrations
                     b.ToTable("LabResults");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.LabTestFile", b =>
-                {
-                    b.Property<int>("LabTestFileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LabTestFileId"));
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FilePath")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PatientId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReceptionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("LabTestFileId");
-
-                    b.HasIndex("PatientId");
-
-                    b.HasIndex("ReceptionId");
-
-                    b.ToTable("LabTestFiles");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.LoginSession", b =>
-                {
-                    b.Property<int>("LoginSessionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LoginSessionId"));
-
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Ipaddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("LoginTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LogoutTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Macaddress")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("PharmacyId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("LoginSessionId");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("PharmacyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("LoginSessions");
-                });
-
             modelBuilder.Entity("Freshx_API.Models.MedicalServiceRequest", b =>
                 {
                     b.Property<int>("MedicalServiceRequestId")
@@ -2138,6 +1606,12 @@ namespace Freshx_API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MedicalServiceRequestId"));
+
+                    b.Property<int?>("AssignedByDoctorDoctorId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AssignedByEmployeeEmployeeId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("AssignedById")
                         .HasColumnType("int");
@@ -2148,11 +1622,11 @@ namespace Freshx_API.Migrations
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("ExecutionDate")
-                        .HasColumnType("datetime2");
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
 
-                    b.Property<DateTime?>("ExecutionTime")
-                        .HasColumnType("datetime2");
+                    b.Property<int?>("ExamineId")
+                        .HasColumnType("int");
 
                     b.Property<bool?>("IsApproved")
                         .HasColumnType("bit");
@@ -2160,13 +1634,7 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("IsDeleted")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("IsPaid")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("NumberOfTubes")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ParentMedicalServiceRequestId")
+                    b.Property<int?>("ParentMedicalServiceRequestMedicalServiceRequestId")
                         .HasColumnType("int");
 
                     b.Property<int?>("PatientId")
@@ -2178,26 +1646,11 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("ReceptionId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("RequestDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RequestNumber")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime?>("RequestTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Result")
+                    b.Property<string>("Results")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("SampleCollectionDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("SampleCollectionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("SampleCollectorId")
-                        .HasColumnType("int");
 
                     b.Property<int?>("ServiceId")
                         .HasColumnType("int");
@@ -2205,32 +1658,33 @@ namespace Freshx_API.Migrations
                     b.Property<decimal?>("ServiceTotalAmount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<decimal?>("ServiceUnitPrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<bool?>("Status")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("Sid")
+                    b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<decimal?>("discount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.HasKey("MedicalServiceRequestId");
 
-                    b.HasIndex("AssignedById");
+                    b.HasIndex("AssignedByDoctorDoctorId");
 
-                    b.HasIndex("ParentMedicalServiceRequestId");
+                    b.HasIndex("AssignedByEmployeeEmployeeId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("ExamineId");
+
+                    b.HasIndex("ParentMedicalServiceRequestMedicalServiceRequestId");
 
                     b.HasIndex("PatientId");
 
                     b.HasIndex("ReceptionId");
-
-                    b.HasIndex("SampleCollectorId");
 
                     b.HasIndex("ServiceId");
 
@@ -2244,9 +1698,6 @@ namespace Freshx_API.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MenuId"));
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
@@ -2266,6 +1717,9 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("ParentMenuId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Path")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
 
@@ -2279,25 +1733,18 @@ namespace Freshx_API.Migrations
                     b.ToTable("Menus");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.MenuPermission", b =>
+            modelBuilder.Entity("Freshx_API.Models.MenuParent", b =>
                 {
-                    b.Property<int>("MenuPermissionId")
+                    b.Property<int>("MenuParentId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MenuPermissionId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MenuParentId"));
 
-                    b.Property<int?>("MenuId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserType")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MenuPermissionId");
-
-                    b.HasIndex("MenuId");
-
-                    b.HasIndex("UserId");
+                    b.HasKey("MenuParentId");
 
                     b.ToTable("MenuPermissions");
                 });
@@ -2310,32 +1757,32 @@ namespace Freshx_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PatientId"));
 
+                    b.Property<string>("AccountId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AdmissionNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CompanyName")
+                    b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("DateOfBirth")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("date");
 
-                    b.Property<string>("DistrictCode")
+                    b.Property<string>("DistrictId")
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("DistrictId")
-                        .HasColumnType("int");
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Ethnicity")
-                        .HasColumnType("int");
+                    b.Property<string>("Ethnicity")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Gender")
                         .HasColumnType("nvarchar(max)");
@@ -2343,10 +1790,13 @@ namespace Freshx_API.Migrations
                     b.Property<string>("IdentityCardNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("ImageId")
+                        .HasColumnType("int");
 
                     b.Property<int?>("IsDeleted")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IsSuspended")
                         .HasColumnType("int");
 
                     b.Property<string>("MedicalRecordNumber")
@@ -2358,42 +1808,62 @@ namespace Freshx_API.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ProvinceCode")
+                    b.Property<string>("ProvinceId")
                         .HasColumnType("nvarchar(20)");
 
-                    b.Property<int?>("ProvinceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TaxCode")
+                    b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("WardCode")
+                    b.Property<string>("WardId")
                         .HasColumnType("nvarchar(20)");
-
-                    b.Property<int?>("WardId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("YearOfBirth")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ZaloId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PatientId");
 
-                    b.HasIndex("DistrictCode");
+                    b.HasIndex("AccountId")
+                        .IsUnique()
+                        .HasFilter("[AccountId] IS NOT NULL");
 
-                    b.HasIndex("ProvinceCode");
+                    b.HasIndex("DistrictId");
 
-                    b.HasIndex("WardCode");
+                    b.HasIndex("ImageId");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.HasIndex("WardId");
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"));
+
+                    b.Property<decimal>("AmountPaid")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int>("BillId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("BillId");
+
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Pharmacy", b =>
@@ -2406,9 +1876,6 @@ namespace Freshx_API.Migrations
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CostCenterId")
-                        .HasColumnType("int");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
@@ -2425,9 +1892,6 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("IsDeleted")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("IsSourceManagement")
-                        .HasColumnType("bit");
-
                     b.Property<bool?>("IsSuspended")
                         .HasColumnType("bit");
 
@@ -2437,9 +1901,6 @@ namespace Freshx_API.Migrations
                     b.Property<string>("NameUnaccented")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SpecialtyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(max)");
 
@@ -2448,11 +1909,24 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("PharmacyId");
 
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("InventoryTypeId");
-
                     b.ToTable("Pharmacies");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Position", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Positions");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Prescription", b =>
@@ -2463,32 +1937,14 @@ namespace Freshx_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrescriptionId"));
 
-                    b.Property<decimal?>("AfternoonDose")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int?>("CreatedBy")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal?>("DaysOfSupply")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("DispensedQuantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("DrugCatalogId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("EveningDose")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<int?>("IsDeleted")
                         .HasColumnType("int");
-
-                    b.Property<bool?>("IsDispensed")
-                        .HasColumnType("bit");
 
                     b.Property<bool?>("IsPaid")
                         .HasColumnType("bit");
@@ -2496,26 +1952,12 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("MedicalExaminationId")
                         .HasColumnType("int");
 
-                    b.Property<decimal?>("MorningDose")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("NoonDose")
-                        .HasColumnType("decimal(18,2)");
-
                     b.Property<string>("Note")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PrescriptionNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal?>("Quantity")
-                        .HasColumnType("decimal(18,2)");
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<decimal?>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("UnitPrice")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
@@ -2525,28 +1967,60 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("PrescriptionId");
 
-                    b.HasIndex("DrugCatalogId");
-
-                    b.HasIndex("MedicalExaminationId");
-
                     b.ToTable("Prescriptions");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.PriceType", b =>
+            modelBuilder.Entity("Freshx_API.Models.PrescriptionDetail", b =>
                 {
-                    b.Property<int>("PriceTypeId")
+                    b.Property<int>("PrescriptionDetailId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PriceTypeId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PrescriptionDetailId"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<decimal?>("AfternoonDose")
+                        .HasColumnType("decimal(18, 2)");
 
-                    b.HasKey("PriceTypeId");
+                    b.Property<decimal?>("DaysOfSupply")
+                        .HasColumnType("decimal(18, 2)");
 
-                    b.ToTable("PriceTypes");
+                    b.Property<int>("DrugCatalogId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("EveningDose")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal?>("MorningDose")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<decimal?>("NoonDose")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("PrescriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("Quantity")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<int?>("TemplatePrescriptionId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("TotalAmount")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.HasKey("PrescriptionDetailId");
+
+                    b.HasIndex("DrugCatalogId");
+
+                    b.HasIndex("PrescriptionId");
+
+                    b.HasIndex("TemplatePrescriptionId");
+
+                    b.ToTable("PrescriptionDetail");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Province", b =>
@@ -2602,11 +2076,8 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("AssignedDoctorId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ContactAddress")
+                    b.Property<string>("CreatedBy")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -2616,6 +2087,9 @@ namespace Freshx_API.Migrations
 
                     b.Property<bool?>("IsPriority")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("MedicalServiceRequestId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
@@ -2632,22 +2106,13 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("ReceptionLocationId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ReceptionMonth")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ReceptionNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ReceptionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("ReceptionYear")
-                        .HasColumnType("int");
-
                     b.Property<int?>("ReceptionistId")
                         .HasColumnType("int");
 
                     b.Property<int?>("SequenceNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ServiceTotalAmount")
                         .HasColumnType("int");
 
                     b.Property<int?>("UpdatedBy")
@@ -2662,123 +2127,9 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("PatientId");
 
+                    b.HasIndex("ReceptionistId");
+
                     b.ToTable("Receptions");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.Report", b =>
-                {
-                    b.Property<int>("ReportId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReportId"));
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("IsDeleted")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IsSuspended")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ProcedureName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReportCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReportFile")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ReportName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("ReportId");
-
-                    b.ToTable("Reports");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.ReportParameter", b =>
-                {
-                    b.Property<int>("ReportParameterId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReportParameterId"));
-
-                    b.Property<string>("DisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ItemType")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("LoadType")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("NumericalOrder")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ParameterName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ReportId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TypeOfControlInputId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ValueIntCheckBoxFalse")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ValueIntCheckBoxTrue")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ValueStringCheckBoxFalse")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ValueStringCheckBoxTrue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ReportParameterId");
-
-                    b.HasIndex("ReportId");
-
-                    b.HasIndex("TypeOfControlInputId");
-
-                    b.ToTable("ReportParameters");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.ReportPermission", b =>
-                {
-                    b.Property<int>("ReportPermissionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ReportPermissionId"));
-
-                    b.Property<int?>("ReportId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ReportPermissionId");
-
-                    b.HasIndex("ReportId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ReportPermissions");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Savefile", b =>
@@ -2812,16 +2163,14 @@ namespace Freshx_API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceCatalogId"));
 
                     b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<bool?>("HasStandardValue")
-                        .HasColumnType("bit");
 
                     b.Property<int?>("IsDeleted")
                         .HasColumnType("int");
@@ -2829,23 +2178,22 @@ namespace Freshx_API.Migrations
                     b.Property<bool?>("IsParentService")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("IsSuspended")
+                    b.Property<int>("IsSuspended")
                         .HasColumnType("int");
 
                     b.Property<int?>("Level")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int?>("ParentServiceId")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("PriceTypeId")
-                        .HasColumnType("int");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<int?>("ServiceCatalogId1")
                         .HasColumnType("int");
@@ -2853,11 +2201,21 @@ namespace Freshx_API.Migrations
                     b.Property<int?>("ServiceGroupId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UnitOfMeasure")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UpdatedBy")
+                    b.Property<int?>("ServiceGroupId1")
                         .HasColumnType("int");
+
+                    b.Property<bool?>("ServiceStandardValueId")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ServiceTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UnitOfMeasure")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -2866,11 +2224,13 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ParentServiceId");
 
-                    b.HasIndex("PriceTypeId");
-
                     b.HasIndex("ServiceCatalogId1");
 
                     b.HasIndex("ServiceGroupId");
+
+                    b.HasIndex("ServiceGroupId1");
+
+                    b.HasIndex("ServiceTypeId");
 
                     b.ToTable("ServiceCatalogs");
                 });
@@ -2886,8 +2246,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -2901,8 +2261,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -2975,65 +2335,23 @@ namespace Freshx_API.Migrations
                     b.ToTable("ServiceStandardValues");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.Setting", b =>
+            modelBuilder.Entity("Freshx_API.Models.ServiceTypes", b =>
                 {
-                    b.Property<int>("SettingId")
+                    b.Property<int>("ServiceTypeId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SettingId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ServiceTypeId"));
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Content")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("Date1")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("Date2")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("IsDeleted")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IsSuspended")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Number1")
-                        .HasColumnType("int");
+                    b.HasKey("ServiceTypeId");
 
-                    b.Property<int?>("Number2")
-                        .HasColumnType("int");
-
-                    b.Property<string>("String1")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("String2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("SettingId");
-
-                    b.ToTable("Settings");
+                    b.ToTable("ServiceTypes");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Supplier", b =>
@@ -3053,14 +2371,20 @@ namespace Freshx_API.Migrations
                     b.Property<string>("ContactPerson")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Director")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DistrictCode")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int?>("DistrictId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
@@ -3095,25 +2419,43 @@ namespace Freshx_API.Migrations
                     b.Property<string>("NameEnglish")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameRussian")
+                    b.Property<string>("NameUnaccented")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NameUnaccented")
+                    b.Property<string>("NameVietNam")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ProvinceCode")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int?>("ProvinceId")
+                        .HasColumnType("int");
+
                     b.Property<string>("TaxCode")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("WardCode")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<int?>("WardId")
+                        .HasColumnType("int");
+
                     b.HasKey("SupplierId");
+
+                    b.HasIndex("DistrictCode");
+
+                    b.HasIndex("ProvinceCode");
+
+                    b.HasIndex("WardCode");
 
                     b.ToTable("Suppliers");
                 });
@@ -3126,11 +2468,38 @@ namespace Freshx_API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TechnicianId"));
 
-                    b.Property<int?>("CreatedBy")
+                    b.Property<string>("AccountId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Address")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AvataId")
                         .HasColumnType("int");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DistrictId")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityCardNumber")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("IsDeleted")
                         .HasColumnType("int");
@@ -3141,13 +2510,41 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UpdatedBy")
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PositionId")
                         .HasColumnType("int");
+
+                    b.Property<string>("ProvinceId")
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("WardId")
+                        .HasColumnType("nvarchar(20)");
+
                     b.HasKey("TechnicianId");
+
+                    b.HasIndex("AccountId")
+                        .IsUnique()
+                        .HasFilter("[AccountId] IS NOT NULL");
+
+                    b.HasIndex("AvataId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("DistrictId");
+
+                    b.HasIndex("PositionId");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.HasIndex("WardId");
 
                     b.ToTable("Technicians");
                 });
@@ -3163,20 +2560,24 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<decimal?>("CreatedBy")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("IsDeleted")
+                    b.Property<int?>("DiagnosisDictionaryId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IsSuspended")
+                    b.Property<int?>("IsDeleted")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int?>("UpdatedBy")
                         .HasColumnType("int");
@@ -3187,81 +2588,6 @@ namespace Freshx_API.Migrations
                     b.HasKey("TemplatePrescriptionId");
 
                     b.ToTable("TemplatePrescriptions");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.TemplatePrescriptionDrugMapping", b =>
-                {
-                    b.Property<int>("TemplatePrescriptionDrugMappingId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TemplatePrescriptionDrugMappingId"));
-
-                    b.Property<decimal?>("AfternoonDose")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal?>("DaysOfSupply")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("DrugCatalogId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("EveningDose")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("IsDeleted")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("MorningDose")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("NoonDose")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal?>("Quantity")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("TemplatePrescriptionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("TemplatePrescriptionDrugMappingId");
-
-                    b.HasIndex("DrugCatalogId");
-
-                    b.HasIndex("TemplatePrescriptionId");
-
-                    b.ToTable("TemplatePrescriptionDrugMappings");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.TypeOfControlInput", b =>
-                {
-                    b.Property<int>("TypeOfControlInputId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TypeOfControlInputId"));
-
-                    b.Property<string>("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("TypeOfControlInputId");
-
-                    b.ToTable("TypeOfControlInputs");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.UnitOfMeasure", b =>
@@ -3278,8 +2604,8 @@ namespace Freshx_API.Migrations
                     b.Property<decimal?>("ConversionValue")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -3296,8 +2622,8 @@ namespace Freshx_API.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -3305,167 +2631,6 @@ namespace Freshx_API.Migrations
                     b.HasKey("UnitOfMeasureId");
 
                     b.ToTable("UnitOfMeasures");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.User", b =>
-                {
-                    b.Property<int>("UserId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
-
-                    b.Property<int?>("CreatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("HospitalId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IsDeleted")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("IsSuspended")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UpdatedBy")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.HasIndex("HospitalId");
-
-                    b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.UserAction", b =>
-                {
-                    b.Property<int>("UserActionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserActionId"));
-
-                    b.Property<string>("Action")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("LoginSessionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RequestObjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ServiceId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserActionId");
-
-                    b.HasIndex("LoginSessionId");
-
-                    b.HasIndex("ServiceId");
-
-                    b.ToTable("UserActions");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.UserActionByMedicalRecord", b =>
-                {
-                    b.Property<int>("UserActionByMedicalRecordId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserActionByMedicalRecordId"));
-
-                    b.Property<string>("Action")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ActionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("AdmissionNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("LoginSessionId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MedicalRecordNumber")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserActionByMedicalRecordId");
-
-                    b.HasIndex("LoginSessionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserActionByMedicalRecords");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.UserDepartment", b =>
-                {
-                    b.Property<int>("UserDepartmentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserDepartmentId"));
-
-                    b.Property<int?>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserDepartmentId");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserDepartments");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.UserPharmacy", b =>
-                {
-                    b.Property<int>("UserPharmacyId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserPharmacyId"));
-
-                    b.Property<int?>("PharmacyId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserPharmacyId");
-
-                    b.HasIndex("PharmacyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserPharmacies");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Ward", b =>
@@ -3512,47 +2677,6 @@ namespace Freshx_API.Migrations
                     b.HasIndex("DistrictCode");
 
                     b.ToTable("Wards");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.ZaloUser", b =>
-                {
-                    b.Property<int?>("RowNumber")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("RowNumber"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Avatar")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("District")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserIdByApp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("RowNumber");
-
-                    b.ToTable("ZaloUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -3688,11 +2812,32 @@ namespace Freshx_API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.AppUser", b =>
+                {
+                    b.HasOne("Freshx_API.Models.District", "District")
+                        .WithMany()
+                        .HasForeignKey("DistrictId");
+
+                    b.HasOne("Freshx_API.Models.Province", "Province")
+                        .WithMany()
+                        .HasForeignKey("ProvinceId");
+
+                    b.HasOne("Freshx_API.Models.Ward", "Ward")
+                        .WithMany()
+                        .HasForeignKey("WardId");
+
+                    b.Navigation("District");
+
+                    b.Navigation("Province");
+
+                    b.Navigation("Ward");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Appointment", b =>
                 {
-                    b.HasOne("Freshx_API.Models.Invoice", "MedicalExamination")
+                    b.HasOne("Freshx_API.Models.Examine", "Examination")
                         .WithMany()
-                        .HasForeignKey("MedicalExaminationId");
+                        .HasForeignKey("ExaminationId");
 
                     b.HasOne("Freshx_API.Models.Patient", "Patient")
                         .WithMany()
@@ -3702,11 +2847,77 @@ namespace Freshx_API.Migrations
                         .WithMany()
                         .HasForeignKey("ReceptionId");
 
-                    b.Navigation("MedicalExamination");
+                    b.Navigation("Examination");
 
                     b.Navigation("Patient");
 
                     b.Navigation("Reception");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Bill", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Employee", "Cashier")
+                        .WithMany()
+                        .HasForeignKey("CashierId");
+
+                    b.HasOne("Freshx_API.Models.Reception", "Reception")
+                        .WithMany()
+                        .HasForeignKey("ReceptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cashier");
+
+                    b.Navigation("Reception");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.BillDetail", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Bill", "Bill")
+                        .WithMany("BillDetails")
+                        .HasForeignKey("BillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Freshx_API.Models.ServiceCatalog", "ServiceCatalog")
+                        .WithMany()
+                        .HasForeignKey("ServiceCatalogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bill");
+
+                    b.Navigation("ServiceCatalog");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.ChatMessage", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Conversation", null)
+                        .WithMany("Messages")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Clinic", b =>
+                {
+                    b.HasOne("Freshx_API.Models.District", "District")
+                        .WithMany()
+                        .HasForeignKey("DistrictCode");
+
+                    b.HasOne("Freshx_API.Models.Province", "Province")
+                        .WithMany()
+                        .HasForeignKey("ProvinceCode");
+
+                    b.HasOne("Freshx_API.Models.Ward", "Ward")
+                        .WithMany()
+                        .HasForeignKey("WardCode");
+
+                    b.Navigation("District");
+
+                    b.Navigation("Province");
+
+                    b.Navigation("Ward");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ConclusionDictionary", b =>
@@ -3721,6 +2932,12 @@ namespace Freshx_API.Migrations
 
             modelBuilder.Entity("Freshx_API.Models.Department", b =>
                 {
+                    b.HasOne("Freshx_API.Models.Pharmacy", null)
+                        .WithMany("Department")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Freshx_API.Models.DepartmentType", "DepartmentType")
                         .WithMany()
                         .HasForeignKey("DepartmentTypeId");
@@ -3728,11 +2945,22 @@ namespace Freshx_API.Migrations
                     b.Navigation("DepartmentType");
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.DiagnosisDictionary", b =>
+                {
+                    b.HasOne("Freshx_API.Models.TemplatePrescription", null)
+                        .WithMany("DiagnosisDictionary")
+                        .HasForeignKey("TemplatePrescriptionId");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.DiagnosticImagingResult", b =>
                 {
                     b.HasOne("Freshx_API.Models.Doctor", "ConcludingDoctor")
                         .WithMany()
                         .HasForeignKey("ConcludingDoctorId");
+
+                    b.HasOne("Freshx_API.Models.ConclusionDictionary", "ConclusionDictionary")
+                        .WithMany()
+                        .HasForeignKey("ConclusionDictionaryId");
 
                     b.HasOne("Freshx_API.Models.MedicalServiceRequest", "MedicalServiceRequest")
                         .WithMany()
@@ -3756,6 +2984,8 @@ namespace Freshx_API.Migrations
 
                     b.Navigation("ConcludingDoctor");
 
+                    b.Navigation("ConclusionDictionary");
+
                     b.Navigation("MedicalServiceRequest");
 
                     b.Navigation("Patient");
@@ -3765,15 +2995,6 @@ namespace Freshx_API.Migrations
                     b.Navigation("SampleCollector");
 
                     b.Navigation("Technician");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.DiagnosticImagingResultImage", b =>
-                {
-                    b.HasOne("Freshx_API.Models.DiagnosticImagingResult", "DiagnosticImagingResult")
-                        .WithMany()
-                        .HasForeignKey("DiagnosticImagingResultId");
-
-                    b.Navigation("DiagnosticImagingResult");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.District", b =>
@@ -3787,171 +3008,50 @@ namespace Freshx_API.Migrations
                     b.Navigation("Province");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.DoctorsCommonIcd", b =>
+            modelBuilder.Entity("Freshx_API.Models.Doctor", b =>
                 {
-                    b.HasOne("Freshx_API.Models.Doctor", "Doctor")
+                    b.HasOne("Freshx_API.Models.AppUser", "AppUser")
+                        .WithOne("Doctor")
+                        .HasForeignKey("Freshx_API.Models.Doctor", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Freshx_API.Models.Savefile", "Avata")
                         .WithMany()
-                        .HasForeignKey("DoctorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Freshx_API.Models.ICDCatalog", "ICDCatalog")
-                        .WithMany()
-                        .HasForeignKey("ICDCatalogId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Doctor");
-
-                    b.Navigation("ICDCatalog");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.Document", b =>
-                {
-                    b.HasOne("Freshx_API.Models.Employee", "Approver")
-                        .WithMany()
-                        .HasForeignKey("ApproverId");
-
-                    b.HasOne("Freshx_API.Models.Employee", "ChiefAccountant")
-                        .WithMany()
-                        .HasForeignKey("ChiefAccountantId");
-
-                    b.HasOne("Freshx_API.Models.Pharmacy", "CorrespondingPharmacy")
-                        .WithMany()
-                        .HasForeignKey("CorrespondingPharmacyId");
-
-                    b.HasOne("Freshx_API.Models.Employee", "Deliverer")
-                        .WithMany()
-                        .HasForeignKey("DelivererId");
+                        .HasForeignKey("AvataId");
 
                     b.HasOne("Freshx_API.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("Freshx_API.Models.Doctor", "Doctor")
+                    b.HasOne("Freshx_API.Models.District", "District")
                         .WithMany()
-                        .HasForeignKey("DoctorId");
+                        .HasForeignKey("DistrictId");
 
-                    b.HasOne("Freshx_API.Models.DocumentPurpose", "DocumentPurpose")
+                    b.HasOne("Freshx_API.Models.Position", "Position")
                         .WithMany()
-                        .HasForeignKey("DocumentPurposeId");
+                        .HasForeignKey("PositionId");
 
-                    b.HasOne("Freshx_API.Models.Pharmacy", "ExecutionPharmacy")
+                    b.HasOne("Freshx_API.Models.Province", "Province")
                         .WithMany()
-                        .HasForeignKey("ExecutionPharmacyId");
+                        .HasForeignKey("ProvinceId");
 
-                    b.HasOne("Freshx_API.Models.Employee", "Inputter")
+                    b.HasOne("Freshx_API.Models.Ward", "Ward")
                         .WithMany()
-                        .HasForeignKey("InputterId");
+                        .HasForeignKey("WardId");
 
-                    b.HasOne("Freshx_API.Models.Employee", "Inspector")
-                        .WithMany()
-                        .HasForeignKey("InspectorId");
+                    b.Navigation("AppUser");
 
-                    b.HasOne("Freshx_API.Models.Pharmacy", "IssuingPharmacy")
-                        .WithMany()
-                        .HasForeignKey("IssuingPharmacyId");
-
-                    b.HasOne("Freshx_API.Models.Invoice", "MedicalExamination")
-                        .WithMany()
-                        .HasForeignKey("MedicalExaminationId");
-
-                    b.HasOne("Freshx_API.Models.Employee", "Receiver")
-                        .WithMany()
-                        .HasForeignKey("ReceiverId");
-
-                    b.HasOne("Freshx_API.Models.Pharmacy", "ReceivingPharmacy")
-                        .WithMany()
-                        .HasForeignKey("ReceivingPharmacyId");
-
-                    b.HasOne("Freshx_API.Models.Doctor", "ReferralDoctor")
-                        .WithMany()
-                        .HasForeignKey("ReferralDoctorId");
-
-                    b.HasOne("Freshx_API.Models.Document", "RelatedDocument")
-                        .WithMany()
-                        .HasForeignKey("RelatedDocumentId");
-
-                    b.HasOne("Freshx_API.Models.Supplier", "Supplier")
-                        .WithMany()
-                        .HasForeignKey("SupplierId");
-
-                    b.HasOne("Freshx_API.Models.Employee", "Treasurer")
-                        .WithMany()
-                        .HasForeignKey("TreasurerId");
-
-                    b.HasOne("Freshx_API.Models.Pharmacy", "UsagePharmacy")
-                        .WithMany()
-                        .HasForeignKey("UsagePharmacyId");
-
-                    b.Navigation("Approver");
-
-                    b.Navigation("ChiefAccountant");
-
-                    b.Navigation("CorrespondingPharmacy");
-
-                    b.Navigation("Deliverer");
+                    b.Navigation("Avata");
 
                     b.Navigation("Department");
 
-                    b.Navigation("Doctor");
+                    b.Navigation("District");
 
-                    b.Navigation("DocumentPurpose");
+                    b.Navigation("Position");
 
-                    b.Navigation("ExecutionPharmacy");
+                    b.Navigation("Province");
 
-                    b.Navigation("Inputter");
-
-                    b.Navigation("Inspector");
-
-                    b.Navigation("IssuingPharmacy");
-
-                    b.Navigation("MedicalExamination");
-
-                    b.Navigation("Receiver");
-
-                    b.Navigation("ReceivingPharmacy");
-
-                    b.Navigation("ReferralDoctor");
-
-                    b.Navigation("RelatedDocument");
-
-                    b.Navigation("Supplier");
-
-                    b.Navigation("Treasurer");
-
-                    b.Navigation("UsagePharmacy");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.DocumentDetail", b =>
-                {
-                    b.HasOne("Freshx_API.Models.Document", "Document")
-                        .WithMany()
-                        .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Freshx_API.Models.DrugCatalog", "DrugCatalog")
-                        .WithMany()
-                        .HasForeignKey("DrugCatalogId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Freshx_API.Models.UnitOfMeasure", "OriginalUnitOfMeasure")
-                        .WithMany()
-                        .HasForeignKey("OriginalUnitOfMeasureId");
-
-                    b.HasOne("Freshx_API.Models.UnitOfMeasure", "UnitOfMeasure")
-                        .WithMany()
-                        .HasForeignKey("UnitOfMeasureId");
-
-                    b.Navigation("Document");
-
-                    b.Navigation("DrugCatalog");
-
-                    b.Navigation("OriginalUnitOfMeasure");
-
-                    b.Navigation("UnitOfMeasure");
+                    b.Navigation("Ward");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.DrugBooking", b =>
@@ -3960,21 +3060,15 @@ namespace Freshx_API.Migrations
                         .WithMany()
                         .HasForeignKey("DrugCatalogId");
 
-                    b.HasOne("Freshx_API.Models.LoginSession", "LoginSession")
+                    b.HasOne("Freshx_API.Models.Examine", "MedicalExamination")
                         .WithMany()
-                        .HasForeignKey("LoginSessionId");
-
-                    b.HasOne("Freshx_API.Models.Invoice", "MedicalExamination")
-                        .WithMany()
-                        .HasForeignKey("MedicalExaminationId");
+                        .HasForeignKey("ExamineId");
 
                     b.HasOne("Freshx_API.Models.Prescription", "Prescription")
                         .WithMany()
                         .HasForeignKey("PrescriptionId");
 
                     b.Navigation("DrugCatalog");
-
-                    b.Navigation("LoginSession");
 
                     b.Navigation("MedicalExamination");
 
@@ -3987,17 +3081,9 @@ namespace Freshx_API.Migrations
                         .WithMany()
                         .HasForeignKey("CountryId");
 
-                    b.HasOne("Freshx_API.Models.Pharmacy", "DepartmentPharmacy")
-                        .WithMany()
-                        .HasForeignKey("DepartmentPharmacyId");
-
                     b.HasOne("Freshx_API.Models.DrugType", "DrugType")
                         .WithMany()
                         .HasForeignKey("DrugTypeId");
-
-                    b.HasOne("Freshx_API.Models.Pharmacy", "ManagementPharmacy")
-                        .WithMany()
-                        .HasForeignKey("ManagementPharmacyId");
 
                     b.HasOne("Freshx_API.Models.Supplier", "Manufacturer")
                         .WithMany()
@@ -4009,30 +3095,11 @@ namespace Freshx_API.Migrations
 
                     b.Navigation("Country");
 
-                    b.Navigation("DepartmentPharmacy");
-
                     b.Navigation("DrugType");
-
-                    b.Navigation("ManagementPharmacy");
 
                     b.Navigation("Manufacturer");
 
                     b.Navigation("UnitOfMeasure");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.EinvoiceFile", b =>
-                {
-                    b.HasOne("Freshx_API.Models.Invoice", "Invoice")
-                        .WithMany()
-                        .HasForeignKey("InvoiceId");
-
-                    b.HasOne("Freshx_API.Models.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId");
-
-                    b.Navigation("Invoice");
-
-                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.EmailContent", b =>
@@ -4044,61 +3111,75 @@ namespace Freshx_API.Migrations
                     b.Navigation("Sender");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.EmailContentImage", b =>
-                {
-                    b.HasOne("Freshx_API.Models.EmailContent", "EmailContent")
-                        .WithMany()
-                        .HasForeignKey("EmailContentId");
-
-                    b.Navigation("EmailContent");
-                });
-
             modelBuilder.Entity("Freshx_API.Models.Employee", b =>
                 {
+                    b.HasOne("Freshx_API.Models.AppUser", "AppUser")
+                        .WithOne("Employee")
+                        .HasForeignKey("Freshx_API.Models.Employee", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Freshx_API.Models.Savefile", "Avata")
+                        .WithMany()
+                        .HasForeignKey("AvataId");
+
                     b.HasOne("Freshx_API.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId");
 
                     b.HasOne("Freshx_API.Models.District", "District")
                         .WithMany()
-                        .HasForeignKey("DistrictCode");
+                        .HasForeignKey("DistrictId");
+
+                    b.HasOne("Freshx_API.Models.Position", "Position")
+                        .WithMany()
+                        .HasForeignKey("PositionId");
 
                     b.HasOne("Freshx_API.Models.Province", "Province")
                         .WithMany()
-                        .HasForeignKey("ProvinceCode");
+                        .HasForeignKey("ProvinceId");
 
                     b.HasOne("Freshx_API.Models.Ward", "Ward")
                         .WithMany()
-                        .HasForeignKey("WardCode");
+                        .HasForeignKey("WardId");
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Avata");
 
                     b.Navigation("Department");
 
                     b.Navigation("District");
+
+                    b.Navigation("Position");
 
                     b.Navigation("Province");
 
                     b.Navigation("Ward");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.ExaminationConfirmation", b =>
+            modelBuilder.Entity("Freshx_API.Models.Examine", b =>
                 {
-                    b.HasOne("Freshx_API.Models.Invoice", "Invoice")
+                    b.HasOne("Freshx_API.Models.ICDCatalog", "ICDCatalog")
                         .WithMany()
-                        .HasForeignKey("MedicalExaminationId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ICDCatalogId");
 
-                    b.HasOne("Freshx_API.Models.Invoice", "MedicalExamination")
+                    b.HasOne("Freshx_API.Models.Patient", "Patient")
                         .WithMany()
-                        .HasForeignKey("MedicalExaminationInvoiceId");
+                        .HasForeignKey("PatientId");
+
+                    b.HasOne("Freshx_API.Models.Prescription", "Prescription")
+                        .WithMany()
+                        .HasForeignKey("PrescriptionId");
 
                     b.HasOne("Freshx_API.Models.Reception", "Reception")
                         .WithMany()
-                        .HasForeignKey("ReceptionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("ReceptionId");
 
-                    b.Navigation("Invoice");
+                    b.Navigation("ICDCatalog");
 
-                    b.Navigation("MedicalExamination");
+                    b.Navigation("Patient");
+
+                    b.Navigation("Prescription");
 
                     b.Navigation("Reception");
                 });
@@ -4113,25 +3194,13 @@ namespace Freshx_API.Migrations
                     b.Navigation("ICDCatalogGroup");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.Invoice", b =>
+            modelBuilder.Entity("Freshx_API.Models.InventoryType", b =>
                 {
-                    b.HasOne("Freshx_API.Models.ICDCatalog", "ICDCatalog")
-                        .WithMany()
-                        .HasForeignKey("ICDCatalogId");
-
-                    b.HasOne("Freshx_API.Models.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId");
-
-                    b.HasOne("Freshx_API.Models.Reception", "Reception")
-                        .WithMany()
-                        .HasForeignKey("ReceptionId");
-
-                    b.Navigation("ICDCatalog");
-
-                    b.Navigation("Patient");
-
-                    b.Navigation("Reception");
+                    b.HasOne("Freshx_API.Models.Pharmacy", null)
+                        .WithMany("InventoryType")
+                        .HasForeignKey("InventoryTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Freshx_API.Models.LabResult", b =>
@@ -4161,71 +3230,45 @@ namespace Freshx_API.Migrations
                     b.Navigation("Technician");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.LabTestFile", b =>
+            modelBuilder.Entity("Freshx_API.Models.MedicalServiceRequest", b =>
                 {
-                    b.HasOne("Freshx_API.Models.Patient", "Patient")
+                    b.HasOne("Freshx_API.Models.Doctor", "AssignedByDoctor")
                         .WithMany()
-                        .HasForeignKey("PatientId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AssignedByDoctorDoctorId");
 
-                    b.HasOne("Freshx_API.Models.Reception", "Reception")
+                    b.HasOne("Freshx_API.Models.Employee", "AssignedByEmployee")
                         .WithMany()
-                        .HasForeignKey("ReceptionId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("AssignedByEmployeeEmployeeId");
 
-                    b.Navigation("Patient");
-
-                    b.Navigation("Reception");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.LoginSession", b =>
-                {
                     b.HasOne("Freshx_API.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("Freshx_API.Models.Pharmacy", "Pharmacy")
-                        .WithMany()
-                        .HasForeignKey("PharmacyId");
-
-                    b.HasOne("Freshx_API.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Pharmacy");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.MedicalServiceRequest", b =>
-                {
-                    b.HasOne("Freshx_API.Models.Employee", "AssignedBy")
-                        .WithMany()
-                        .HasForeignKey("AssignedById");
+                    b.HasOne("Freshx_API.Models.Examine", null)
+                        .WithMany("MedicalServiceRequests")
+                        .HasForeignKey("ExamineId");
 
                     b.HasOne("Freshx_API.Models.MedicalServiceRequest", "ParentMedicalServiceRequest")
                         .WithMany()
-                        .HasForeignKey("ParentMedicalServiceRequestId");
+                        .HasForeignKey("ParentMedicalServiceRequestMedicalServiceRequestId");
 
                     b.HasOne("Freshx_API.Models.Patient", "Patient")
                         .WithMany()
                         .HasForeignKey("PatientId");
 
                     b.HasOne("Freshx_API.Models.Reception", "Reception")
-                        .WithMany()
+                        .WithMany("MedicalServiceRequest")
                         .HasForeignKey("ReceptionId");
-
-                    b.HasOne("Freshx_API.Models.Employee", "SampleCollector")
-                        .WithMany()
-                        .HasForeignKey("SampleCollectorId");
 
                     b.HasOne("Freshx_API.Models.ServiceCatalog", "Service")
                         .WithMany()
                         .HasForeignKey("ServiceId");
 
-                    b.Navigation("AssignedBy");
+                    b.Navigation("AssignedByDoctor");
+
+                    b.Navigation("AssignedByEmployee");
+
+                    b.Navigation("Department");
 
                     b.Navigation("ParentMedicalServiceRequest");
 
@@ -4233,36 +3276,150 @@ namespace Freshx_API.Migrations
 
                     b.Navigation("Reception");
 
-                    b.Navigation("SampleCollector");
-
                     b.Navigation("Service");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Menu", b =>
                 {
-                    b.HasOne("Freshx_API.Models.Menu", "ParentMenu")
+                    b.HasOne("Freshx_API.Models.MenuParent", "ParentMenu")
                         .WithMany()
                         .HasForeignKey("ParentMenuId");
 
                     b.Navigation("ParentMenu");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.MenuPermission", b =>
+            modelBuilder.Entity("Freshx_API.Models.Patient", b =>
                 {
-                    b.HasOne("Freshx_API.Models.Menu", "Menu")
+                    b.HasOne("Freshx_API.Models.AppUser", "AppUser")
+                        .WithOne("Patient")
+                        .HasForeignKey("Freshx_API.Models.Patient", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Freshx_API.Models.District", "District")
                         .WithMany()
-                        .HasForeignKey("MenuId");
+                        .HasForeignKey("DistrictId");
 
-                    b.HasOne("Freshx_API.Models.User", "User")
+                    b.HasOne("Freshx_API.Models.Savefile", "Image")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("ImageId");
 
-                    b.Navigation("Menu");
+                    b.HasOne("Freshx_API.Models.Province", "Province")
+                        .WithMany()
+                        .HasForeignKey("ProvinceId");
 
-                    b.Navigation("User");
+                    b.HasOne("Freshx_API.Models.Ward", "Ward")
+                        .WithMany()
+                        .HasForeignKey("WardId");
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("District");
+
+                    b.Navigation("Image");
+
+                    b.Navigation("Province");
+
+                    b.Navigation("Ward");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.Patient", b =>
+            modelBuilder.Entity("Freshx_API.Models.Payment", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Bill", "Bill")
+                        .WithMany("Payments")
+                        .HasForeignKey("BillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bill");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.PrescriptionDetail", b =>
+                {
+                    b.HasOne("Freshx_API.Models.DrugCatalog", "DrugCatalog")
+                        .WithMany()
+                        .HasForeignKey("DrugCatalogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Freshx_API.Models.Prescription", "Prescription")
+                        .WithMany("PrescriptionDetails")
+                        .HasForeignKey("PrescriptionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Freshx_API.Models.TemplatePrescription", "TemplatePrescription")
+                        .WithMany("PrescriptionDetails")
+                        .HasForeignKey("TemplatePrescriptionId");
+
+                    b.Navigation("DrugCatalog");
+
+                    b.Navigation("Prescription");
+
+                    b.Navigation("TemplatePrescription");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Reception", b =>
+                {
+                    b.HasOne("Freshx_API.Models.Doctor", "AssignedDoctor")
+                        .WithMany("Receptions")
+                        .HasForeignKey("AssignedDoctorId");
+
+                    b.HasOne("Freshx_API.Models.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId");
+
+                    b.HasOne("Freshx_API.Models.Employee", "Receptionist")
+                        .WithMany()
+                        .HasForeignKey("ReceptionistId");
+
+                    b.Navigation("AssignedDoctor");
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Receptionist");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.ServiceCatalog", b =>
+                {
+                    b.HasOne("Freshx_API.Models.ServiceCatalog", "ParentService")
+                        .WithMany()
+                        .HasForeignKey("ParentServiceId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Freshx_API.Models.ServiceCatalog", null)
+                        .WithMany("ChildServices")
+                        .HasForeignKey("ServiceCatalogId1");
+
+                    b.HasOne("Freshx_API.Models.ServiceGroup", "ServiceGroup")
+                        .WithMany()
+                        .HasForeignKey("ServiceGroupId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Freshx_API.Models.ServiceGroup", null)
+                        .WithMany("ServiceCatalogs")
+                        .HasForeignKey("ServiceGroupId1");
+
+                    b.HasOne("Freshx_API.Models.ServiceTypes", "ServiceTypes")
+                        .WithMany()
+                        .HasForeignKey("ServiceTypeId");
+
+                    b.Navigation("ParentService");
+
+                    b.Navigation("ServiceGroup");
+
+                    b.Navigation("ServiceTypes");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.ServiceStandardValue", b =>
+                {
+                    b.HasOne("Freshx_API.Models.ServiceCatalog", "ServiceCatalog")
+                        .WithMany("ServiceStandardValues")
+                        .HasForeignKey("ServiceCatalogId");
+
+                    b.Navigation("ServiceCatalog");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Supplier", b =>
                 {
                     b.HasOne("Freshx_API.Models.District", "District")
                         .WithMany()
@@ -4283,204 +3440,50 @@ namespace Freshx_API.Migrations
                     b.Navigation("Ward");
                 });
 
-            modelBuilder.Entity("Freshx_API.Models.Pharmacy", b =>
+            modelBuilder.Entity("Freshx_API.Models.Technician", b =>
                 {
+                    b.HasOne("Freshx_API.Models.AppUser", "AppUser")
+                        .WithOne("Technician")
+                        .HasForeignKey("Freshx_API.Models.Technician", "AccountId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Freshx_API.Models.Savefile", "Avata")
+                        .WithMany()
+                        .HasForeignKey("AvataId");
+
                     b.HasOne("Freshx_API.Models.Department", "Department")
                         .WithMany()
                         .HasForeignKey("DepartmentId");
 
-                    b.HasOne("Freshx_API.Models.InventoryType", "InventoryType")
+                    b.HasOne("Freshx_API.Models.District", "District")
                         .WithMany()
-                        .HasForeignKey("InventoryTypeId");
+                        .HasForeignKey("DistrictId");
+
+                    b.HasOne("Freshx_API.Models.Position", "Position")
+                        .WithMany()
+                        .HasForeignKey("PositionId");
+
+                    b.HasOne("Freshx_API.Models.Province", "Province")
+                        .WithMany()
+                        .HasForeignKey("ProvinceId");
+
+                    b.HasOne("Freshx_API.Models.Ward", "Ward")
+                        .WithMany()
+                        .HasForeignKey("WardId");
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Avata");
 
                     b.Navigation("Department");
 
-                    b.Navigation("InventoryType");
-                });
+                    b.Navigation("District");
 
-            modelBuilder.Entity("Freshx_API.Models.Prescription", b =>
-                {
-                    b.HasOne("Freshx_API.Models.DrugCatalog", "DrugCatalog")
-                        .WithMany()
-                        .HasForeignKey("DrugCatalogId");
+                    b.Navigation("Position");
 
-                    b.HasOne("Freshx_API.Models.Invoice", "MedicalExamination")
-                        .WithMany()
-                        .HasForeignKey("MedicalExaminationId");
+                    b.Navigation("Province");
 
-                    b.Navigation("DrugCatalog");
-
-                    b.Navigation("MedicalExamination");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.Reception", b =>
-                {
-                    b.HasOne("Freshx_API.Models.Doctor", "AssignedDoctor")
-                        .WithMany()
-                        .HasForeignKey("AssignedDoctorId");
-
-                    b.HasOne("Freshx_API.Models.Patient", "Patient")
-                        .WithMany()
-                        .HasForeignKey("PatientId");
-
-                    b.Navigation("AssignedDoctor");
-
-                    b.Navigation("Patient");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.ReportParameter", b =>
-                {
-                    b.HasOne("Freshx_API.Models.Report", "Report")
-                        .WithMany()
-                        .HasForeignKey("ReportId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Freshx_API.Models.TypeOfControlInput", "TypeOfControlInput")
-                        .WithMany()
-                        .HasForeignKey("TypeOfControlInputId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Report");
-
-                    b.Navigation("TypeOfControlInput");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.ReportPermission", b =>
-                {
-                    b.HasOne("Freshx_API.Models.Report", "Report")
-                        .WithMany()
-                        .HasForeignKey("ReportId");
-
-                    b.HasOne("Freshx_API.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Report");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.ServiceCatalog", b =>
-                {
-                    b.HasOne("Freshx_API.Models.ServiceCatalog", "ParentService")
-                        .WithMany()
-                        .HasForeignKey("ParentServiceId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Freshx_API.Models.PriceType", "PriceType")
-                        .WithMany()
-                        .HasForeignKey("PriceTypeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Freshx_API.Models.ServiceCatalog", null)
-                        .WithMany("ChildServices")
-                        .HasForeignKey("ServiceCatalogId1");
-
-                    b.HasOne("Freshx_API.Models.ServiceGroup", "ServiceGroup")
-                        .WithMany()
-                        .HasForeignKey("ServiceGroupId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("ParentService");
-
-                    b.Navigation("PriceType");
-
-                    b.Navigation("ServiceGroup");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.ServiceStandardValue", b =>
-                {
-                    b.HasOne("Freshx_API.Models.ServiceCatalog", "ServiceCatalog")
-                        .WithMany("ServiceStandardValues")
-                        .HasForeignKey("ServiceCatalogId");
-
-                    b.Navigation("ServiceCatalog");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.TemplatePrescriptionDrugMapping", b =>
-                {
-                    b.HasOne("Freshx_API.Models.DrugCatalog", "DrugCatalog")
-                        .WithMany()
-                        .HasForeignKey("DrugCatalogId");
-
-                    b.HasOne("Freshx_API.Models.TemplatePrescription", "TemplatePrescription")
-                        .WithMany()
-                        .HasForeignKey("TemplatePrescriptionId");
-
-                    b.Navigation("DrugCatalog");
-
-                    b.Navigation("TemplatePrescription");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.User", b =>
-                {
-                    b.HasOne("Freshx_API.Models.Hospital", "Hospital")
-                        .WithMany()
-                        .HasForeignKey("HospitalId");
-
-                    b.Navigation("Hospital");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.UserAction", b =>
-                {
-                    b.HasOne("Freshx_API.Models.LoginSession", "LoginSession")
-                        .WithMany()
-                        .HasForeignKey("LoginSessionId");
-
-                    b.HasOne("Freshx_API.Models.ServiceCatalog", "Service")
-                        .WithMany()
-                        .HasForeignKey("ServiceId");
-
-                    b.Navigation("LoginSession");
-
-                    b.Navigation("Service");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.UserActionByMedicalRecord", b =>
-                {
-                    b.HasOne("Freshx_API.Models.LoginSession", "LoginSession")
-                        .WithMany()
-                        .HasForeignKey("LoginSessionId");
-
-                    b.HasOne("Freshx_API.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("LoginSession");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.UserDepartment", b =>
-                {
-                    b.HasOne("Freshx_API.Models.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId");
-
-                    b.HasOne("Freshx_API.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Freshx_API.Models.UserPharmacy", b =>
-                {
-                    b.HasOne("Freshx_API.Models.Pharmacy", "Pharmacy")
-                        .WithMany()
-                        .HasForeignKey("PharmacyId");
-
-                    b.HasOne("Freshx_API.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Pharmacy");
-
-                    b.Navigation("User");
+                    b.Navigation("Ward");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Ward", b =>
@@ -4545,9 +3548,59 @@ namespace Freshx_API.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Freshx_API.Models.AppUser", b =>
+                {
+                    b.Navigation("Doctor");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Patient");
+
+                    b.Navigation("Technician");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Bill", b =>
+                {
+                    b.Navigation("BillDetails");
+
+                    b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Conversation", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Doctor", b =>
+                {
+                    b.Navigation("Receptions");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Examine", b =>
+                {
+                    b.Navigation("MedicalServiceRequests");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Pharmacy", b =>
+                {
+                    b.Navigation("Department");
+
+                    b.Navigation("InventoryType");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Prescription", b =>
+                {
+                    b.Navigation("PrescriptionDetails");
+                });
+
             modelBuilder.Entity("Freshx_API.Models.Province", b =>
                 {
                     b.Navigation("Districts");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.Reception", b =>
+                {
+                    b.Navigation("MedicalServiceRequest");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ServiceCatalog", b =>
@@ -4555,6 +3608,18 @@ namespace Freshx_API.Migrations
                     b.Navigation("ChildServices");
 
                     b.Navigation("ServiceStandardValues");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.ServiceGroup", b =>
+                {
+                    b.Navigation("ServiceCatalogs");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.TemplatePrescription", b =>
+                {
+                    b.Navigation("DiagnosisDictionary");
+
+                    b.Navigation("PrescriptionDetails");
                 });
 #pragma warning restore 612, 618
         }

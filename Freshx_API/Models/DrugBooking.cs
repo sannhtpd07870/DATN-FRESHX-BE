@@ -4,12 +4,10 @@ using System.Collections.Generic;
 namespace Freshx_API.Models;
 
 public partial class DrugBooking
-{
+{   // chức năng còn đang xem xét có thực hiện hay không, không xây CURD cho table này
     public int DrugBookingId { get; set; } // ID đặt thuốc
 
-    public int? LoginSessionId { get; set; } // ID phiên đăng nhập
-
-    public int? MedicalExaminationId { get; set; } // ID khám bệnh
+    public int? ExamineId { get; set; } // ID khám bệnh
 
     public int? PrescriptionId { get; set; } // ID đơn thuốc
 
@@ -38,10 +36,7 @@ public partial class DrugBooking
     public string? Note { get; set; } // Ghi chú
 
     public virtual DrugCatalog? DrugCatalog { get; set; } // Danh mục thuốc
-
-    public virtual LoginSession? LoginSession { get; set; } // Phiên đăng nhập liên quan
-
-    public virtual Invoice? MedicalExamination { get; set; } // Khám bệnh liên quan
+    public virtual Examine? MedicalExamination { get; set; } // Khám bệnh liên quan
 
     public virtual Prescription? Prescription { get; set; } // Đơn thuốc liên quan
 }

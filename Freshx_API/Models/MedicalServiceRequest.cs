@@ -6,75 +6,70 @@ namespace Freshx_API.Models;
 
 public partial class MedicalServiceRequest
 {
-    public int MedicalServiceRequestId { get; set; }
+    public int MedicalServiceRequestId { get; set; } // ID của yêu cầu dịch vụ y tế
 
-    public string? RequestNumber { get; set; }
+    public DateTime? RequestTime { get; set; } // Thời gian yêu cầu
 
-    public DateTime? RequestDate { get; set; }
-
-    public DateTime? RequestTime { get; set; }
-
+    // ID của lễ tân
     public int? ReceptionId { get; set; }
 
-    public int? PatientId { get; set; }
-
-    public int? ServiceId { get; set; }
-
+    // Số lượng dịch vụ
     public int? Quantity { get; set; }
 
-    public decimal? ServiceUnitPrice { get; set; }
+    // ID của dịch vụ
+    public int? ServiceId { get; set; }
+    public string? Results  { get; set; } // kết quả
 
+    // Tổng số tiền của dịch vụ
     public decimal? ServiceTotalAmount { get; set; }
+    
+    //chiết khấu
+    public decimal? discount { get; set; }
 
+    // Trạng thái phê duyệt
     public bool? IsApproved { get; set; }
 
-    public bool? IsPaid { get; set; }
+    //phòng thực hiện
+    public int? DepartmentId { get; set; }
 
-    public string? Status { get; set; }
+    // Trạng thái của yêu cầu
+    public bool? Status { get; set; }
 
+    // ID của người được giao nhiệm vụ
     public int? AssignedById { get; set; }
 
+    // ID của người tạo yêu cầu
     public int? CreatedBy { get; set; }
 
+    // Ngày tạo yêu cầu
     public DateTime? CreatedDate { get; set; }
 
-    public int? UpdatedBy { get; set; }
+    // Người cập nhật yêu cầu
+    public string? UpdatedBy { get; set; }
 
+    // Ngày cập nhật yêu cầu
     public DateTime? UpdatedDate { get; set; }
 
+    // Trạng thái xóa yêu cầu
     public int? IsDeleted { get; set; }
 
-    public int? SampleCollectorId { get; set; }
+    // Nhân viên được giao nhiệm vụ
+    public virtual Employee? AssignedByEmployee { get; set; }
 
-    public DateTime? SampleCollectionDate { get; set; }
+    // Bác sĩ được giao nhiệm vụ
+    public virtual Doctor? AssignedByDoctor { get; set; }
 
-    public DateTime? SampleCollectionTime { get; set; }
-
-    public string? NumberOfTubes { get; set; }
-
-    public string? Sid { get; set; }
-
-    public DateTime? ExecutionDate { get; set; }
-
-    public DateTime? ExecutionTime { get; set; }
-
-    public string? Result { get; set; }
-
-    public int? ParentMedicalServiceRequestId { get; set; }
-
-    public virtual Employee? AssignedBy { get; set; }
-
-    //public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>();
-
-    //public virtual ICollection<MedicalServiceRequest> InverseParentMedicalServiceRequest { get; set; } = new List<MedicalServiceRequest>();
-
+    // Yêu cầu dịch vụ y tế cha
     public virtual MedicalServiceRequest? ParentMedicalServiceRequest { get; set; }
 
+    // Bệnh nhân
     public virtual Patient? Patient { get; set; }
 
+    // Lễ tân
     public virtual Reception? Reception { get; set; }
 
-    public virtual Employee? SampleCollector { get; set; }
+    public virtual Department? Department { get; set; }
 
+    // Mối quan hệ 1 MedicalServiceRequest có thể có nhiều dịch vụ
     public virtual ServiceCatalog? Service { get; set; }
 }

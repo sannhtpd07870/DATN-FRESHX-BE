@@ -7,11 +7,11 @@ namespace Freshx_API.Models;
 public partial class DiseaseGroup
 {
     [Key]
-    public int DiseaseGroupId { get; set; }
+    public int DiseaseGroupId { get; set; } // Nhóm bệnh
 
-    public string? Code { get; set; }
+    public string? Code { get; set; } // mã nhóm bệnh { ktra trùng lặp}
 
-    public string? Name { get; set; }
+    public string? Name { get; set; } // Tên Nhóm bệnh
 
     public int? IsSuspended { get; set; }
 
@@ -24,4 +24,5 @@ public partial class DiseaseGroup
     public DateTime? UpdatedDate { get; set; }
 
     public int? IsDeleted { get; set; }
+    public ICollection<ICDCatalog>? Catalog = new List<ICDCatalog>(); // danh mục bệnh theo tiêu chuản quốc tế
 }

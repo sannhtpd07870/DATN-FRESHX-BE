@@ -4,6 +4,11 @@ using Freshx_API.Dtos.DepartmentDtos;
 using Freshx_API.Services.CommonServices;
 using Freshx_API.Services;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
+using Freshx_API.Interfaces;
+using Freshx_API.Models;
+using Freshx_API.Dtos.DepartmenTypeDtos;
+using Freshx_API.Repository;
 
 namespace Freshx_API.Controllers
 {
@@ -11,135 +16,111 @@ namespace Freshx_API.Controllers
     [Route("api/[controller]")]
     public class DepartmentController : ControllerBase
     {
-        private readonly DepartmentService _service;
+        private readonly IFixDepartmentRepository _fixDepartmentRepository;
         private readonly ILogger<DepartmentController> _logger;
+        private readonly IMapper _mapper;
 
-        public DepartmentController(DepartmentService service, ILogger<DepartmentController> logger)
+        public DepartmentController(IFixDepartmentRepository fixDepartmentRepository,ILogger<DepartmentController> logger,IMapper mapper)
         {
-            _service = service;
+            _fixDepartmentRepository = fixDepartmentRepository;
             _logger = logger;
+            _mapper = mapper;
         }
 
-        [HttpGet()]
-        public async Task<ActionResult<ApiResponse<List<DepartmentDto>>>> GetAll(string? searchKeyword, DateTime? createdDate, DateTime? updatedDate, int? status)
+        [HttpGet("All-Departments")]
+        public async Task<ActionResult<ApiResponse<List<Department>>>> GetAllDepartments([FromQuery]Parameters parameters)
+        {
+
+            try
+            {
+                var departments = await _fixDepartmentRepository.GetAllDepartmentsAsync(parameters);
+                var data = _mapper.Map<List<DepartmentDto>>(departments);
+                return Ok(ResponseFactory.Success(Request.Path, data, "Lấy danh sách phòng ban thành công"));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<DepartmentTypeDto>(Request.Path, "Lỗi đã xảy ra khi lấy danh sách phòng ban", StatusCodes.Status500InternalServerError));
+
+            }
+        }
+        [HttpPost("Create-Department")]
+        public async Task<ActionResult<ApiResponse<DepartmentDto?>>> CreateDepartmentAsync([FromForm]DepartmentCreateUpdateDto request)
         {
             try
             {
-                var result = await _service.GetAllAsync(searchKeyword, createdDate, updatedDate, status);
-
-                if (result == null || !result.Any())
+                var department = await _fixDepartmentRepository.CreateDepartmentAsync(request);
+                if (department == null)
                 {
-                    return StatusCode(StatusCodes.Status404NotFound,
-                        ResponseFactory.Error<List<DepartmentDto>>(Request.Path, "Không tìm thấy dữ liệu.", StatusCodes.Status404NotFound));
+                    return BadRequest(ResponseFactory.Error<DepartmentTypeDto>(Request.Path, "Tên phòng ban không hợp lệ"));
                 }
-
-                return StatusCode(StatusCodes.Status200OK,
-                    ResponseFactory.Success(Request.Path, result, "Dữ liệu lấy thành công.", StatusCodes.Status200OK));
+                var data = _mapper.Map<DepartmentDto>(department);
+                return Ok(ResponseFactory.Success(Request.Path, data));
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Một lỗi đã xảy ra trong khi tìm nạp các phòng.");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<List<DepartmentDto>>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+                _logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<DepartmentTypeDto>(Request.Path, "Lỗi đã xảy ra khi tạo mới loại phòng ban", StatusCodes.Status500InternalServerError));
             }
         }
-
-        [HttpGet("detail")]
-        public async Task<ActionResult<ApiResponse<List<DepartmentDetailDto>>>> GetDetailAll(string? searchKeyword, DateTime? createdDate, DateTime? updatedDate, int? status)
+        [HttpGet("departmentdetail/{id:int}")]
+        public async Task<ActionResult<ApiResponse<DepartmentDto?>>> GetDepartmentById(int id)
         {
             try
             {
-                var result = await _service.GetDetailAllAsync(searchKeyword, createdDate, updatedDate, status);
-
-                if (result == null || !result.Any())
+                var department= await _fixDepartmentRepository.GetDepartmentByIdAsync(id);
+                if (department == null)
                 {
-                    return StatusCode(StatusCodes.Status404NotFound,
-                        ResponseFactory.Error<List<DepartmentDetailDto>>(Request.Path, "Không tìm thấy dữ liệu.", StatusCodes.Status404NotFound));
+                    return BadRequest(ResponseFactory.Error<DepartmentTypeDto>(Request.Path, "Lấy chi tiết phòng ban thất bại"));
                 }
-
-                return StatusCode(StatusCodes.Status200OK,
-                    ResponseFactory.Success(Request.Path, result, "Dữ liệu lấy thành công.", StatusCodes.Status200OK));
+                var data = _mapper.Map<DepartmentDto>(department);
+                return Ok(ResponseFactory.Success(Request.Path, data, "Lấy chi tiết phòng ban thành công"));
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                _logger.LogError(e, "Một lỗi đã xảy ra trong khi tìm nạp các phòng.");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<List<DepartmentDetailDto>>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+                _logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<DepartmentDto>(Request.Path, "Lỗi đã xảy ra khi lấy chi tiết phòng ban", StatusCodes.Status500InternalServerError));
             }
         }
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ApiResponse<DepartmentDto>>> GetById(int id)
+        [HttpDelete]
+        [Route("{id:int}")]
+        public async Task<ActionResult<ApiResponse<DepartmentDto?>>> DeleteDepartmentById(int id)
         {
             try
             {
-                var result = await _service.GetByIdAsync(id);
 
-                if (result == null)
+                var department = await _fixDepartmentRepository.DeleteDepartmentAsync(id);
+                if (department == null)
                 {
-                    return StatusCode(StatusCodes.Status404NotFound,
-                        ResponseFactory.Error<DepartmentDto>(Request.Path, "Phòng không tìm thấy.", StatusCodes.Status404NotFound));
+                    return BadRequest(ResponseFactory.Error<DepartmentDto>(Request.Path, "Xóa phòng ban thất bại"));
                 }
-
-                return StatusCode(StatusCodes.Status200OK,
-                    ResponseFactory.Success(Request.Path, result, "Chi tiết phòng lấy thành công.", StatusCodes.Status200OK));
+                var data = _mapper.Map<DepartmentDto>(department);
+                return Ok(ResponseFactory.Success(Request.Path, data, "Xóa phòng ban thành công"));
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Một lỗi đã xảy ra trong khi tìm nạp phòng bởi ID.");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<DepartmentDto>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+                _logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<DepartmentTypeDto>(Request.Path, "Lỗi đã xảy ra khi xóa phòng ban", StatusCodes.Status500InternalServerError));
             }
         }
-
-        [HttpPost]
-        public async Task<ActionResult<ApiResponse<DepartmentDto>>> Create([FromBody] DepartmentCreateUpdateDto dto)
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<ActionResult<ApiResponse<Department?>>> UpdateDepartmentById(int id, DepartmentCreateUpdateDto request)
         {
             try
             {
-                var result = await _service.CreateAsync(dto);
-                return StatusCode(StatusCodes.Status201Created,
-                    ResponseFactory.Success(Request.Path, result, "Phòng tạo ra thành công.", StatusCodes.Status201Created));
+                var department = await _fixDepartmentRepository.UpdateDepartmentAsync(id,request);
+                if(department == null)
+                {
+                    return NotFound(ResponseFactory.Error<DepartmentDto>(Request.Path, "Phòng ban không được tìm thấy"));
+                }
+                var data = _mapper.Map<DepartmentDto>(department);
+                return Ok(ResponseFactory.Success(Request.Path, data, "Cập nhật phòng ban thành công"));
             }
-            catch (Exception e)
+            catch(Exception e)
             {
-                _logger.LogError(e, "Một lỗi đã xảy ra trong khi tạo phòng.");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<DepartmentDto>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
-            }
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ApiResponse<string>>> Update(int id, [FromBody] DepartmentCreateUpdateDto dto)
-        {
-            try
-            {
-                await _service.UpdateAsync(id, dto);
-                return StatusCode(StatusCodes.Status200OK,
-                    ResponseFactory.Success(Request.Path, "Cập nhật thành công. ", " Phòng cập nhật thành công.", StatusCodes.Status200OK));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Một lỗi đã xảy ra trong khi cập nhật phòng.");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<ApiResponse<string>>> Delete(int id)
-        {
-            try
-            {
-                await _service.DeleteAsync(id);
-                return StatusCode(StatusCodes.Status200OK,
-                    ResponseFactory.Success(Request.Path, "Phòng đã xóa thành công. ", " Xóa thành công.", StatusCodes.Status200OK));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Một lỗi đã xảy ra trong khi xóa phòng.");
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+                _logger.LogError(e.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<DepartmentTypeDto>(Request.Path, "Lỗi đã xảy ra khi cập nhật phòng ban", StatusCodes.Status500InternalServerError));
             }
         }
     }

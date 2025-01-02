@@ -1,7 +1,9 @@
-﻿    using Freshx_API.Dtos.Auth.Account;
+﻿using Freshx_API.Dtos.Auth.Account;
 using Freshx_API.Interfaces.Auth;
 using Freshx_API.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Update;
 using System.ComponentModel;
 using System.Diagnostics;
 
@@ -11,12 +13,16 @@ namespace Freshx_API.Repository.Auth.AccountRepositories
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ITokenRepository _tokenRepository;
-        public AccountRepository(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenRepository tokenRepository)
+        private readonly ILogger<AccountRepository> _logger;
+        public AccountRepository(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenRepository tokenRepository,ILogger<AccountRepository> logger,RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _tokenRepository = tokenRepository;
+            _logger = logger;
+            _roleManager = roleManager;
         }
         public async Task<AppUser?> RegisterAccount(AddingRegister registerDto)
         {
@@ -126,5 +132,107 @@ namespace Freshx_API.Repository.Auth.AccountRepositories
             return user != null;
         }
 
+        public async Task<AccountDto?> GetAccountInformationByIdAsync(string id)
+        {
+            try
+            {
+               var account = await _userManager.FindByIdAsync(id);
+                if(account == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    var role = await _userManager.GetRolesAsync(account);
+                    return new AccountDto
+                    {
+                        Email = account.Email,
+                        Name = account.FullName,
+                        RoleName = role.FirstOrDefault(),
+                        IsActive = account?.IsActive,
+                        Id = account.Id
+                    };
+                }    
+               
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e, $"An exception occured while getting information account by {id}");
+                throw;
+            }
+        }
+        public async Task<AccountDto?> UpdateAccountAsync(string id, UpdatingAccountRequest request)
+        {
+            try
+            {
+                // Tìm user theo id
+                var account = await _userManager.FindByIdAsync(id);
+                if (account == null)
+                {
+                    return null;
+                }
+                // Cập nhật thông tin cơ bản
+                account.Email = request.Email;
+                account.FullName = request.Name;
+                account.UserName = request.Email;
+                account.IsActive = request.IsActive;
+
+                // Cập nhật user
+                var result = await _userManager.UpdateAsync(account);
+                if (result.Succeeded)
+                {
+                    // Lấy role hiện tại của user
+                    var currentRoles = await _userManager.GetRolesAsync(account);
+
+                    // Xóa tất cả role hiện tại
+                    if (currentRoles.Any())
+                    {
+                        await _userManager.RemoveFromRolesAsync(account, currentRoles);
+                    }
+
+                    // Tìm role mới theo Id
+                    var newRole = await _roleManager.FindByIdAsync(request.RoleId);
+                    if (newRole != null)
+                    {
+                        // Thêm role mới
+                        await _userManager.AddToRoleAsync(account, newRole.Name);
+                        return new AccountDto
+                        {
+                           Id = account.Id,
+                           Email = account.Email,
+                           RoleName = newRole.Name,
+                           Name = account.FullName,
+                           IsActive = account.IsActive,
+                        };
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"An exception occurred while updating account {id}");
+                throw;
+            }
+        }
+        public async Task<List<AccountDto>> GetAllAccountsAsync()
+        {
+            var accounts = await _userManager.Users.ToListAsync();
+            var results = new List<AccountDto>();
+            foreach ( var account in accounts )
+            {
+                var roles = await _userManager.GetRolesAsync(account);
+                var accountDto = new AccountDto
+                {
+                    Id = account.Id,
+                    Name = account.FullName,
+                    IsActive = account.IsActive,
+                    Email = account.Email,
+                    RoleName = roles.FirstOrDefault()
+                };
+                results.Add(accountDto);
+            }
+            return results;
+        }
     }
 }
