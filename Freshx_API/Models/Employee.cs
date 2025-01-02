@@ -56,7 +56,7 @@ public partial class Employee
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
     public virtual Department? Department { get; set; } // Phòng ban của nhân viên
 
-  //  public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
+    //  public virtual ICollection<DiagnosticImagingResult> DiagnosticImagingResults { get; set; } = new List<DiagnosticImagingResult>(); // Danh sách kết quả chẩn đoán hình ảnh
 
     public virtual District? District { get; set; } // Đơn vị hành chính quận/huyện
 

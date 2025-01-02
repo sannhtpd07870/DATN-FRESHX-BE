@@ -4,7 +4,6 @@ using Freshx_API.Dtos.Auth.Account;
 using Freshx_API.Dtos.Auth.Role;
 using Freshx_API.Dtos.DepartmenTypeDtos;
 using Freshx_API.Dtos.Doctor;
-
 using Freshx_API.Dtos.DepartmentDtos;
 using Freshx_API.Dtos.Drugs;
 using Freshx_API.Models;
@@ -20,11 +19,11 @@ using Freshx_API.Dtos.Country;
 using Freshx_API.Dtos.DrugCatalog;
 using Freshx_API.Dtos.Payments;
 using Freshx_API.Dtos.UserAccount;
-using Freshx_API.Dtos.LabResult;
 using Freshx_API.Dtos.Patient;
 using Freshx_API.Dtos.Employee;
 using Freshx_API.Dtos.UserAccountManagement;
-
+using Freshx_API.Dtos.ExamineDtos;
+using Freshx_API.Dtos.Prescription;
 namespace Freshx_API.Mappers
 {
     public class AutoMapperProfile : Profile
@@ -34,7 +33,7 @@ namespace Freshx_API.Mappers
             CreateMap<Savefile, FileDto>().ReverseMap();
             CreateMap<IdentityRole, RoleResponse>();
             CreateMap<AppUser, RegisterResponse>();
-            CreateMap<DrugType, DrugTypeDto>();
+            CreateMap<DrugType, DrugTypeDto>().ReverseMap();
             CreateMap<DrugTypeCreateDto, DrugType>();
             CreateMap<DrugTypeUpdateDto, DrugType>();
 
@@ -54,7 +53,7 @@ namespace Freshx_API.Mappers
             CreateMap<DoctorCreateUpdateDto, Doctor>();
 
             // Mapping từ Model Department sang DTO
-            CreateMap<Department, DepartmentDto>();
+            CreateMap<Department, DepartmentDto>().ReverseMap();
             CreateMap<Department, DepartmentDetailDto>();
 
             // Mapping từ DTO sang Model Department khi tạo hoặc cập nhật
@@ -91,25 +90,23 @@ namespace Freshx_API.Mappers
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // ServiceCatalog Mappings
-            CreateMap<ServiceCatalog, ServiceCatalogDto>();
-            CreateMap<ServiceCatalog, ServiceCatalogDetailDto>();
+            CreateMap<ServiceCatalog, ServiceCatalogDto>().ReverseMap();
+            CreateMap<ServiceCatalog, ServiceCatalogDetailDto>().ReverseMap();
             CreateMap<ServiceCatalogCreateUpdateDto, ServiceCatalog>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
 
-            //CreateMap<Patient, PatientDto>();
-            CreateMap<Reception, ReceptionDto>();
-            
+           
 
             // Map UnitOfMeasure -> UnitOfMeasureDetailDto
-            CreateMap<UnitOfMeasure, UnitOfMeasureDetailDto>();
+            CreateMap<UnitOfMeasure, UnitOfMeasureDetailDto>().ReverseMap();
 
             // Map UnitOfMeasureCreateUpdateDto -> UnitOfMeasure
             CreateMap<UnitOfMeasureCreateUpdateDto, UnitOfMeasure>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Map Supplier -> SupplierDetailDto
-            CreateMap<Supplier, SupplierDetailDto>();
+            CreateMap<Supplier, SupplierDetailDto>().ReverseMap();
 
             // Map SupplierCreateUpdateDto -> Supplier
             CreateMap<SupplierUpdateDto, Supplier>()
@@ -119,7 +116,7 @@ namespace Freshx_API.Mappers
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
             // Map country -> CountryDto
-            CreateMap<Country, CountryDto>();
+            CreateMap<Country, CountryDto>().ReverseMap();
 
             // Map CountryCreateUpdateDto -> Country
             CreateMap<CountryCreateUpdateDto, Country>()
@@ -135,9 +132,9 @@ namespace Freshx_API.Mappers
 
         
             //Địa chỉ 
-            CreateMap<Province, ProvinceDto>();
-            CreateMap<District, DistrictDto>();
-            CreateMap<Ward, WardDto>();
+            CreateMap<Province, ProvinceDto>().ReverseMap();
+            CreateMap<District, DistrictDto>().ReverseMap();
+            CreateMap<Ward, WardDto>().ReverseMap();
 
             // Mapping Bill to BillDto
             CreateMap<Bill, BillDto>().ReverseMap();
@@ -146,16 +143,22 @@ namespace Freshx_API.Mappers
             // Mapping BillDetail to BillDetailDto
             CreateMap<BillDetail, BillDetailDto>().ReverseMap();
 
-            CreateMap<Bill,BillDtoUpdate>().ReverseMap();
-            CreateMap<BillDetail,BillDetailDtoUpdate>().ReverseMap();
+            //medical service reqest
+            CreateMap<MedicalServiceRequest, MedicalServiceRequestDto>().ReverseMap();
+            CreateMap<MedicalServiceRequest, CreateMedicalServiceRequestDto>().ReverseMap();
+            // tiếp nhận
+            //CreateMap<Patient, PatientDto>();
+            CreateMap<Reception, CreateReceptionDto>().ReverseMap();
+            CreateMap<ReceptionDto, Reception>().ReverseMap();
 
-            //
+            //create-update patient
+            CreateMap<AddingPatientRequest, UpdatingPatientRequest>().ReverseMap();
 
-            CreateMap<MedicalServiceRequest, MedicalServiceRequestDTO>();
-    
-
-            CreateMap<UpdateMedicalServiceRequestDTO, MedicalServiceRequest>()
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            //Examine khám bệnh
+            CreateMap<Examine, ExamineResponseDto>().ReverseMap();
+            CreateMap<ExamineRequestDto, Examine>().ReverseMap();
+            CreateMap<Examine, ExamineOnly>().ReverseMap();
+            CreateMap<CreateExamDto, Examine>().ReverseMap();
 
             CreateMap<AppUser, UserResponse>().ReverseMap();
 
@@ -177,6 +180,21 @@ namespace Freshx_API.Mappers
 
             //Mapping AppUserModel to UserAccountManagementDto
             CreateMap<AppUser, UserAccountResponse>();
+
+            //labresult - xét nghiệm
+            CreateMap<LabResult, LabResultDto>().ReverseMap();
+            CreateMap<LabResult, CreateLabResultDto>().ReverseMap();
+            CreateMap<LabResult, UpdateLabResultDto>().ReverseMap();
+            // Prescription - toa thuốc - toa thuốc chi tiết
+            CreateMap<Prescription, PrescriptionDto>().ReverseMap();
+            CreateMap<Prescription, CreatePrescriptionDto>().ReverseMap();
+            CreateMap<Prescription, UpdatePrescriptionDto>().ReverseMap();
+
+            CreateMap<PrescriptionDetail, PrescriptionDetailDto>().ReverseMap();
+            CreateMap<PrescriptionDetail, CreatePrescriptionDetailDto>().ReverseMap();
+            CreateMap<PrescriptionDetail, UpdatePrescriptionDetailDto>().ReverseMap();
+            CreateMap<CreatePrescriptionDto, UpdatePrescriptionDto>().ReverseMap();
+
         }
     }
 }

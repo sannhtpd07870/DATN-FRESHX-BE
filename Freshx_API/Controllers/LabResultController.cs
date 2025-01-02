@@ -8,13 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Freshx_API.Models;
 using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Dtos;
-using Freshx_API.Interfaces.LabResultRepository;
+using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.Services;
 using Freshx_API.Services;
 using Freshx_API.Services.CommonServices;
 using Microsoft.AspNetCore.Http;
 using Sprache;
-using Freshx_API.Dtos.LabResult;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Freshx_API.Controllers
@@ -23,137 +22,113 @@ namespace Freshx_API.Controllers
     [Route("api/[controller]")]
     public class LabResultController : ControllerBase
     {
-        private readonly FreshxDBContext _context;
         private readonly ILabResultService _service;
+        private readonly ILogger<LabResultController> _logger;
 
-        public LabResultController(FreshxDBContext context, ILabResultService service)
+        public LabResultController(ILabResultService service, ILogger<LabResultController> logger)
         {
-            _context = context;
             _service = service;
+            _logger = logger;
         }
 
-        // GET: LabResult get by id
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ApiResponse<LabResultDto>>> GetLabResultById(int id)
-        {
-            //var freshxDBContext = _context.LabResults.Include(l => l.ConcludingDoctor).Include(l => l.Patient).Include(l => l.Reception).Include(l => l.Technician);
-            //return View(await freshxDBContext.ToListAsync());
-
-            var result = await _service.GetLabResultByIdAsync(id);
-            if (result == null)
-            {
-                return StatusCode(StatusCodes.Status404NotFound,
-                        ResponseFactory.Error<LabResultDto>(Request.Path, "Không tìm thấy kết quả xét nghiệm.", StatusCodes.Status404NotFound));
-            }
-            return StatusCode(StatusCodes.Status200OK, result);
-        }
-
-        // GET: LabResults get all
         [HttpGet]
-        public async Task<ActionResult<ApiResponse<LabResultDto>>> GetAllLabResults(string? searchKeyword, DateTime? createdDate, DateTime? updatedDate)
-        {
-            var result = await _service.GetAllLabResultsAsync(searchKeyword, createdDate, updatedDate);
-            if (result == null)
-            {
-                return StatusCode(StatusCodes.Status404NotFound,
-                        ResponseFactory.Error<LabResultDto>(Request.Path, "Không tìm thấy kết quả xét nghiệm.", StatusCodes.Status404NotFound));
-            }
-            return StatusCode(StatusCodes.Status200OK, result);
-        }
-
-        // GET: LabResults/Create
-        public async Task<ActionResult<ApiResponse<LabResultDto>>> CreateLabResult([FromBody] LabResultDto labResult)
+        public async Task<ActionResult<ApiResponse<List<LabResultDto>>>> GetAll([FromQuery] string? searchKey)
         {
             try
             {
-                var create = await _service.CreateLabResultAsync(labResult);
-                return StatusCode(StatusCodes.Status201Created,
-                   ResponseFactory.Success(Request.Path, CreateLabResult, "Tạo kết quả thành công.", StatusCodes.Status201Created));
+                var result = await _service.GetAllAsync(searchKey);
+
+                if (result == null || !result.Any())
+                {
+                    return StatusCode(StatusCodes.Status404NotFound,
+                        ResponseFactory.Error<List<LabResultDto>>(Request.Path, "Không tìm thấy dữ liệu.", StatusCodes.Status404NotFound));
+                }
+
+                return StatusCode(StatusCodes.Status200OK,
+                    ResponseFactory.Success(Request.Path, result, "Dữ liệu lấy thành công.", StatusCodes.Status200OK));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Một lỗi đã xảy ra khi tìm nạp danh sách kết quả xét nghiệm.");
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                        ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+                    ResponseFactory.Error<List<LabResultDto>>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
             }
         }
 
-        // POST: LabResults/Edit
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ApiResponse<LabResultDto>>> GetById(int id)
+        {
+            try
+            {
+                var result = await _service.GetByIdAsync(id);
+
+                if (result == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound,
+                        ResponseFactory.Error<LabResultDto>(Request.Path, "Không tìm thấy dữ liệu.", StatusCodes.Status404NotFound));
+                }
+
+                return StatusCode(StatusCodes.Status200OK,
+                    ResponseFactory.Success(Request.Path, result, "Dữ liệu lấy thành công.", StatusCodes.Status200OK));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Một lỗi đã xảy ra khi tìm nạp kết quả xét nghiệm với ID {Id}.", id);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ResponseFactory.Error<LabResultDto>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+            }
+        }
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult<ApiResponse<LabResultDto>>> UpdateLabResult(int id, [Bind("LabResultId,ExecutionDate,ExecutionTime,ReceptionId,PatientId,TechnicianId,ConcludingDoctorId,Conclusion,Result,Description,Note,Instruction,Diagnosis,ResultTypeId,SampleReceivedTime,SampleTypeId,SampleQualityId,CreatedBy,CreatedDate,UpdatedBy,UpdatedDate,IsDeleted,SpouseName,SpouseYearOfBirth,SampleCollectionLocationMedicalFacilityId,IsSampleCollectedAtHome,SampleReceivedDate,SampleCollectionDate,SampleCollectionTime")] LabResult labResult)
+        public async Task<ActionResult<ApiResponse<CreateLabResultDto>>> Create([FromBody] CreateLabResultDto labResultDto)
         {
-            if (id != labResult.LabResultId)
+            try
             {
-                return NotFound();
+                await _service.AddAsync(labResultDto);
+                return StatusCode(StatusCodes.Status201Created,
+                    ResponseFactory.Success(Request.Path, labResultDto, "Thêm mới thành công.", StatusCodes.Status201Created));
             }
-
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                try
-                {
-                    _context.Update(labResult);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LabResultExists(labResult.LabResultId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _logger.LogError(ex, "Một lỗi đã xảy ra khi tạo mới kết quả xét nghiệm.");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ResponseFactory.Error<CreateLabResultDto>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
             }
-            //ViewData["ConcludingDoctorId"] = new SelectList(_context.Doctors, "DoctorId", "DoctorId", labResult.ConcludingDoctorId);
-            //ViewData["PatientId"] = new SelectList(_context.Patients, "PatientId", "PatientId", labResult.PatientId);
-            //ViewData["ReceptionId"] = new SelectList(_context.Receptions, "ReceptionId", "ReceptionId", labResult.ReceptionId);
-            //ViewData["TechnicianId"] = new SelectList(_context.Technicians, "TechnicianId", "TechnicianId", labResult.TechnicianId);
-            return Ok(labResult);
         }
 
-        // GET: LabResults/Delete/5
-        public async Task<ActionResult<ApiResponse<LabResultDto>>> Delete(int? id)
+        [HttpPut]
+        public async Task<ActionResult<ApiResponse<UpdateLabResultDto>>> Update([FromBody] UpdateLabResultDto labResultDto)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
+                await _service.UpdateAsync(labResultDto);
+                return StatusCode(StatusCodes.Status200OK,
+                    ResponseFactory.Success(Request.Path, labResultDto, "Cập nhật thành công.", StatusCodes.Status200OK));
             }
-
-            var labResult = await _context.LabResults
-                .Include(l => l.ConcludingDoctor)
-                .Include(l => l.Patient)
-                .Include(l => l.Reception)
-                .Include(l => l.Technician)
-                .FirstOrDefaultAsync(m => m.LabResultId == id);
-            if (labResult == null)
+            catch (Exception ex)
             {
-                return NotFound();
+                _logger.LogError(ex, "Một lỗi đã xảy ra khi cập nhật kết quả xét nghiệm.");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ResponseFactory.Error<UpdateLabResultDto>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
             }
-
-            return NoContent();
         }
 
-        // POST: LabResults/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult<ApiResponse<LabResultDto>>> DeleteConfirmed(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<ApiResponse<object>>> Delete(int id)
         {
-            var labResult = await _context.LabResults.FindAsync(id);
-            if (labResult != null)
+            try
             {
-                _context.LabResults.Remove(labResult);
+                await _service.DeleteAsync(id);
+                return StatusCode(StatusCodes.Status200OK,
+                    ResponseFactory.Success(Request.Path, true, "Xóa thành công.", StatusCodes.Status200OK));
             }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool LabResultExists(int id)
-        {
-            return _context.LabResults.Any(e => e.LabResultId == id);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Một lỗi đã xảy ra khi xóa kết quả xét nghiệm với ID {Id}.", id);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ResponseFactory.Error<object>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+            }
         }
     }
+
 }

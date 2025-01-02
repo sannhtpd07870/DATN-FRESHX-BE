@@ -1,4 +1,5 @@
-﻿namespace Freshx_API.Dtos.ServiceGroup
+﻿using Freshx_API.Dtos.ServiceCatalog;
+namespace Freshx_API.Dtos.ServiceGroup
 {
     // DTO để trả dữ liệu chi tiết về nhóm dịch vụ
     public class ServiceGroupDetailDto
@@ -12,5 +13,6 @@
         public string? UpdatedBy { get; set; } // Người cập nhật
         public DateTime? UpdatedDate { get; set; } // Thời gian cập nhật
         public int? IsDeleted { get; set; } // Trạng thái đã xóa
+        public List<ServiceCatalogDto>? ServiceCatalogs { get; set; }
     }
 }

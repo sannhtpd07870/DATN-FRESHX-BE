@@ -9,8 +9,6 @@
         public int? InventoryTypeId { get; set; } // ID loại tồn kho
         public bool? IsSuspended { get; set; } // Trạng thái tạm ngưng
         public string? NameUnaccented { get; set; } // Tên không dấu của nhà thuốc
-        public int? SpecialtyId { get; set; } // ID chuyên khoa
-        public int? CostCenterId { get; set; } // ID trung tâm chi phí
         public bool? IsSourceManagement { get; set; } // Trạng thái quản lý nguồn
     }
 

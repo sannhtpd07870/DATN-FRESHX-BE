@@ -20,16 +20,16 @@ public partial class Examine
 
     public string? Symptoms { get; set; } // Triệu chứng
 
-    public int?  ICDCatalogId { get; set; } // ID danh mục ICD
+    public int? ICDCatalogId { get; set; } // ID danh mục ICD
 
-    public int? DiagnosisDictionaryId { get; set; } // từ điển chẩn đoán khám bệnh
+    public int? DiagnosisDictionaryId { get; set; } // Từ điển chẩn đoán khám bệnh
     public string? Diagnosis { get; set; } // Chẩn đoán
 
     public string? Conclusion { get; set; } // Kết luận
 
     public string? MedicalAdvice { get; set; } // Lời khuyên y tế
     public int? PrescriptionId { get; set; }    // Toa thuốc
-    public int? TemplatePrescriptionId { get; set; } // toa thuốc mẫu
+    public int? TemplatePrescriptionId { get; set; } // Toa thuốc mẫu
 
     public string? CreatedById { get; set; } // Người tạo
 
@@ -59,18 +59,29 @@ public partial class Examine
 
     public string? ReasonForVisit { get; set; } // Lý do khám bệnh
 
-    public bool IsPaid { get; set; } // đổi trạng thái khi khám xong
+    public bool IsPaid { get; set; } // Đổi trạng thái khi khám xong
 
     public string? ExaminationNote { get; set; } // Ghi chú khám bệnh
-  
+
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
-    public virtual  ICDCatalog?  ICDCatalog { get; set; }
+
+    // Thông tin thêm khi khám bệnh
+    public double? Temperature { get; set; } // Nhiệt độ cơ thể
+    public double? Height { get; set; } // Chiều cao (cm)
+    public double? Weight { get; set; } // Cân nặng (kg)
+    public double? BloodPressureSystolic { get; set; } // Huyết áp tâm thu
+    public double? BloodPressureDiastolic { get; set; } // Huyết áp tâm trương
+    public double? HeartRate { get; set; } // Nhịp tim (lần/phút)
+    public string? OxygenSaturation { get; set; } // Độ bão hòa oxy (SpO2)
+    public string? VisionLeft { get; set; } // Thị lực mắt trái
+    public string? VisionRight { get; set; } // Thị lực mắt phải
+    public string? SkinCondition { get; set; } // Tình trạng da
+    public string? OtherPhysicalFindings { get; set; } // Các phát hiện thể chất khác
+
+    // Quan hệ
+    public virtual ICDCatalog? ICDCatalog { get; set; }
     public virtual Patient? Patient { get; set; }
-
     public virtual Reception? Reception { get; set; }
-
     public ICollection<MedicalServiceRequest> MedicalServiceRequests { get; set; }
     public virtual Prescription? Prescription { get; set; }
-    public virtual TemplatePrescription? PrescriptionTemplate { get; set; }
-     public virtual DiagnosisDictionary? DiagnosisDictionary { get; set; }
 }

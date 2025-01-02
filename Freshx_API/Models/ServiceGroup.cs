@@ -21,6 +21,5 @@ public partial class ServiceGroup
 
     public DateTime? UpdatedDate { get; set; }
     public int? IsDeleted { get; set; }
-
     public virtual ICollection<ServiceCatalog> ServiceCatalogs { get; set; } = new List<ServiceCatalog>();
 }

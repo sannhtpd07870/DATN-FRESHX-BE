@@ -28,8 +28,14 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.SignalR;
 using Freshx_API.Interfaces.Payments;
-using Freshx_API.Repositories;
-using Freshx_API.Repositories.Payments;
+using Freshx_API.Repository.Payments;
+using Freshx_API.Repository.Payments;
+using Freshx_API.Interfaces.IReception;
+using Freshx_API.Repository.LabResults;
+using Freshx_API.Interfaces.Services;
+using Org.BouncyCastle.Math.EC.Multiplier;
+using Freshx_API.Interfaces.IPrescription;
+using Freshx_API.Interfaces.ServiceType;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -301,7 +307,11 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+
+// tiếp nhận
 builder.Services.AddScoped<IReceptionRepository, ReceptionRepository>();
+builder.Services.AddScoped<IReceptionService, ReceptionService>();
+
 builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 builder.Services.AddScoped<NumberGeneratorService>();
 builder.Services.AddScoped<IFixDoctorRepository, FixDoctorRepository>();
@@ -319,6 +329,9 @@ builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
+// medical service - dịch vụ y tế
+builder.Services.AddScoped<IMedicalServiceRequestRepository, MedicalServiceRequestRepository>();
+builder.Services.AddScoped<IMedicalServiceRequestService, MedicalServiceRequestService>();
 
 // Đăng ký Repository và Service với Dependency Injection
 builder.Services.AddScoped<IDepartmentTypeRepository, DepartmentTypeRepository>();
@@ -393,6 +406,26 @@ builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 //Đăng ký Repository và service cho payments
 builder.Services.AddScoped<IBillingRepository, BillingRepository>();
 builder.Services.AddScoped<IBillingService, BillingService>();
+
+// Đăng kí labReSult
+builder.Services.AddScoped<ILabResultRepository, LabResultRepository>();
+builder.Services.AddScoped<ILabResultService, LabResultService>();
+
+//Đăng kí Prescription - toa thuốc - toa thuốc chi tiết
+builder.Services.AddScoped<IPrescriptionService,PrescriptionService>();
+builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
+builder.Services.AddScoped<IPrescriptionDetailRepository, PrescriptionDetailRepository>();
+builder.Services.AddScoped<IPrescriptionDetailService, PrescriptionDetailService>();
+
+//Đăng kí loại dịch vụ servicetype
+builder.Services.AddScoped<IServiceTypeRepository, ServiceTypeRepository>();
+builder.Services.AddScoped<IServiceTypeService, ServiceTypeService>();
+
+// khám bệnh
+builder.Services.AddScoped<IExamineRepository, ExamineRepository>();
+builder.Services.AddScoped<IExamineService, ExamineService>();
+// đăng kí repositorycheck dùng để check trùng lặp
+builder.Services.AddScoped<RepositoryCheck>();
 
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();

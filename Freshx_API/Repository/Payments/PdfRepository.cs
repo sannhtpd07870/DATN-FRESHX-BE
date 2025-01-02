@@ -7,7 +7,7 @@ using PdfSharp.Drawing;
 using Microsoft.EntityFrameworkCore;
 using Freshx_API.Interfaces.Payments;
 
-namespace Freshx_API.Repositories.Payments
+namespace Freshx_API.Repository.Payments
 {
     public class PdfRepository : IPdfRepository
     {
