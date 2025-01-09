@@ -29,6 +29,6 @@ public partial class Pharmacy
 
     public int? IsDeleted { get; set; } // Trạng thái đã xóa
 
-    public virtual Department? Department { get; set; } // Phòng ban của nhà thuốc
-    public virtual InventoryType? InventoryType { get; set; } // Loại tồn kho của nhà thuốc
+    public virtual ICollection<Department>? Department { get; set; } // Phòng ban của nhà thuốc
+    public virtual ICollection <InventoryType>? InventoryType { get; set; } // Loại tồn kho của nhà thuốc
 }

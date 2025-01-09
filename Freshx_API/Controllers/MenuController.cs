@@ -1,5 +1,5 @@
 ﻿using Freshx_API.Dtos.Menu;
-using Freshx_API.Services;
+using Freshx_API.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Freshx_API.Controllers

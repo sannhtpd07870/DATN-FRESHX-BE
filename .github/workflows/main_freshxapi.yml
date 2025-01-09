@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - freshxapi
+name: Build and deploy ASP.Net Core app to Windows Server - freshxapi
 
 on:
   push:
@@ -47,6 +47,36 @@ jobs:
           overwrite: false
           include-hidden-files: true  # Ensure hidden files like .env are uploaded
 
+  deploy:
+    runs-on: windows-latest  # Chạy trên môi trường Windows
+    needs: build
+    steps:
+      - name: Download artifact for deployment
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+          path: ./publish
 
-# Deploy job
- 
+      - name: Setup SSH Key for remote access
+          uses: webfactory/ssh-agent@v0.5.3
+          with:
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add your SSH private key to GitHub secrets
+
+      - name: Check SSH Connection to the Server
+          run: |
+            echo "Checking SSH Connection..."
+            ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 "echo 'SSH connection successful!'"
+          env:
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+        - name: Stop the running app (if needed)
+            run: |
+              ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 "taskkill /f /im freshx_api.dll"
+            env:
+              SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy the new version
+            run: |
+              ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 "cd E:/Share/source && dotnet run freshx_api.dll"
+            env:
+              SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}

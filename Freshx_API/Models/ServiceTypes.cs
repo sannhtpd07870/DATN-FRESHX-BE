@@ -6,6 +6,8 @@ namespace Freshx_API.Models
     {
         [Key]
         public int ServiceTypeId { get; set; }
+        public string? Code { get; set; }
         public string? Name { get; set; }
+       
     }
 }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Freshx_API.Models;
 
 public partial class DrugCatalog
 {
-    public int DrugCatalogId { get; set; } // ID danh mục thuốc
-
+    [Key]
+   public int DrugCatalogId { get; set; } // ID danh mục thuốc
     public string? Code { get; set; } // Mã danh mục thuốc
 
     public string? Name { get; set; } // Tên danh mục thuốc

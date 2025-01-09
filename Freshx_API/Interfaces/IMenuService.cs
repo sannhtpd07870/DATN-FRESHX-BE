@@ -1,6 +1,6 @@
 ﻿using Freshx_API.Dtos.Menu;
 
-namespace Freshx_API.Services
+namespace Freshx_API.Interfaces
 {
     public interface IMenuService
     {

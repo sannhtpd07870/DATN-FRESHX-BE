@@ -1,11 +1,11 @@
 ﻿using Freshx_API.Models;
 
-namespace Freshx_API.Interfaces.LabResultRepository
+namespace Freshx_API.Interfaces
 {
     public interface ILabResultRepository
     {
-        Task<LabResult> GetByIdAsync(int id);
-        Task<IEnumerable<LabResult>> GetAllAsync();
+        Task<IEnumerable<LabResult>> GetAllAsync(string searchKey = null);
+        Task<LabResult?> GetByIdAsync(int id);
         Task AddAsync(LabResult labResult);
         Task UpdateAsync(LabResult labResult);
         Task DeleteAsync(int id);

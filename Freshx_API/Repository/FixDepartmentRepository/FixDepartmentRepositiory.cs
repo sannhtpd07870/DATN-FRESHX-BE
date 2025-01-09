@@ -29,6 +29,14 @@ namespace Freshx_API.Repository
         {
             try
             {
+                var departmentTypeExists = await _context.DepartmentTypes
+                 .AnyAsync(dt => dt.DepartmentTypeId == request.DepartmentTypeId);
+
+                if (!departmentTypeExists)
+                {
+                    throw new ArgumentException("DepartmentTypeId không hợp lệ.");
+                }
+
                 var (code, name) = await GenerateDepartmentCode.GenerateCode(_context, request.DepartmentTypeId);
                 var department = new Department
                 {

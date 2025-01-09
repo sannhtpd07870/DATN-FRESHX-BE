@@ -10,8 +10,8 @@ namespace Freshx_API.Models
         [Key]
         public int BillId { get; set; } // ID hóa đơn
 
-        public int ReceptionId { get; set; } // ID bệnh nhân liên quan đến hóa đơn
-
+        public int ReceptionId { get; set; } // ID tiếp nhận liên quan đến hóa đơn
+        public int? CashierId { get; set; } // nhân viên tiếp nhận
         [Required]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalAmount { get; set; } // Tổng số tiền
@@ -25,8 +25,10 @@ namespace Freshx_API.Models
         public DateTime? UpdatedDate { get; set; } // Ngày cập nhật
 
         // Quan hệ
-        public virtual Reception Reception { get; set; } // Tham chiếu đến bệnh nhân
+        public virtual Reception Reception { get; set; } // Tham chiếu đến
         public virtual ICollection<BillDetail> BillDetails { get; set; } = new HashSet<BillDetail>(); // Danh sách chi tiết hóa đơn
         public virtual ICollection<Payment> Payments { get; set; } = new HashSet<Payment>(); // Danh sách thanh toán
+        [ForeignKey("CashierId")]
+        public virtual Employee? Cashier { get; set; } // nhân viên tiếp nhận
     }
 }

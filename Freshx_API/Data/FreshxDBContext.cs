@@ -40,6 +40,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Pharmacy> Pharmacies { get; set; }
     public DbSet<Prescription> Prescriptions { get; set; }
+    public DbSet<PrescriptionDetail> PrescriptionDetail { get; set; }
     public DbSet<Reception> Receptions { get; set; }
     public DbSet<Savefile> Savefiles { get; set; } // Consider a more descriptive name
     public DbSet<ServiceCatalog> ServiceCatalogs { get; set; }
@@ -48,6 +49,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Technician> Technicians { get; set; }
     public DbSet<TemplatePrescription> TemplatePrescriptions { get; set; }
+    public DbSet<TemplatePrescriptionDetail> TemplatePrescriptionDetails { get; set; }
     public DbSet<ServiceTypes> ServiceTypes { get; set; }
     public DbSet<UnitOfMeasure> UnitOfMeasures { get; set; }
     public DbSet<District> Districts { get; set; }
@@ -97,6 +99,23 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .WithMany()
             .HasForeignKey(s => s.ParentServiceId)
             .OnDelete(DeleteBehavior.Restrict);
+        // service group
+
+        modelBuilder.Entity<ServiceGroup>()
+           .HasMany(sg => sg.ServiceCatalogs)
+           .WithOne(sc => sc.ServiceGroup)
+           .HasForeignKey(sc => sc.ServiceCatalogId);
+
+        //phamacy
+        modelBuilder.Entity<Pharmacy>()
+            .HasMany(e => e.Department)
+            .WithOne()
+            .HasForeignKey(d => d.DepartmentId); // Cấu hình khóa ngoại rõ ràng
+
+        modelBuilder.Entity<Pharmacy>()
+    .HasMany(e => e.InventoryType)
+    .WithOne()
+    .HasForeignKey(d => d.InventoryTypeId); // Cấu hình khóa ngoại rõ ràng
 
 
         modelBuilder.Entity<Bill>()
@@ -115,6 +134,15 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             b.HasKey(e => e.LabResultId);
             b.Property(e => e.LabResultId).ValueGeneratedOnAdd();
         });
+
+        //phòng ban vs loại phòng ban
+        modelBuilder.Entity<Department>()
+      .HasKey(d => d.DepartmentId);
+
+        modelBuilder.Entity<Department>()
+            .Property(d => d.DepartmentId)
+            .ValueGeneratedOnAdd();
+
 
         modelBuilder.Entity<AppUser>()
         .HasOne(u => u.Doctor)

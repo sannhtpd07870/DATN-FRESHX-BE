@@ -3,7 +3,7 @@ using Freshx_API.Models;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Freshx_API.Repositories
+namespace Freshx_API.Repository
 {
     public class BillingRepository : IBillingRepository
     {
