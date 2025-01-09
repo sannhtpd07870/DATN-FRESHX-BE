@@ -57,11 +57,6 @@ jobs:
           name: .net-app
           path: ./publish
 
-      - name: Setup SSH Key for remote access
-          uses: webfactory/ssh-agent@v0.5.3
-          with:
-            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add your SSH private key to GitHub secrets
-
       - name: Check SSH Connection to the Server
           run: |
             echo "Checking SSH Connection..."
