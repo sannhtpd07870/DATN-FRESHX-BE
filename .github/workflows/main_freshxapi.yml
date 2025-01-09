@@ -61,7 +61,6 @@ jobs:
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add your SSH private key to GitHub secrets
-          ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
 
       - name: Stop existing server (optional)
         run: |
