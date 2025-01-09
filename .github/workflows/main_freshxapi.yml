@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core app- freshxapi
+name: Build and deploy ASP.Net Core app to Windows Server - freshxapi
 
 on:
   push:
@@ -47,8 +47,7 @@ jobs:
           overwrite: false
           include-hidden-files: true  # Ensure hidden files like .env are uploaded
 
-# Deploy job
-deploy:
+  deploy:
     runs-on: windows-latest  # Chạy trên môi trường Windows
     needs: build
     steps:
@@ -65,7 +64,7 @@ deploy:
 
       - name: Stop existing server (optional)
         run: |
-          ssh user@100.95.37.29 "taskkill /f /im freshx_api.dll" 
+          ssh user@100.95.37.29 "taskkill /f /im freshx_api.dll"  # Dừng ứng dụng đang chạy (nếu cần)
 
       - name: Copy files to remote server
         run: |
