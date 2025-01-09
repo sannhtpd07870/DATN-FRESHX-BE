@@ -58,18 +58,25 @@ jobs:
           path: ./publish
 
       - name: Setup SSH Key for remote access
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add your SSH private key to GitHub secrets
+          uses: webfactory/ssh-agent@v0.5.3
+          with:
+            ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add your SSH private key to GitHub secrets
 
-      - name: Stop existing server (optional)
-        run: |
-          ssh user@100.95.37.29 "taskkill /f /im freshx_api.dll"  # Dừng ứng dụng đang chạy (nếu cần)
+      - name: Check SSH Connection to the Server
+          run: |
+            echo "Checking SSH Connection..."
+            ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 "echo 'SSH connection successful!'"
+          env:
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Copy files to remote server
-        run: |
-          scp -r ./publish/* user@100.95.37.29:E:/Share/source/  # Sao chép và thay thế file cũ
+        - name: Stop the running app (if needed)
+            run: |
+              ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 "taskkill /f /im freshx_api.dll"
+            env:
+              SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Start new application
-        run: |
-          ssh user@100.95.37.29 "cd E:/Share/source && dotnet run freshx_api.dll"  # Khởi động lại ứng dụng mới
+      - name: Deploy the new version
+            run: |
+              ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 "cd E:/Share/source && dotnet run freshx_api.dll"
+            env:
+              SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
