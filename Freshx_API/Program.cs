@@ -171,9 +171,19 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
     };
 }); ;
 // Cấu hình Kestrel để lắng nghe trên Tailscale IP
-builder.WebHost.ConfigureKestrel(options =>
+builder.WebHost.ConfigureKestrel((context, options) =>
 {
-    options.Listen(System.Net.IPAddress.Any,5000); // Lắng nghe trên tất cả các IP
+    // Kiểm tra nếu đang ở môi trường Production
+    if (context.HostingEnvironment.IsProduction())
+    {
+        // Chỉ lắng nghe tất cả các IP khi ở môi trường Production
+        options.Listen(System.Net.IPAddress.Any, 5000);
+    }
+    else
+    {
+        
+    }
+    //options.Listen(System.Net.IPAddress.Any,5000); // Lắng nghe trên tất cả các IP
 });
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
@@ -499,11 +509,11 @@ app.MapHub<NotificationHub>("/notificationHub").RequireCors(policy =>
 });
 // Configure the HTTP request pipeline.
 
-//if (app.Environment.IsDevelopment())
-//{
-//    app.UseSwagger();
-//    app.UseSwaggerUI();
-//}
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 
 //chạy swagger trên puplig
