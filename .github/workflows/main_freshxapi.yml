@@ -1,4 +1,4 @@
-name: Build and deploy ASP.Net Core app to Azure Web App - freshxapi
+name: Build and deploy ASP.Net Core app- freshxapi
 
 on:
   push:
@@ -47,6 +47,30 @@ jobs:
           overwrite: false
           include-hidden-files: true  # Ensure hidden files like .env are uploaded
 
-
 # Deploy job
- 
+deploy:
+    runs-on: windows-latest  # Chạy trên môi trường Windows
+    needs: build
+    steps:
+      - name: Download artifact for deployment
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+          path: ./publish
+
+      - name: Setup SSH Key for remote access
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add your SSH private key to GitHub secrets
+
+      - name: Stop existing server (optional)
+        run: |
+          ssh user@100.95.37.29 "taskkill /f /im freshx_api.dll" 
+
+      - name: Copy files to remote server
+        run: |
+          scp -r ./publish/* user@100.95.37.29:E:/Share/source/  # Sao chép và thay thế file cũ
+
+      - name: Start new application
+        run: |
+          ssh user@100.95.37.29 "cd E:/Share/source && dotnet run freshx_api.dll"  # Khởi động lại ứng dụng mới

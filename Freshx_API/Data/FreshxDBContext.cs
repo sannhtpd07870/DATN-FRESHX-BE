@@ -49,6 +49,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Technician> Technicians { get; set; }
     public DbSet<TemplatePrescription> TemplatePrescriptions { get; set; }
+    public DbSet<TemplatePrescriptionDetail> TemplatePrescriptionDetails { get; set; }
     public DbSet<ServiceTypes> ServiceTypes { get; set; }
     public DbSet<UnitOfMeasure> UnitOfMeasures { get; set; }
     public DbSet<District> Districts { get; set; }
@@ -130,6 +131,15 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             b.HasKey(e => e.LabResultId);
             b.Property(e => e.LabResultId).ValueGeneratedOnAdd();
         });
+
+        //phòng ban vs loại phòng ban
+        modelBuilder.Entity<Department>()
+      .HasKey(d => d.DepartmentId);
+
+        modelBuilder.Entity<Department>()
+            .Property(d => d.DepartmentId)
+            .ValueGeneratedOnAdd();
+
 
         modelBuilder.Entity<AppUser>()
         .HasOne(u => u.Doctor)

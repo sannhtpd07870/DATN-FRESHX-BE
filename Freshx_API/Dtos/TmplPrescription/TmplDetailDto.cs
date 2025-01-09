@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace Freshx_API.Dtos.Prescription
+namespace Freshx_API.Dtos.TmplPrescription
 {
-    public class CreatePrescriptionDetailDto
+    public class CreateTmplDetailDto
     {
         public int PrescriptionId { get; set; } // ID đơn thuốc (FK)
         public int DrugCatalogId { get; set; } // ID danh mục thuốc (FK)
@@ -35,7 +35,7 @@ namespace Freshx_API.Dtos.Prescription
 
 
 
-    public class DetailDto
+    public class TmplDetailDto
     {
         public int PrescriptionDetailId { get; set; } // ID chi tiết toa thuốc
         public int PrescriptionId { get; set; } // ID đơn thuốc (FK)
@@ -65,7 +65,7 @@ namespace Freshx_API.Dtos.Prescription
         [StringLength(500)]
         public string? Note { get; set; } // Ghi chú riêng
     }
-    public class UpdatePrescriptionDetailDto
+    public class UpdateTmplDetailDto
     {
         public int PrescriptionDetailId { get; set; }
         public int PrescriptionId { get; set; }

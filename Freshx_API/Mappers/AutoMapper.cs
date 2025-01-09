@@ -24,6 +24,7 @@ using Freshx_API.Dtos.Employee;
 using Freshx_API.Dtos.UserAccountManagement;
 using Freshx_API.Dtos.ExamineDtos;
 using Freshx_API.Dtos.Prescription;
+using Freshx_API.Dtos.TmplPrescription;
 namespace Freshx_API.Mappers
 {
     public class AutoMapperProfile : Profile
@@ -190,11 +191,20 @@ namespace Freshx_API.Mappers
             CreateMap<Prescription, CreatePrescriptionDto>().ReverseMap();
             CreateMap<Prescription, UpdatePrescriptionDto>().ReverseMap();
 
-            CreateMap<PrescriptionDetail, PrescriptionDetailDto>().ReverseMap();
+            CreateMap<PrescriptionDetail, DetailDto>().ReverseMap();
             CreateMap<PrescriptionDetail, CreatePrescriptionDetailDto>().ReverseMap();
             CreateMap<PrescriptionDetail, UpdatePrescriptionDetailDto>().ReverseMap();
             CreateMap<CreatePrescriptionDto, UpdatePrescriptionDto>().ReverseMap();
+            // toa thuốc mẫu 
+            // Prescription - toa thuốc - toa thuốc chi tiết
+            CreateMap<TemplatePrescription, TmplPrescriptionDto>().ReverseMap();
+            CreateMap<TemplatePrescription, CreateTmplPrescriptionDto>().ReverseMap();
+            CreateMap<TemplatePrescription, UpdateTmplPrescriptionDto>().ReverseMap();
 
+            CreateMap<TemplatePrescriptionDetail, DetailDto>().ReverseMap();
+            CreateMap<TemplatePrescriptionDetail, CreateTmplDetailDto>().ReverseMap();
+            CreateMap<TemplatePrescriptionDetail, UpdateTmplDetailDto>().ReverseMap();
+            CreateMap<CreatePrescriptionDto, UpdateTmplDetailDto>().ReverseMap();
         }
     }
 }
