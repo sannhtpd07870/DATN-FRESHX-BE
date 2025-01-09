@@ -68,8 +68,8 @@ jobs:
       - name: Check SSH Connection to the Server
         run: |
           echo "Checking SSH Connection..."
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 "echo 'SSH connection successful!'"
-          env:
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 "echo ""SSH connection successful!"""
+        env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
       # Dừng ứng dụng đang chạy (nếu cần)
@@ -85,3 +85,4 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ${{ secrets.SSH_PRIVATE_KEY }} user@100.95.37.29 "cd E:/Share/source && dotnet run freshx_api.dll"
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
