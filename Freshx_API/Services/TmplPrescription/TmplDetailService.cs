@@ -2,15 +2,16 @@
 using Freshx_API.Dtos.Prescription;
 using Freshx_API.Interfaces.IPrescription;
 using Freshx_API.Models;
+using Freshx_API.Repository;
 
-namespace Freshx_API.Services
+namespace Freshx_API.Services.TmplPrescription
 {
-    public class PrescriptionDetailService : IPrescriptionDetailService
-    {
-        private readonly IPrescriptionDetailRepository _repository;
+    public class TmplDetailService
+    { 
+        private readonly TmplDetailRepository _repository;
         private readonly IMapper _mapper;
 
-        public PrescriptionDetailService(IPrescriptionDetailRepository repository, IMapper mapper)
+        public TmplDetailService(TmplDetailRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
@@ -18,13 +19,13 @@ namespace Freshx_API.Services
 
         public async Task AddAsync(CreatePrescriptionDetailDto detailDto)
         {
-            var detail = _mapper.Map<PrescriptionDetail>(detailDto);
+            var detail = _mapper.Map<TemplatePrescriptionDetail>(detailDto);
             await _repository.AddAsync(detail);
         }
 
         public async Task UpdateAsync(UpdatePrescriptionDetailDto detailDto)
         {
-            var detail = _mapper.Map<PrescriptionDetail>(detailDto);
+            var detail = _mapper.Map<TemplatePrescriptionDetail>(detailDto);
             await _repository.UpdateAsync(detail);
         }
 

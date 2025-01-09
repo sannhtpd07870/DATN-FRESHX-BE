@@ -36,10 +36,26 @@ using Freshx_API.Interfaces.Services;
 using Org.BouncyCastle.Math.EC.Multiplier;
 using Freshx_API.Interfaces.IPrescription;
 using Freshx_API.Interfaces.ServiceType;
+using System.Net;
+using System.Reflection;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
-//cấu hình Swagger phục vụ cho việc kiểm tra api với authorize
+
+
+Console.OutputEncoding = System.Text.Encoding.UTF8;
+// hiển thị phiên bản
+static DateTime GetBuildDate()
+{
+    var filePath = Assembly.GetExecutingAssembly().Location;
+    return File.GetLastWriteTime(filePath); // Lấy thời gian file .dll được build
+}
+
+var buildDate = GetBuildDate();
+
+// Hiển thị thông tin
+Console.WriteLine($"Thời gian phát hành: {buildDate:yyyy-MM-dd HH:mm:ss}");
+
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "API DATN", Version = "v1" });
@@ -154,6 +170,11 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
         };
     };
 }); ;
+// Cấu hình Kestrel để lắng nghe trên Tailscale IP
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Listen(System.Net.IPAddress.Any,5000); // Lắng nghe trên tất cả các IP
+});
 // Configure JWT authentication
 builder.Services.AddAuthentication(options =>
 {
@@ -439,7 +460,15 @@ builder.Services.AddSingleton<DefaultAzureCredential>();
 
 // Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
 builder.Services.AddHttpContextAccessor();
+// Cấu hình Kestrel để lắng nghe trên tất cả các địa chỉ IP
+//builder.WebHost.ConfigureKestrel(options =>
+//{
+//    options.Listen(IPAddress.Any, 7075); // Hoặc địa chỉ IP của thiết bị
+//});
+
+
 var app = builder.Build();
+
 
 
 // Cấu hình CORS để cho phép truy cập từ mọi nguồn
@@ -469,11 +498,22 @@ app.MapHub<NotificationHub>("/notificationHub").RequireCors(policy =>
           .AllowCredentials();                // Cho phép tín hiệu sử dụng cookie
 });
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+
+//chạy swagger trên puplig
+app.UseSwagger();
+app.UseSwaggerUI(options =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    options.RoutePrefix = string.Empty;
+});
+
 
 app.UseHttpsRedirection();
 //xac thuc truoc khi phan quyen

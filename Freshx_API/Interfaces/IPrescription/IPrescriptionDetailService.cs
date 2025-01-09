@@ -7,7 +7,7 @@ namespace Freshx_API.Interfaces.IPrescription
         Task AddAsync(CreatePrescriptionDetailDto detailDto);
         Task UpdateAsync(UpdatePrescriptionDetailDto detailDto);
         Task DeleteAsync(int id);
-        Task<List<PrescriptionDetailDto>> GetByPrescriptionIdAsync(int prescriptionId);
+        Task<List<DetailDto>> GetByPrescriptionIdAsync(int prescriptionId);
     }
 
 }
