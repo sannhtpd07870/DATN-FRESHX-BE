@@ -23,7 +23,7 @@ namespace Freshx_API.Repository
                 var isAvailableDoctor = await _context.OnlineAppointments
                     .FirstOrDefaultAsync(o => o.TimeSlotId == request.TimeSlotId
                         && o.DoctorId == request.DoctorId
-                        && o.Date == request.Date);
+                        && o.Date == request.Date&&o.IsDeleted == false);
                 if(isAvailableDoctor != null)
                 {
                     return null;
@@ -54,6 +54,31 @@ namespace Freshx_API.Repository
             }
         }
 
+        public async Task<OnlineAppointment?> DeleteOnlineOppointmentById(int id)
+        {
+            try
+            {
+                var existingOnlineAppointment = await _context.OnlineAppointments.FirstOrDefaultAsync(o => o.OnlineAppointmentId == id && o.IsDeleted == false);
+                if (existingOnlineAppointment == null)
+                {
+                    return null;
+                }
+                existingOnlineAppointment.IsDeleted = true;
+                existingOnlineAppointment.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return await _context.OnlineAppointments
+                       .Include(x => x.Doctor)
+                           .ThenInclude(d => d.Department)
+                       .Include(x => x.TimeSlot)
+                       .FirstOrDefaultAsync(x => x.OnlineAppointmentId == id);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw;
+            }
+        }
+
         public async Task<OnlineAppointment?> GetOnlineAppointmentById(string accountId)
         {
             try
@@ -62,7 +87,7 @@ namespace Freshx_API.Repository
             .Include(x => x.Doctor)
                 .ThenInclude(d => d.Department)
             .Include(x => x.TimeSlot)
-            .Where(x => x.AccountId == accountId && x.Date >= DateTime.Today)
+            .Where(x => x.AccountId == accountId && x.Date >= DateTime.Today&&x.IsDeleted == false)
             .OrderBy(x => x.Date)
             .ThenBy(x => x.TimeSlot.StartTime)
             .FirstOrDefaultAsync();
@@ -73,6 +98,34 @@ namespace Freshx_API.Repository
             {
                 _logger.LogError(e.Message);
                 throw;
+            }
+        }
+
+        public async Task<OnlineAppointment?> UpdateOnlineOppointmentById(int id, CreateUpdateOnlineAppointment request)
+        {
+            try
+            {
+                var existingOnlineAppointment = await _context.OnlineAppointments.FirstOrDefaultAsync(o => o.OnlineAppointmentId == id && o.IsDeleted == false);
+                if (existingOnlineAppointment == null)
+                {
+                    return null;
+                }
+                existingOnlineAppointment.ReasonForVisit = request.ReasonForVisit;
+                existingOnlineAppointment.Date = request.Date;
+                existingOnlineAppointment.DoctorId = request.DoctorId;
+                existingOnlineAppointment.TimeSlotId = request.TimeSlotId;
+                existingOnlineAppointment.UpdatedAt = DateTime.UtcNow;
+                await _context.SaveChangesAsync();
+                return await _context.OnlineAppointments
+                       .Include(x => x.Doctor)
+                           .ThenInclude(d => d.Department)
+                       .Include(x => x.TimeSlot)
+                       .FirstOrDefaultAsync(x => x.OnlineAppointmentId == id);
+            }
+           catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                throw;  
             }
         }
     }
