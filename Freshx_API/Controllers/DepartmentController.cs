@@ -44,8 +44,8 @@ namespace Freshx_API.Controllers
 
             }
         }
-        [HttpPost("Create-Department")]
-        public async Task<ActionResult<ApiResponse<DepartmentDto?>>> CreateDepartmentAsync([FromForm]DepartmentCreateUpdateDto request)
+        [HttpPost()]
+        public async Task<ActionResult<ApiResponse<DepartmentDto?>>> CreateDepartmentAsync([FromBody]DepartmentCreateUpdateDto request)
         {
             try
             {
@@ -57,10 +57,16 @@ namespace Freshx_API.Controllers
                 var data = _mapper.Map<DepartmentDto>(department);
                 return Ok(ResponseFactory.Success(Request.Path, data));
             }
+            catch (ArgumentException aex)
+            {
+                _logger.LogError(aex.Message);
+                return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<DepartmentTypeDto>(Request.Path, aex.Message, StatusCodes.Status500InternalServerError));
+            }
+
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<DepartmentTypeDto>(Request.Path, "Lỗi đã xảy ra khi tạo mới loại phòng ban", StatusCodes.Status500InternalServerError));
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<DepartmentTypeDto>(Request.Path, "Lỗi đã xảy ra khi tạo mới loại phòng ban" + e.Message, StatusCodes.Status500InternalServerError));
             }
         }
         [HttpGet("departmentdetail/{id:int}")]

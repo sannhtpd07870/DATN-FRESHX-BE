@@ -31,8 +31,8 @@ public partial class TemplatePrescription
     public string? Note { get; set; } // Ghi chú chung
 
     // Quan hệ
-    public virtual ICollection<PrescriptionDetail> PrescriptionDetails { get; set; }
-        = new List<PrescriptionDetail>(); // Chi tiết toa thuốc
+    public virtual ICollection<TemplatePrescriptionDetail> TemplatePrescriptionDetails { get; set; }
+        = new List<TemplatePrescriptionDetail>(); // Chi tiết toa thuốc
 
     public virtual ICollection<DiagnosisDictionary> DiagnosisDictionary { get; set; } // từ điển chẩn đoán
     //public virtual ICollection<TemplatePrescriptionDrugMapping> TemplatePrescriptionDrugMappings { get; set; } = new List<TemplatePrescriptionDrugMapping>(); // Danh sách ánh xạ thuốc trong mẫu đơn
