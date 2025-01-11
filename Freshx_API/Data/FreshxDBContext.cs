@@ -64,6 +64,9 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Payment> Payments { get; set; } // Bảng thanh toán
 
     public DbSet<Position> Positions { get; set; }
+
+    public DbSet<TimeSlot> TimeSlots { get; set; }
+    public DbSet<OnlineAppointment> OnlineAppointments { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -175,5 +178,27 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
        .OnDelete(DeleteBehavior.Cascade)      // Xóa cascade
        .OnDelete(DeleteBehavior.SetNull)      // Set null khi xóa
        .OnDelete(DeleteBehavior.Restrict);    // Ngăn xóa nếu có quan hệ
+      /*  modelBuilder.Entity<TimeSlot>()
+              .Property(t => t.Duration)
+              .HasComputedColumnSql("DATEADD(MINUTE, DATEDIFF(MINUTE, StartTime, EndTime), CAST('00:00:00' AS TIME))");*/
+
+
+        modelBuilder.Entity<OnlineAppointment>()
+            .HasOne(a => a.Doctor)
+            .WithMany()
+            .HasForeignKey(a => a.DoctorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<OnlineAppointment>()
+            .HasOne(a => a.AppUser)
+            .WithMany()
+            .HasForeignKey(a => a.AccountId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<OnlineAppointment>()
+            .HasOne(a => a.TimeSlot)
+            .WithMany()
+            .HasForeignKey(a => a.TimeSlotId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

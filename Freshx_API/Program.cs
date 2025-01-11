@@ -351,6 +351,7 @@ builder.Services.AddScoped<ITechnicianRepository,TechnicianRepository>();
 builder.Services.AddScoped<IUserAccountManagementRepository,UserAccountManagementRepository>();
 builder.Services.AddScoped<IFixDepartmentTypeRepository, FixDepartmentTypeRepository>();
 builder.Services.AddScoped<IFixDepartmentRepository, FixDepartmentRepositiory>();
+builder.Services.AddScoped<IOnlineAppointmentRepository,OnlineAppointmentRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

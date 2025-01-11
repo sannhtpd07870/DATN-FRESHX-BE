@@ -166,7 +166,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ReceptionId");
 
-                    b.ToTable("Appointments");
+                    b.ToTable("Appointments", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Bill", b =>
@@ -203,7 +203,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ReceptionId");
 
-                    b.ToTable("Bills");
+                    b.ToTable("Bills", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.BillDetail", b =>
@@ -235,7 +235,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ServiceCatalogId");
 
-                    b.ToTable("BillDetails");
+                    b.ToTable("BillDetails", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ChatMessage", b =>
@@ -264,7 +264,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ConversationId");
 
-                    b.ToTable("ChatMessages");
+                    b.ToTable("ChatMessages", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Clinic", b =>
@@ -337,7 +337,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("WardCode");
 
-                    b.ToTable("Hospitals");
+                    b.ToTable("Hospitals", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ConclusionDictionary", b =>
@@ -406,7 +406,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ServiceCatalogId");
 
-                    b.ToTable("ConclusionDictionaries");
+                    b.ToTable("ConclusionDictionaries", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Conversation", b =>
@@ -426,7 +426,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Conversations");
+                    b.ToTable("Conversations", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Country", b =>
@@ -472,7 +472,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("CountryId");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Department", b =>
@@ -512,7 +512,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("DepartmentTypeId");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.DepartmentType", b =>
@@ -549,7 +549,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("DepartmentTypeId");
 
-                    b.ToTable("DepartmentTypes");
+                    b.ToTable("DepartmentTypes", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.DiagnosisDictionary", b =>
@@ -604,6 +604,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("DiagnosisDictionaryId");
 
+                    b.ToTable("DiagnosisDictionaries", (string)null);
                     b.HasIndex("TemplatePrescriptionId");
 
                     b.ToTable("DiagnosisDictionaries");
@@ -738,7 +739,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("TechnicianId");
 
-                    b.ToTable("DiagnosticImagingResults");
+                    b.ToTable("DiagnosticImagingResults", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.DiseaseGroup", b =>
@@ -775,7 +776,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("DiseaseGroupId");
 
-                    b.ToTable("DiseaseGroups");
+                    b.ToTable("DiseaseGroups", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.District", b =>
@@ -824,7 +825,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ProvinceCode");
 
-                    b.ToTable("Districts");
+                    b.ToTable("Districts", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Doctor", b =>
@@ -916,7 +917,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("WardId");
 
-                    b.ToTable("Doctors");
+                    b.ToTable("Doctors", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.DrugBooking", b =>
@@ -977,7 +978,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("PrescriptionId");
 
-                    b.ToTable("DrugBookings");
+                    b.ToTable("DrugBookings", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.DrugCatalog", b =>
@@ -1091,7 +1092,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("UnitOfMeasureId");
 
-                    b.ToTable("DrugCatalogs");
+                    b.ToTable("DrugCatalogs", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.DrugType", b =>
@@ -1128,7 +1129,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("DrugTypeId");
 
-                    b.ToTable("DrugTypes");
+                    b.ToTable("DrugTypes", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.EmailContent", b =>
@@ -1155,7 +1156,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("EmailContents");
+                    b.ToTable("EmailContents", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Employee", b =>
@@ -1247,7 +1248,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("WardId");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Examine", b =>
@@ -1462,7 +1463,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ICDCatalogGroupId");
 
-                    b.ToTable("ICDcatalogs");
+                    b.ToTable("ICDcatalogs", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Icdchapter", b =>
@@ -1505,7 +1506,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("IcdchapterId");
 
-                    b.ToTable("Icdchapters");
+                    b.ToTable("Icdchapters", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.InventoryType", b =>
@@ -1521,7 +1522,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("InventoryTypeId");
 
-                    b.ToTable("InventoryTypes");
+                    b.ToTable("InventoryTypes", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.LabResult", b =>
@@ -1604,7 +1605,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("TechnicianId");
 
-                    b.ToTable("LabResults");
+                    b.ToTable("LabResults", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.MedicalServiceRequest", b =>
@@ -1696,7 +1697,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("MedicalServiceRequests");
+                    b.ToTable("MedicalServiceRequests", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Menu", b =>
@@ -1738,7 +1739,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ParentMenuId");
 
-                    b.ToTable("Menus");
+                    b.ToTable("Menus", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.MenuParent", b =>
@@ -1754,7 +1755,50 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("MenuParentId");
 
-                    b.ToTable("MenuPermissions");
+                    b.ToTable("MenuPermissions", (string)null);
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.OnlineAppointment", b =>
+                {
+                    b.Property<int>("OnlineAppointmentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OnlineAppointmentId"));
+
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("DoctorId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReasonForVisit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TimeSlotId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("OnlineAppointmentId");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("DoctorId");
+
+                    b.HasIndex("TimeSlotId");
+
+                    b.ToTable("OnlineAppointments", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Patient", b =>
@@ -1842,7 +1886,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("WardId");
 
-                    b.ToTable("Patients");
+                    b.ToTable("Patients", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Payment", b =>
@@ -1871,7 +1915,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("BillId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Pharmacy", b =>
@@ -1934,7 +1978,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Positions");
+                    b.ToTable("Positions", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Prescription", b =>
@@ -1975,7 +2019,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("PrescriptionId");
 
-                    b.ToTable("Prescriptions");
+                    b.ToTable("Prescriptions", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.PrescriptionDetail", b =>
@@ -2070,7 +2114,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("Code");
 
-                    b.ToTable("Provinces");
+                    b.ToTable("Provinces", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Reception", b =>
@@ -2139,7 +2183,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ReceptionistId");
 
-                    b.ToTable("Receptions");
+                    b.ToTable("Receptions", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Savefile", b =>
@@ -2161,7 +2205,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Savefiles");
+                    b.ToTable("Savefiles", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ServiceCatalog", b =>
@@ -2232,7 +2276,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ServiceTypeId");
 
-                    b.ToTable("ServiceCatalogs");
+                    b.ToTable("ServiceCatalogs", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ServiceGroup", b =>
@@ -2269,7 +2313,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("ServiceGroupId");
 
-                    b.ToTable("ServiceGroups");
+                    b.ToTable("ServiceGroups", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ServiceStandardValue", b =>
@@ -2332,7 +2376,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("ServiceCatalogId");
 
-                    b.ToTable("ServiceStandardValues");
+                    b.ToTable("ServiceStandardValues", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.ServiceTypes", b =>
@@ -2351,7 +2395,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("ServiceTypeId");
 
-                    b.ToTable("ServiceTypes");
+                    b.ToTable("ServiceTypes", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Supplier", b =>
@@ -2457,7 +2501,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("WardCode");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Technician", b =>
@@ -2546,7 +2590,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("WardId");
 
-                    b.ToTable("Technicians");
+                    b.ToTable("Technicians", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.TemplatePrescription", b =>
@@ -2587,7 +2631,33 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("TemplatePrescriptionId");
 
-                    b.ToTable("TemplatePrescriptions");
+                    b.ToTable("TemplatePrescriptions", (string)null);
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.TimeSlot", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("EndTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<TimeSpan>("StartTime")
+                        .HasColumnType("time");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TimeSlots", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.TemplatePrescriptionDetail", b =>
@@ -2683,7 +2753,7 @@ namespace Freshx_API.Migrations
 
                     b.HasKey("UnitOfMeasureId");
 
-                    b.ToTable("UnitOfMeasures");
+                    b.ToTable("UnitOfMeasures", (string)null);
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Ward", b =>
@@ -2729,7 +2799,7 @@ namespace Freshx_API.Migrations
 
                     b.HasIndex("DistrictCode");
 
-                    b.ToTable("Wards");
+                    b.ToTable("Wards", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -3339,6 +3409,33 @@ namespace Freshx_API.Migrations
                         .HasForeignKey("ParentMenuId");
 
                     b.Navigation("ParentMenu");
+                });
+
+            modelBuilder.Entity("Freshx_API.Models.OnlineAppointment", b =>
+                {
+                    b.HasOne("Freshx_API.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Freshx_API.Models.Doctor", "Doctor")
+                        .WithMany()
+                        .HasForeignKey("DoctorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Freshx_API.Models.TimeSlot", "TimeSlot")
+                        .WithMany()
+                        .HasForeignKey("TimeSlotId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Doctor");
+
+                    b.Navigation("TimeSlot");
                 });
 
             modelBuilder.Entity("Freshx_API.Models.Patient", b =>
