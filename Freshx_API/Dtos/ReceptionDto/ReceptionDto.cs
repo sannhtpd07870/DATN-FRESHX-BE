@@ -41,4 +41,18 @@ namespace Freshx_API.Dtos
         public ExamineOnly Examine { get; set; }
         public LabResult LabResult { get; set; }
     }
+
+    public class ListReceptionDto
+    {
+        public int ReceptionId { get; set; }
+        public int? PatientId { get; set; }
+        public string? Name { get; set; }
+        public int? Age { get; set; } // Tuổi bệnh nhân
+        public string? Gender { get; set; } // Giới tính bệnh nhân
+        public string? type { get; set; }
+        public DateTime? time { get; set; }
+        public string? ReasonForVisit { get; set; } //lý do khám
+        public int? ExamineId { get; set; }
+        public int? LabResultId { get; set; }
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Freshx_API.Dtos;
 using Freshx_API.Dtos.CommonDtos;
+using Freshx_API.Dtos.Patient;
 using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.IReception;
 using Freshx_API.Models;
@@ -56,6 +57,50 @@ namespace Freshx_API.Controllers
             {
                 _logger.LogError(e, "Xảy ra lỗi khi lấy dữ liệu");
                 return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<IEnumerable<ReceptionDto>>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn:"+ e.Message));
+            }
+        }
+
+        [HttpGet("examine")]
+        public async Task<ActionResult<ApiResponse<IEnumerable<ExamineHistoryDto>>>> GetExamine(string? searchKey, bool isHistory = false)
+        {
+            try
+            {
+                var receptions = await _service.GetListExamine(searchKey, isHistory) ;
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, receptions));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Xảy ra lỗi khi lấy dữ liệu");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<IEnumerable<ReceptionDto>>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn:" + e.Message));
+            }
+        }
+        [HttpGet("lapresult")]
+        public async Task<ActionResult<ApiResponse<IEnumerable<ExamineHistoryDto>>>> GetLapReult(string? searchKey, bool isHistory = false)
+        {
+            try
+            {
+                var receptions = await _service.GetListLabResult(searchKey, isHistory);
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, receptions));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Xảy ra lỗi khi lấy dữ liệu");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<IEnumerable<ReceptionDto>>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn:" + e.Message));
+            }
+        }
+
+        [HttpGet("examine/{Id}")]
+        public async Task<ActionResult<ApiResponse<IEnumerable<ExamineHistoryDto>>>> GetExamine(int Id)
+        {
+            try
+            {
+                var receptions = await _service.GetPatientHistory(Id);
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, receptions));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Xảy ra lỗi khi lấy dữ liệu");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<IEnumerable<ReceptionDto>>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn:" + e.Message));
             }
         }
 

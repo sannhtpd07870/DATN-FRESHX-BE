@@ -8,6 +8,7 @@ using Freshx_API.Interfaces.IReception;
 using Freshx_API.Interfaces.Payments;
 using Freshx_API.Interfaces.Services;
 using Freshx_API.Models;
+using System;
 
 namespace Freshx_API.Services
 {
@@ -52,7 +53,20 @@ namespace Freshx_API.Services
         {
             var receptions = await _repository.GetAllAsync();
             var data = _mapper.Map<IEnumerable<ReceptionDto>>(receptions);
-            
+            return data;
+        }
+        public async Task<List<ListReceptionDto>> GetListExamine(string? searchKey, bool isHistory)
+        {
+           return await _repository.GetListExamine(searchKey,isHistory);
+        }
+
+        public async Task<List<ListReceptionDto>> GetListLabResult(string? searchKey, bool isHistory)
+        {
+            return await _repository.GetListLabResult(searchKey,isHistory);
+        }
+        public async Task<ExamineHistoryDto> GetPatientHistory(int receptionId)
+        {
+            var data = await _repository.GetPatientHistory(receptionId);
             return data;
         }
 

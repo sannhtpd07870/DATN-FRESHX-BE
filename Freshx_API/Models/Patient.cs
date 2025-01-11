@@ -61,5 +61,6 @@ public partial class Patient
 
     [ForeignKey("AccountId")]
     public virtual AppUser? AppUser { get; set; }
+    public virtual Reception? Reception { get; set; }
 
 }

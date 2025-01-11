@@ -74,6 +74,23 @@ namespace Freshx_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, "Lỗi đã xảy ra khi lấy danh sách bệnh nhân"));
             }
         }
+
+        [HttpGet("GetHistory/{id:int}")]
+        public async Task<ActionResult<ApiResponse<List<PatientResponseDto?>>>> GetHistory(int id, [FromQuery] string? keyword = null, DateTime? startDate = null, DateTime? endDate = null)
+        {
+            Console.Write(id);
+            try
+            {
+                var history = await _patientRepository.GetPatientHistory(id, keyword, startDate,endDate);
+             
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success<Object>(Request.Path, history));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Một ngoại lệ đã xảy ra khi lấy danh sách");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<Object>(Request.Path, "Lỗi đã xảy ra khi lấy lịch sử: " + e.Message));
+            }
+        }
         [HttpPut]
         [Route("{id:int}")]
         public async Task<ActionResult<ApiResponse<PatientResponseDto?>>> UpdatePatientById(int id, UpdatingPatientRequest request)

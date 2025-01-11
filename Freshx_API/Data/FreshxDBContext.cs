@@ -125,7 +125,6 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .WithOne(p => p.Bill)
             .HasForeignKey(p => p.BillId);
 
-
         modelBuilder.Entity<LabResult>(b =>
         {
             b.HasKey(e => e.LabResultId);

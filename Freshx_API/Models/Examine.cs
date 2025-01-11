@@ -7,19 +7,12 @@ namespace Freshx_API.Models;
 public partial class Examine
 {
     public int ExamineId { get; set; } // ID Khám bệnh
-
     public int? ReceptionId { get; set; } // ID tiếp nhận
-
     public DateTime? CreatedDate { get; set; } // Ngày tạo
-
     public DateTime? CreatedTime { get; set; } // Thời gian tạo
-
     public string? RespiratoryRate { get; set; } // Tần số hô hấp
-
     public string? Bmi { get; set; } // Chỉ số BMI
-
     public string? Symptoms { get; set; } // Triệu chứng
-
     public int? ICDCatalogId { get; set; } // ID danh mục ICD
 
     public int? DiagnosisDictionaryId { get; set; } // Từ điển chẩn đoán khám bệnh

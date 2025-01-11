@@ -10,7 +10,7 @@ public partial class Prescription
     [Key]
     public int PrescriptionId { get; set; } // ID đơn thuốc
 
-    public int? MedicalExaminationId { get; set; } // ID khám bệnh
+    public int ExamineId { get; set; } // ID Khám bệnh
 
     [Column(TypeName = "decimal(18, 2)")]
     public decimal? TotalAmount { get; set; } // Tổng số tiền
@@ -33,12 +33,12 @@ public partial class Prescription
     // Quan hệ
     public virtual ICollection<PrescriptionDetail> PrescriptionDetails { get; set; }
         = new List<PrescriptionDetail>(); // Chi tiết toa thuốc
-    // tách phần danh mục thuốc và chi tiết toa thuốc ra
-    //Truy vấn toa thuốc:
-    //Sử dụng Include để lấy chi tiết toa thuốc kèm danh sách thuốc.
-    //var prescription = context.Prescriptions
-    //.Include(p => p.PrescriptionDetails)
-    //.ThenInclude(d => d.DrugCatalog)
-    //.FirstOrDefault(p => p.PrescriptionId == id);
+                                          // tách phần danh mục thuốc và chi tiết toa thuốc ra
+                                          //Truy vấn toa thuốc:
+                                          //Sử dụng Include để lấy chi tiết toa thuốc kèm danh sách thuốc.
+                                          //var prescription = context.Prescriptions
+                                          //.Include(p => p.PrescriptionDetails)
+                                          //.ThenInclude(d => d.DrugCatalog)
+                                          //.FirstOrDefault(p => p.PrescriptionId == id);
 
 }

@@ -205,6 +205,26 @@ namespace Freshx_API.Mappers
             CreateMap<TemplatePrescriptionDetail, CreateTmplDetailDto>().ReverseMap();
             CreateMap<TemplatePrescriptionDetail, UpdateTmplDetailDto>().ReverseMap();
             CreateMap<CreatePrescriptionDto, UpdateTmplDetailDto>().ReverseMap();
+
+            // bệnh nhân khám
+            CreateMap<Reception, PatientVisitDto>()
+            .ForMember(dest => dest.Age, opt => opt.MapFrom(src =>
+            src.Patient.DateOfBirth != null
+            ? DateTime.Now.Year - src.Patient.DateOfBirth.Value.Year
+            : 0))
+             .ForMember(dest => dest.Time, opt => opt.MapFrom(src =>
+        src.ReceptionDate.HasValue
+            ? src.ReceptionDate.Value.ToString("HH:mm")
+            : "N/A"))
+            .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Examine == null ? "Chưa khám" : (src.Examine.IsPaid ? "Đã khám" : "Đang khám")))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src =>
+            src.MedicalServiceRequest.FirstOrDefault() != null &&
+            src.MedicalServiceRequest.FirstOrDefault().Service != null &&
+            src.MedicalServiceRequest.FirstOrDefault().Service.ServiceTypes != null
+                ? src.MedicalServiceRequest.FirstOrDefault().Service.ServiceTypes.Name
+                : null))
+            .ReverseMap();
+
         }
     }
 }

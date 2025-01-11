@@ -33,15 +33,16 @@ namespace Freshx_API.Services
         public async Task<PrescriptionDto> AddAsync(CreatePrescriptionDto prescriptionDto)
         {
             var prescription = _mapper.Map<Prescription>(prescriptionDto);
-            if (prescriptionDto.Details.Count != 0) {
+           
+          var prescript = await _repository.AddAsync(prescription);
+             if (prescriptionDto.Details.Count != 0) {
                 foreach (var detailDto in prescriptionDto.Details)
                 {
                     
-                    detailDto.PrescriptionId = prescription.PrescriptionId;
+                    detailDto.PrescriptionId = prescript.PrescriptionId;
                     await _detailService.AddAsync(detailDto);
                 }
             }
-          var prescript = await _repository.AddAsync(prescription);
             return _mapper.Map<PrescriptionDto>(prescript);
         }
            

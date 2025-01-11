@@ -1,4 +1,5 @@
-﻿using Freshx_API.Models;
+﻿using Freshx_API.Dtos;
+using Freshx_API.Models;
 
 namespace Freshx_API.Interfaces.IReception
 {
@@ -9,6 +10,9 @@ namespace Freshx_API.Interfaces.IReception
         Task<Reception?> AddAsync(Reception reception);
         Task UpdateAsync(Reception reception);
         Task DeleteAsync(int id);
+        Task<ExamineHistoryDto> GetPatientHistory(int receptionId);
+        Task<List<ListReceptionDto>> GetListExamine(string? searchKey, bool isHistory);
+        Task<List<ListReceptionDto>> GetListLabResult(string? searchKey, bool isHistory);
     }
 
 }
