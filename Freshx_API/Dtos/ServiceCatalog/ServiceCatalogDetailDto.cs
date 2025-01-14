@@ -1,4 +1,6 @@
-﻿namespace Freshx_API.Dtos.ServiceCatalog
+﻿using Freshx_API.Models;
+
+namespace Freshx_API.Dtos.ServiceCatalog
 {
     // DTO để trả dữ liệu chi tiết về danh mục dịch vụ
     public class ServiceCatalogDetailDto
@@ -13,6 +15,7 @@
         public bool? IsParentService { get; set; } // Trạng thái dịch vụ cha
         public int? ParentServiceId { get; set; } // ID dịch vụ cha
         public int? ServiceGroupId { get; set; } // ID nhóm dịch vụ
+        public int? serviceTypeId { get; set; }
         public int? IsSuspended { get; set; } // Trạng thái tạm ngưng
         public string? CreatedBy { get; set; } // Người tạo
         public DateTime? CreatedDate { get; set; } // Ngày tạo
@@ -22,5 +25,6 @@
         //public int? PriceTypeId { get; set; } // ID loại giá
         public string? ParentServiceName { get; set; } // Tên dịch vụ cha
         public string? ServiceGroupName { get; set; } // Tên nhóm dịch vụ
+        public virtual ServiceTypes? ServiceTypes { get; set; }
     }
 }

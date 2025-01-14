@@ -78,7 +78,6 @@ namespace Freshx_API.Repository
                 {
                     try
                     {
-                        
                         await _context.Patients.AddAsync(patient);
                         await _context.SaveChangesAsync();
                         // Load related entities to generate address

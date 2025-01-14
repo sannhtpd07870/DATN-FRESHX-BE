@@ -79,7 +79,7 @@ namespace Freshx_API.Services
         }
 
         // Tạo mới phòng ban
-        public async Task<DepartmentDto> CreateAsync(DepartmentCreateUpdateDto dto)
+/*        public async Task<DepartmentDto> CreateAsync(DepartmentCreateUpdateDto dto)
         {
 
 
@@ -109,8 +109,8 @@ namespace Freshx_API.Services
             return _mapper.Map<DepartmentDto>(createdEntity);
         }
 
-        // Cập nhật phòng ban
-        public async Task UpdateAsync(int id, DepartmentCreateUpdateDto dto)
+        // Cập nhật phòng ban*/
+     /*   public async Task UpdateAsync(int id, DepartmentCreateUpdateDto dto)
         {
             var existingEntity = await _repository.GetByIdAsync(id);
 
@@ -138,7 +138,7 @@ namespace Freshx_API.Services
 
             await _repository.UpdateAsync(existingEntity);
         }
-
+*/
         // Xóa mềm phòng ban
         public async Task DeleteAsync(int id)
         {

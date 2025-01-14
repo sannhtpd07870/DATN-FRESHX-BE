@@ -21,7 +21,7 @@ namespace Freshx_API.Repository
             int? status)
         {
             // Lấy danh sách dịch vụ chưa bị xóa mềm
-            var query = _context.ServiceCatalogs
+            var query = _context.ServiceCatalogs.Include(e => e.ServiceTypes)
                 .Where(s => s.IsDeleted == 0 || s.IsDeleted == null);
 
             // Áp dụng bộ lọc từ khóa tìm kiếm
@@ -55,6 +55,7 @@ namespace Freshx_API.Repository
         public async Task<ServiceCatalog?> GetByIdAsync(int id)
         {
             var service = await _context.ServiceCatalogs
+                .Include(s => s.ServiceTypes)
                 .FirstOrDefaultAsync(s => s.ServiceCatalogId == id && (s.IsDeleted == 0 || s.IsDeleted == null));
 
             if (service != null && service.IsSuspended != 0)

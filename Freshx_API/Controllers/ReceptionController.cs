@@ -1,166 +1,114 @@
-﻿//using AutoMapper;
-//using Freshx_API.Dtos;
-//using Freshx_API.Dtos.CommonDtos;
-//using Freshx_API.DTOs;
-//using Freshx_API.Interfaces;
-//using Freshx_API.Models;
-//using Freshx_API.Repository;
-//using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Freshx_API.Dtos;
+using Freshx_API.Dtos.CommonDtos;
+using Freshx_API.Interfaces;
+using Freshx_API.Interfaces.IReception;
+using Freshx_API.Models;
+using Freshx_API.Repository;
+using Freshx_API.Services.CommonServices;
+using Microsoft.AspNetCore.Mvc;
 
 
-//namespace Freshx_API.Controllers
-//{
-//    [ApiController]
-//    [Route("api/[controller]")]
-//    public class ReceptionController : ControllerBase
-//    {
-//        private readonly IReceptionRepository _receptionRepository;
-//        private readonly IMapper _mapper; 
+namespace Freshx_API.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ReceptionController : ControllerBase
+    {
+        private readonly IReceptionService _service;
+        private readonly ILogger<ReceptionController> _logger;
 
-//        public ReceptionController(IReceptionRepository receptionRepository, IMapper mapper)
-//        {
-//            _receptionRepository = receptionRepository;
-//            _mapper = mapper;
-//        }
+        public ReceptionController(IReceptionService service, ILogger<ReceptionController> logger)
+        {
+            _service = service;
+            _logger = logger;
+        }
 
-//        // GET: api/receptions
-//        [HttpGet]
-//        public async Task<ActionResult<ApiResponse<List<ReceptionDto>>>> GetAllReceptions()
-//        {
-//            var receptions = await _receptionRepository.GetAllReceptionsAsync();
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ApiResponse<ReceptionDto?>>> GetById(int id)
+        {
+            try
+            {
+                var reception = await _service.GetByIdAsync(id);
+                if (reception == null)
+                {
+                    return StatusCode(StatusCodes.Status404NotFound, ResponseFactory.Error<ReceptionDto?>(Request.Path, "Không tìm thấy tiếp nhận"));
+                }
 
-//            if (receptions == null || receptions.Count == 0)
-//            {
-//                return NotFound(new ApiResponse<List<ReceptionDto>>
-//                {
-                   
-//                    Message = "No receptions found",
-//                    StatusCode = 404,
-//                    Data = null,
-//                    Timestamp = DateTime.UtcNow
-//                });
-//            }
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, reception));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Xảy ra lỗi khi lấy thông tin tiếp nhận bằng ID");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<ReceptionDto?>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
+            }
+        }
 
-//            var receptionDtos = _mapper.Map<List<ReceptionDto>>(receptions);
+        [HttpGet]
+        public async Task<ActionResult<ApiResponse<IEnumerable<ReceptionDto>>>> GetAll()
+        {
+            try
+            {
+                var receptions = await _service.GetAllAsync();
+                return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, receptions));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Xảy ra lỗi khi lấy dữ liệu");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<IEnumerable<ReceptionDto>>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn:"+ e.Message));
+            }
+        }
 
-//            return Ok(new ApiResponse<List<ReceptionDto>>
-//            {
-              
-//                Message = "Receptions retrieved successfully",
-//                StatusCode = 200,
-//                Data = receptionDtos,
-//                Timestamp = DateTime.UtcNow
-//            });
-//        }
+        [HttpPost]
+        public async Task<ActionResult<ApiResponse<ReceptionDto>>> Add([FromForm] CreateReceptionDto dto)
+        {
+            try
+            {
+                var reception = await _service.AddAsync(dto);
+                if (reception == null)
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, ResponseFactory.Error<ReceptionDto>(Request.Path, "Dữ liệu được cung cấp không hợp lệ"));
+                }
 
-//        // GET: api/receptions/{id}
-//        [HttpGet("{id}")]
-//        public async Task<ActionResult<ApiResponse<ReceptionDto>>> GetReceptionById(int id)
-//        {
-//            var reception = await _receptionRepository.GetReceptionByIdAsync(id);
+                return StatusCode(StatusCodes.Status201Created, ResponseFactory.Success(Request.Path, reception));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<ReceptionDto>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
+            }
+        }
 
-//            if (reception == null)
-//            {
-//                return NotFound(new ApiResponse<ReceptionDto>
-//                {
-                   
-//                    Message = "Reception not found",
-//                    StatusCode = 404,
-//                    Data = null,
-//                    Timestamp = DateTime.UtcNow
-//                });
-//            }
+        [HttpPut]
+        public async Task<ActionResult<ApiResponse<object>>> Update([FromForm] CreateReceptionDto dto)
+        {
+            try
+            {
+                await _service.UpdateAsync(dto);
+                return StatusCode(StatusCodes.Status204NoContent, ResponseFactory.Success<object>(Request.Path, null, "Cập nhật thành công"));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Xảy ra lỗi khi cập nhật tiếp nhận");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
+            }
+        }
 
-//            var receptionDto = _mapper.Map<ReceptionDto>(reception);
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ApiResponse<object>>> Delete(int id)
+        {
+            try
+            {
+                await _service.DeleteAsync(id);
+                return StatusCode(StatusCodes.Status204NoContent, ResponseFactory.Success<object>(Request.Path, null, "Xóa thành công"));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Xảy ra lỗi khi xóa tiếp nhận");
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
+            }
+        }
+    }
+    
 
-//            return Ok(new ApiResponse<ReceptionDto>
-//            {
-                
-//                Message = "Reception retrieved successfully",
-//                StatusCode = 200,
-//                Data = receptionDto,
-//                Timestamp = DateTime.UtcNow
-//            });
-//        }
-
-//        // POST: api/receptions
-//        [HttpPost]
-//        public async Task<ActionResult<ApiResponse<ReceptionDto>>> CreateReception(CreateReceptionDto createDto)
-//        {
-//            var reception = _mapper.Map<Reception>(createDto);
-
-//            await _receptionRepository.CreateReceptionAsync(reception);
-
-//            var receptionDto = _mapper.Map<ReceptionDto>(reception);
-
-//            return CreatedAtAction(nameof(GetReceptionById), new { id = reception.ReceptionId },
-//                new ApiResponse<ReceptionDto>
-//                {
-                   
-//                    Message = "Reception created successfully",
-//                    StatusCode = 201,
-//                    Data = receptionDto,
-//                    Timestamp = DateTime.UtcNow
-//                });
-//        }
-
-//        // PUT: api/receptions/{id}
-//        [HttpPut("{id}")]
-//        public async Task<ActionResult<ApiResponse<ReceptionDto>>> UpdateReception(int id, UpdateReceptionDto updateDto)
-//        {
-//            var reception = await _receptionRepository.GetReceptionByIdAsync(id);
-//            if (reception == null)
-//            {
-//                return NotFound(new ApiResponse<ReceptionDto>
-//                {
-                    
-//                    Message = "Reception not found",
-//                    StatusCode = 404,
-//                    Data = null,
-//                    Timestamp = DateTime.UtcNow
-//                });
-//            }
-
-//            _mapper.Map(updateDto, reception);
-//            await _receptionRepository.UpdateReceptionAsync(reception);
-
-//            var receptionDto = _mapper.Map<ReceptionDto>(reception);
-
-//            return Ok(new ApiResponse<ReceptionDto>
-//            {
-               
-//                Message = "Reception updated successfully",
-//                StatusCode = 200,
-//                Data = receptionDto,
-//                Timestamp = DateTime.UtcNow
-//            });
-//        }
-
-//        // DELETE: api/receptions/{id}
-//        [HttpDelete("{id}")]
-//        public async Task<ActionResult<ApiResponse<string>>> DeleteReception(int id)
-//        {
-//            var reception = await _receptionRepository.GetReceptionByIdAsync(id);
-//            if (reception == null)
-//            {
-//                return NotFound(new ApiResponse<string>
-//                {
-//                    Message = "Reception not found",
-//                    StatusCode = 404,
-//                    Data = null,
-//                    Timestamp = DateTime.UtcNow
-//                });
-//            }
-
-//            await _receptionRepository.DeleteReceptionAsync(id);
-//            return Ok(new ApiResponse<string>
-//            {
-//                Message = "Reception deleted successfully",
-//                StatusCode = 200,
-//                Data = "Reception successfully deleted",
-//                Timestamp = DateTime.UtcNow
-//            });
-//        }
-//    }
-
-//}
+}

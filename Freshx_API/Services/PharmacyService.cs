@@ -13,12 +13,16 @@ namespace Freshx_API.Services
         private readonly IPharmacyRepository _repository;
         private readonly IMapper _mapper;
         private readonly ITokenRepository _tokenRepository;
+        private readonly RepositoryCheck _check;
+        private readonly FreshxDBContext _context;
 
-        public PharmacyService(IPharmacyRepository repository, IMapper mapper, ITokenRepository tokenRepository)
+        public PharmacyService(IPharmacyRepository repository, IMapper mapper, ITokenRepository tokenRepository, RepositoryCheck check, FreshxDBContext context)
         {
             _repository = repository;
             _mapper = mapper;
             _tokenRepository = tokenRepository;
+            _check = check;
+            _context = context;
         }
 
         // Lấy danh sách nhà thuốc với các bộ lọc
@@ -116,9 +120,12 @@ namespace Freshx_API.Services
         public async Task DeleteAsync(int id)
         {
             var entity = await _repository.GetByIdAsync(id);
-
             if (entity == null || entity.IsDeleted == 1)
                 throw new KeyNotFoundException("Nhà thuốc không tồn tại.");
+
+            //var checkResuilt = await _context.CheckDependencies(entity, "PharmacyId");
+            //if (!checkResuilt.CanDelete)
+            //    throw new InvalidOperationException(checkResuilt.Message + checkResuilt.ActiveDependencies.ToString());
 
             entity.IsDeleted = 1;
             entity.UpdatedDate = DateTime.UtcNow;

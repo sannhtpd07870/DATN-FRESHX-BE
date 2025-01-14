@@ -1,50 +1,64 @@
 ﻿using AutoMapper;
+using Freshx_API.Dtos;
 using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Interfaces;
+using Freshx_API.Interfaces.Auth;
 using Freshx_API.Models;
 using Freshx_API.Services.CommonServices;
+using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Core.Types;
 
 namespace Freshx_API.Services
 {
-    public class MedicalServiceRequestService 
+
+    public class MedicalServiceRequestService : IMedicalServiceRequestService
     {
         private readonly IMedicalServiceRequestRepository _repository;
         private readonly IMapper _mapper;
-        private readonly ILogger<MedicalServiceRequestService> _logger;
-        public MedicalServiceRequestService(
-           IMedicalServiceRequestRepository repository,
-           IMapper mapper,
-           ILogger<MedicalServiceRequestService> logger)
+        private readonly FreshxDBContext _context;
+
+        public MedicalServiceRequestService(IMedicalServiceRequestRepository repository, IMapper mapper, FreshxDBContext context)
         {
             _repository = repository;
             _mapper = mapper;
-            _logger = logger;
+            _context = context;
         }
-        public async Task<ApiResponse<MedicalServiceRequestDTO>> CreateAsync(CreateMedicalServiceRequestDTO createDto)
-        {
-            try
-            {
-                var request = _mapper.Map<MedicalServiceRequest>(createDto);
-                var result = await _repository.CreateAsync(request);
-                var dto = _mapper.Map<MedicalServiceRequestDTO>(result);
 
-                return ResponseFactory.Success(
-                    "api/MedicalServiceRequest",
-                    dto,
-                    "Medical service request created successfully",
-                    StatusCodes.Status201Created);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating medical service request");
-                return ResponseFactory.Error<MedicalServiceRequestDTO>(
-                    "api/MedicalServiceRequest",
-                    "Error creating medical service request",
-                    StatusCodes.Status500InternalServerError);
-            }
+        public async Task<MedicalServiceRequestDto> GetByIdAsync(int id)
+        {
+            var entity = await _repository.GetByIdAsync(id);
+            return _mapper.Map<MedicalServiceRequestDto>(entity);
+        }
+
+        public async Task<IEnumerable<MedicalServiceRequestDto>> GetAllAsync()
+        {
+            var entities = await _repository.GetAllAsync();
+            Console.WriteLine(entities);
+            return _mapper.Map<IEnumerable<MedicalServiceRequestDto>>(entities);
+        }
+
+        public async Task<MedicalServiceRequestDto> AddAsync(CreateMedicalServiceRequestDto medicalServiceRequestDto)
+        {
+            var entity = _mapper.Map<MedicalServiceRequest>(medicalServiceRequestDto);
+
+            var result = await _repository.AddAsync(entity);
+            return _mapper.Map<MedicalServiceRequestDto>(result);
+        }
+
+        public async Task<MedicalServiceRequestDto> UpdateAsync(CreateMedicalServiceRequestDto medicalServiceRequestDto)
+        {
+            var entity = _mapper.Map<MedicalServiceRequest>(medicalServiceRequestDto);
+
+            var result = await _repository.UpdateAsync(entity);
+            return _mapper.Map<MedicalServiceRequestDto>(result);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
         }
     }
-    // Implement các method khác...
+
+
 
 }

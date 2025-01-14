@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.IO;
+using System.Xml;
 
 namespace Freshx_API.Models;
 
@@ -39,6 +40,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Patient> Patients { get; set; }
     public DbSet<Pharmacy> Pharmacies { get; set; }
     public DbSet<Prescription> Prescriptions { get; set; }
+    public DbSet<PrescriptionDetail> PrescriptionDetail { get; set; }
     public DbSet<Reception> Receptions { get; set; }
     public DbSet<Savefile> Savefiles { get; set; } // Consider a more descriptive name
     public DbSet<ServiceCatalog> ServiceCatalogs { get; set; }
@@ -47,6 +49,7 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Supplier> Suppliers { get; set; }
     public DbSet<Technician> Technicians { get; set; }
     public DbSet<TemplatePrescription> TemplatePrescriptions { get; set; }
+    public DbSet<TemplatePrescriptionDetail> TemplatePrescriptionDetails { get; set; }
     public DbSet<ServiceTypes> ServiceTypes { get; set; }
     public DbSet<UnitOfMeasure> UnitOfMeasures { get; set; }
     public DbSet<District> Districts { get; set; }
@@ -61,6 +64,9 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
     public DbSet<Payment> Payments { get; set; } // Bảng thanh toán
 
     public DbSet<Position> Positions { get; set; }
+
+    public DbSet<TimeSlot> TimeSlots { get; set; }
+    public DbSet<OnlineAppointment> OnlineAppointments { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -93,6 +99,23 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .WithMany()
             .HasForeignKey(s => s.ParentServiceId)
             .OnDelete(DeleteBehavior.Restrict);
+        // service group
+
+        modelBuilder.Entity<ServiceGroup>()
+           .HasMany(sg => sg.ServiceCatalogs)
+           .WithOne(sc => sc.ServiceGroup)
+           .HasForeignKey(sc => sc.ServiceCatalogId);
+
+        //phamacy
+        modelBuilder.Entity<Pharmacy>()
+            .HasMany(e => e.Department)
+            .WithOne()
+            .HasForeignKey(d => d.DepartmentId); // Cấu hình khóa ngoại rõ ràng
+
+        modelBuilder.Entity<Pharmacy>()
+    .HasMany(e => e.InventoryType)
+    .WithOne()
+    .HasForeignKey(d => d.InventoryTypeId); // Cấu hình khóa ngoại rõ ràng
 
 
         modelBuilder.Entity<Bill>()
@@ -104,6 +127,22 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .HasMany(b => b.Payments)
             .WithOne(p => p.Bill)
             .HasForeignKey(p => p.BillId);
+
+
+        modelBuilder.Entity<LabResult>(b =>
+        {
+            b.HasKey(e => e.LabResultId);
+            b.Property(e => e.LabResultId).ValueGeneratedOnAdd();
+        });
+
+        //phòng ban vs loại phòng ban
+        modelBuilder.Entity<Department>()
+      .HasKey(d => d.DepartmentId);
+
+        modelBuilder.Entity<Department>()
+            .Property(d => d.DepartmentId)
+            .ValueGeneratedOnAdd();
+
 
         modelBuilder.Entity<AppUser>()
         .HasOne(u => u.Doctor)
@@ -140,5 +179,27 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
        .OnDelete(DeleteBehavior.Cascade)      // Xóa cascade
        .OnDelete(DeleteBehavior.SetNull)      // Set null khi xóa
        .OnDelete(DeleteBehavior.Restrict);    // Ngăn xóa nếu có quan hệ
+      /*  modelBuilder.Entity<TimeSlot>()
+              .Property(t => t.Duration)
+              .HasComputedColumnSql("DATEADD(MINUTE, DATEDIFF(MINUTE, StartTime, EndTime), CAST('00:00:00' AS TIME))");*/
+
+
+        modelBuilder.Entity<OnlineAppointment>()
+            .HasOne(a => a.Doctor)
+            .WithMany()
+            .HasForeignKey(a => a.DoctorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<OnlineAppointment>()
+            .HasOne(a => a.AppUser)
+            .WithMany()
+            .HasForeignKey(a => a.AccountId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<OnlineAppointment>()
+            .HasOne(a => a.TimeSlot)
+            .WithMany()
+            .HasForeignKey(a => a.TimeSlotId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

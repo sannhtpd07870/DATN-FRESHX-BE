@@ -29,11 +29,38 @@ namespace Freshx_API.Repository
             return await query.ToListAsync();
         }
 
+        public async Task<InventoryType?> GetByCodeAsync(string code)
+        {
+            try
+            {
+                return await _context.InventoryTypes
+                    .FirstOrDefaultAsync(s => s.Code == code );
+            }
+            catch (Exception ex)
+            {
+                // Log exception hoặc xử lý thêm
+                throw new Exception("Error retrieving InventoryType", ex);
+            }
+        }
+
         // Lấy loại tồn kho theo ID
         public async Task<InventoryType?> GetByIdAsync(int id)
         {
             return await _context.InventoryTypes
                 .FirstOrDefaultAsync(i => i.InventoryTypeId == id);
+        }
+        public async Task<InventoryType?> GetNameAsync(string name)
+        {
+            try
+            {
+                return await _context.InventoryTypes
+                    .FirstOrDefaultAsync(s => s.Name == name );
+            }
+            catch (Exception ex)
+            {
+                // Log exception hoặc xử lý thêm
+                throw new Exception("Error retrieving InventoryType", ex);
+            }
         }
 
         // Tạo mới loại tồn kho
@@ -70,5 +97,20 @@ namespace Freshx_API.Repository
 
             return false; // Không tìm thấy bản ghi để xóa
         }
+
+        public async Task DeleteAsyncCode(string code)
+        {
+            // Tìm nhà cung cấp theo code
+            var entity = await _context.InventoryTypes.FirstOrDefaultAsync(s => s.Code == code);
+
+            if (entity == null)
+            {
+                // Nếu không tìm thấy, ném ngoại lệ hoặc xử lý theo cách khác
+                throw new KeyNotFoundException("InventoryTypes không tồn tại hoặc đã bị xóa.");
+            }
+            // Lưu thay đổi vào cơ sở dữ liệu
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

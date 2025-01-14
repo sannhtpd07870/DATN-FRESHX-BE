@@ -3,6 +3,7 @@ using Freshx_API.Dtos.ServiceGroup;
 using Freshx_API.Interfaces.Auth;
 using Freshx_API.Interfaces;
 using Freshx_API.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Freshx_API.Services
 {
@@ -11,12 +12,14 @@ namespace Freshx_API.Services
         private readonly IServiceGroupRepository _repository;
         private readonly IMapper _mapper;
         private readonly ITokenRepository _tokenRepository;
+        private readonly FreshxDBContext _context;
 
-        public ServiceGroupService(IServiceGroupRepository repository, IMapper mapper, ITokenRepository tokenRepository)
+        public ServiceGroupService(IServiceGroupRepository repository, IMapper mapper, ITokenRepository tokenRepository, FreshxDBContext context)
         {
             _repository = repository;
             _mapper = mapper;
             _tokenRepository = tokenRepository;
+            _context = context;
         }
 
         // Lấy danh sách nhóm dịch vụ với các bộ lọc
@@ -75,10 +78,19 @@ namespace Freshx_API.Services
         public async Task UpdateAsync(int id, ServiceGroupCreateUpdateDto dto)
         {
             var existingEntity = await _repository.GetByIdAsync(id);
-
+                
             if (existingEntity == null)
                 throw new KeyNotFoundException("Nhóm dịch vụ không tồn tại.");
 
+            if (existingEntity.Code != dto.Code)
+            {
+                // Kiểm tra xem có nhà thuốc nào có mã code giống nhau không
+                var existingPharmacyWithCode = await _context.ServiceGroups.Where(p => p.Code == dto.Code && p.IsDeleted == 0).FirstOrDefaultAsync();
+                if (existingPharmacyWithCode != null && existingPharmacyWithCode.IsDeleted == 0)  // Nếu nhà thuốc trùng mã và chưa bị xóa
+                {
+                    throw new InvalidOperationException("Mã Nhóm đã tồn tại."); // Ném ra exception InvalidOperationException
+                }
+            }
             // Sử dụng AutoMapper để cập nhật dữ liệu từ DTO sang Entity
             _mapper.Map(dto, existingEntity);
 

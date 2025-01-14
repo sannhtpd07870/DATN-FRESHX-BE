@@ -21,7 +21,7 @@ namespace Freshx_API.Repository
             int? status)
         {
             // Lấy danh sách nhóm dịch vụ chưa bị xóa mềm
-            var query = _context.ServiceGroups
+            var query = _context.ServiceGroups.Include(r => r.ServiceCatalogs).ThenInclude(s => s.ServiceTypes)
                 .Where(sg => sg.IsDeleted == 0 || sg.IsDeleted == null);
 
             // Áp dụng bộ lọc từ khóa tìm kiếm

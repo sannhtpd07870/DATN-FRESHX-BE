@@ -25,7 +25,7 @@ public partial class ServiceCatalog
     [StringLength(20)]
     public string? UnitOfMeasure { get; set; } // Đơn vị đo lường
 
-    public bool? HasStandardValue { get; set; } // Có giá trị tiêu chuẩn không
+    public bool? ServiceStandardValueId { get; set; } // id giá trị chuẩn
 
     public int? Level { get; set; } // Cấp độ dịch vụ
 
@@ -35,9 +35,8 @@ public partial class ServiceCatalog
 
     [ForeignKey("ServiceGroup")]
     public int? ServiceGroupId { get; set; } // ID nhóm dịch vụ
-
+    public int? ServiceTypeId { get; set; } // Id loại dịch vụ 
     public int IsSuspended { get; set; } // Trạng thái tạm ngưng (default = false)
-
     public string? CreatedBy { get; set; } // Người tạo
 
     public DateTime? CreatedDate { get; set; } // Ngày tạo
