@@ -93,5 +93,9 @@ namespace Freshx_API.Services
             var bill = await _repository.GetBillWithDetailsAsync(billId);
             return _mapper.Map<BillDto>(bill); 
         }
+        public async Task<IEnumerable<object>> GetStatisticsAsync(DateTime startDate, DateTime endDate, string grouping)
+        {
+            return await _repository.GetStatisticsAsync(startDate, endDate, grouping);
+        }
     }
 }

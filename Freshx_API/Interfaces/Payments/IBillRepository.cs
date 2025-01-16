@@ -11,6 +11,7 @@ namespace Freshx_API.Interfaces.Payments
         Task<Bill> UpdateAsync(Bill bill);
         Task<Bill> DeleteAsync(Bill bill);
         Task<Bill> GetBillWithDetailsAsync(int billId);
+        Task<IEnumerable<object>> GetStatisticsAsync(DateTime startDate, DateTime endDate, string grouping);
         //Task<byte[]> GenerateBillPdfAsync(int billId);
     }
 }

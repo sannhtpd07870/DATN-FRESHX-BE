@@ -147,6 +147,28 @@ namespace Freshx_API.Controllers
             return File(pdfBytes, "application/pdf", $"Invoice_{billId}.pdf");
         }
 
+        [HttpGet("statistics")]
+        public async Task<ActionResult> GetStatistics(DateTime startDate, DateTime endDate, string grouping)
+        {
+            try
+            {
+                var statistics = await _service.GetStatisticsAsync(startDate, endDate, grouping);
+                if (statistics == null || !statistics.Any())
+                {
+                    return StatusCode(StatusCodes.Status404NotFound,
+                    ResponseFactory.Error<string>(Request.Path, "Không có dữ liệu thống kê.", StatusCodes.Status404NotFound));
+                }
+
+                return StatusCode(StatusCodes.Status200OK, statistics);
+            }
+            catch (ArgumentException ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ResponseFactory.Error<string>(Request.Path, "Một lỗi đã xảy ra: " + ex.Message, StatusCodes.Status500InternalServerError));                
+            }
+        }
+
+
     }
 
 }
