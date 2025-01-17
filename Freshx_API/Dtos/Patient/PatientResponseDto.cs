@@ -29,5 +29,6 @@ namespace Freshx_API.Dtos.Patient
         public int? ImageId { get; set; }
         public int? IsDeleted { get; set; } // Trạng thái đã xóa
         public string? Ethnicity { get; set; } // Dân tộc của bệnh nhân
+        public int? ReceptionId { get; set; } // tiếp nhận trong ngày
     }
 }

@@ -18,6 +18,30 @@ namespace Freshx_API.Controllers
             _service = service;
             _logger = logger;
         }
+        [HttpGet("Search")]
+        public async Task<ActionResult<ApiResponse<AddressSearchResult>>> SearchAddress([FromQuery] Parameters request)
+        {
+           
+            try
+            {
+                var result = await _service.SearchAddress(request);
+
+                if (result == null || !result.Any())
+                {
+                    return StatusCode(StatusCodes.Status404NotFound,
+                        ResponseFactory.Error<List<ProvinceDto>>(Request.Path, "Chưa có dữ liệu nào.", StatusCodes.Status404NotFound));
+                }
+
+                return StatusCode(StatusCodes.Status200OK,
+                    ResponseFactory.Success(Request.Path, result, "Lấy dữ liệu thành công.", StatusCodes.Status200OK));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Một ngoại lệ đã xảy ra trong khi tìm nạp danh sách tỉnh/thành phố");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    ResponseFactory.Error<List<ProvinceDto>>(Request.Path, "Một lỗi đã xảy ra.", StatusCodes.Status500InternalServerError));
+            }
+        }
 
         [HttpGet("provinces")]
         public async Task<ActionResult<ApiResponse<List<ProvinceDto>>>> GetAllProvinces()
@@ -68,7 +92,7 @@ namespace Freshx_API.Controllers
         }
 
         [HttpGet("districts/{provinceCode}")]
-        public async Task<ActionResult<ApiResponse<List<DistrictDto>>>> GetDistrictsByProvinceCode(string provinceCode)
+        public async Task<ActionResult<ApiResponse<List<DistrictDto>>>> GetDistrictsByProvinceCode(string? provinceCode)
         {
             try
             {
@@ -92,7 +116,7 @@ namespace Freshx_API.Controllers
         }
 
         [HttpGet("ward/{districtCode}")]
-        public async Task<ActionResult<ApiResponse<List<WardDto>>>> GetWardsByDistrictCode(string districtCode)
+        public async Task<ActionResult<ApiResponse<List<WardDto>>>> GetWardsByDistrictCode(string? districtCode)
         {
             try
             {

@@ -27,7 +27,7 @@ namespace Freshx_API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("All-Departments")]
+        [HttpGet]
         public async Task<ActionResult<ApiResponse<List<Department>>>> GetAllDepartments([FromQuery]Parameters parameters)
         {
 
@@ -69,7 +69,7 @@ namespace Freshx_API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<DepartmentTypeDto>(Request.Path, "Lỗi đã xảy ra khi tạo mới loại phòng ban" + e.Message, StatusCodes.Status500InternalServerError));
             }
         }
-        [HttpGet("departmentdetail/{id:int}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<ApiResponse<DepartmentDto?>>> GetDepartmentById(int id)
         {
             try

@@ -80,42 +80,48 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .OnDelete(DeleteBehavior.Restrict);
 
         // ConclusionDictionary
-        modelBuilder.Entity<ConclusionDictionary>()
-            .HasOne(c => c.ServiceCatalog)
-            .WithMany()
-            .HasForeignKey(c => c.ServiceCatalogId)
-            .OnDelete(DeleteBehavior.Restrict);
+        //modelBuilder.Entity<ConclusionDictionary>()
+        //    .HasOne(c => c.ServiceCatalog)
+        //    .WithMany()
+        //    .HasForeignKey(c => c.ServiceCatalogId)
+        //    .OnDelete(DeleteBehavior.Restrict);
 
-      
-        // ServiceCatalog
-        modelBuilder.Entity<ServiceCatalog>()
-            .HasOne(s => s.ServiceGroup)
-            .WithMany()
-            .HasForeignKey(s => s.ServiceGroupId)
-            .OnDelete(DeleteBehavior.Restrict);
+
 
         modelBuilder.Entity<ServiceCatalog>()
-            .HasOne(s => s.ParentService)
-            .WithMany()
-            .HasForeignKey(s => s.ParentServiceId)
-            .OnDelete(DeleteBehavior.Restrict);
-        // service group
+        .HasOne(s => s.ParentService)
+        .WithMany(p => p.ChildServices)
+        .HasForeignKey(s => s.ParentServiceId)
+        .IsRequired(false); // Cho phép null nếu không có dịch vụ cha
 
+        modelBuilder.Entity<ServiceCatalog>()
+        .HasOne(s => s.UnitOfMeasure)
+        .WithMany()
+        .HasForeignKey(s => s.UnitOfMeasureId);
+       
+        modelBuilder.Entity<ServiceCatalog>()
+            .HasMany(s => s.ChildServices)
+            .WithOne(c => c.ParentService)
+            .HasForeignKey(c => c.ParentServiceId);
+
+        // Đảm bảo cấu hình quan hệ đúng
         modelBuilder.Entity<ServiceGroup>()
-           .HasMany(sg => sg.ServiceCatalogs)
-           .WithOne(sc => sc.ServiceGroup)
-           .HasForeignKey(sc => sc.ServiceCatalogId);
+       .HasMany(sg => sg.ServiceCatalogs)
+       .WithOne(sc => sc.ServiceGroup)
+       .HasForeignKey(sc => sc.ServiceGroupId)
+       .OnDelete(DeleteBehavior.SetNull);
 
-        //phamacy
+
+
         modelBuilder.Entity<Pharmacy>()
             .HasMany(e => e.Department)
             .WithOne()
             .HasForeignKey(d => d.DepartmentId); // Cấu hình khóa ngoại rõ ràng
 
         modelBuilder.Entity<Pharmacy>()
-    .HasMany(e => e.InventoryType)
-    .WithOne()
-    .HasForeignKey(d => d.InventoryTypeId); // Cấu hình khóa ngoại rõ ràng
+        .HasMany(e => e.InventoryType)
+        .WithOne()
+        .HasForeignKey(d => d.InventoryTypeId); // Cấu hình khóa ngoại rõ ràng
 
 
         modelBuilder.Entity<Bill>()
@@ -200,5 +206,11 @@ public partial class FreshxDBContext : IdentityDbContext<AppUser,IdentityRole,st
             .WithMany()
             .HasForeignKey(a => a.TimeSlotId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Prescription>()
+    .HasMany(o => o.PrescriptionDetails)
+    .WithOne(od => od.Prescription)
+    .OnDelete(DeleteBehavior.Cascade); // xóa đơn thuốc chi tiết khi thuốc bị xóa
+
     }
 }

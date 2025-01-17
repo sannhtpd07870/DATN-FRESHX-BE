@@ -6,7 +6,7 @@ namespace Freshx_API.Dtos.Prescription
     public class PrescriptionDto
     {
         public int? PrescriptionId { get; set; } // ID đơn thuốc
-        public int? MedicalExaminationId { get; set; } // ID khám bệnh
+        public int? ExamineId { get; set; } // ID khám bệnh
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? TotalAmount { get; set; } // Tổng số tiền
@@ -20,7 +20,7 @@ namespace Freshx_API.Dtos.Prescription
 
     public class CreatePrescriptionDto
     {
-        public int? MedicalExaminationId { get; set; } // ID khám bệnh
+        public int? ExamineId { get; set; } // ID khám bệnh
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? TotalAmount { get; set; } // Tổng số tiền
@@ -36,7 +36,7 @@ namespace Freshx_API.Dtos.Prescription
     {
         public int PrescriptionId { get; set; } // ID đơn thuốc
         public int PrescriptionDetailId { get; set; }
-        public int? MedicalExaminationId { get; set; } // ID khám bệnh
+        public int? ExamineId { get; set; } // ID khám bệnh
 
         [Column(TypeName = "decimal(18, 2)")]
         public decimal? TotalAmount { get; set; } // Tổng số tiền

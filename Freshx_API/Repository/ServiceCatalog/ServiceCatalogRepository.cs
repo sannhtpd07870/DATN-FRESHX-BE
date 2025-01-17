@@ -70,13 +70,13 @@ namespace Freshx_API.Repository
         public async Task<ServiceCatalog> CreateAsync(ServiceCatalog entity)
         {
             // Kiểm tra trạng thái trước khi tạo mới
-            if (entity.IsSuspended != 0)
-            {
-                entity.Name += " (Tạm ngưng hoạt động)";
-            }
+            //if (entity.IsSuspended != 0)
+            //{
+            //    entity.Name += " (Tạm ngưng hoạt động)";
+            //}
 
             _context.ServiceCatalogs.Add(entity);
-            await _context.SaveChangesAsync();
+             await _context.SaveChangesAsync();
             return entity;
         }
 

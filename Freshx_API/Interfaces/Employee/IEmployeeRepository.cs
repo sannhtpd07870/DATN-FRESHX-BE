@@ -11,5 +11,6 @@ namespace Freshx_API.Interfaces
         public Task<Employee?> GetEmployeeByIdAsync(int id);
         public Task<Employee?> DeleteEmployeeByIdAsync(int id);
         public Task<Employee?> UpdateEmployeeByIdAsync(int id, EmployeeRequest request);
+        Task<Employee?> GetEmployeeByAcountIdAsync(string? id);
     }
 }

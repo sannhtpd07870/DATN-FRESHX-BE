@@ -2,6 +2,7 @@
 using Azure.Core;
 using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Dtos.Patient;
+using Freshx_API.Dtos.Prescription;
 using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.Auth;
 using Freshx_API.Models;
@@ -304,7 +305,7 @@ namespace Freshx_API.Repository
                             PrescriptionExamine = r.Examine.Prescription == null ? null : new PrescriptionExamineHistory
                             {
                                 PrescriptionId = r.Examine.Prescription.PrescriptionId,
-                                Details = r.Examine.Prescription.PrescriptionDetails.ToList(),
+                                Details = _mapper.Map<List<DetailDto>>(r.Examine.Prescription.PrescriptionDetails)
                             }
                         },
                         LapResult = r.LabResult == null ? null : new LapResultMedicalHistory
@@ -325,12 +326,46 @@ namespace Freshx_API.Repository
                throw;
             }
         }
-    
-    public async Task<List<Patient?>> GetPatientsAsync(Parameters parameters)
-        {
-            var query = _context.Patients.Where(p => p.IsDeleted == 0).AsQueryable();
 
-            // Apply search filter
+        public async Task<List<PatientResponseDto>> GetPatientsAsync(Parameters parameters)
+        {
+            var today = DateTime.Today;
+
+            var query = _context.Patients
+                .Where(p => p.IsDeleted != 1) // Lọc bệnh nhân không bị xóa
+                .GroupJoin(
+                    _context.Receptions.Where(r => r.ReceptionDate.HasValue && r.ReceptionDate.Value.Date == today),
+                    p => p.PatientId,
+                    r => r.PatientId,
+                    (p, receptions) => new { Patient = p, Receptions = receptions }
+                )
+                .SelectMany(
+                    pr => pr.Receptions.DefaultIfEmpty(), // Sử dụng DefaultIfEmpty để xử lý quan hệ left join
+                    (pr, r) => new PatientResponseDto
+                    {
+                        PatientId = pr.Patient.PatientId,
+                        MedicalRecordNumber = pr.Patient.MedicalRecordNumber,
+                        IdentityCardNumber = pr.Patient.IdentityCardNumber,
+                        AdmissionNumber = pr.Patient.AdmissionNumber,
+                        Name = pr.Patient.Name,
+                        Gender = pr.Patient.Gender,
+                        DateOfBirth = pr.Patient.DateOfBirth,
+                        PhoneNumber = pr.Patient.PhoneNumber,
+                        Email = pr.Patient.Email,
+                        Address = pr.Patient.Address,
+                        WardId = pr.Patient.WardId,
+                        DistrictId = pr.Patient.DistrictId,
+                        ProvinceId = pr.Patient.ProvinceId,
+                        CreatedDate = pr.Patient.CreatedDate,
+                        ImageId = pr.Patient.ImageId,
+                        IsDeleted = pr.Patient.IsDeleted,
+                        Ethnicity = pr.Patient.Ethnicity,
+                        // Kiểm tra ReceptionId chỉ lấy trong ngày hôm nay
+                        ReceptionId = r != null ? r.ReceptionId : null
+                    }
+                );
+
+            // Áp dụng filter tìm kiếm
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
                 query = query.Where(u =>
@@ -338,12 +373,18 @@ namespace Freshx_API.Repository
                     (u.Address != null && u.Address.Contains(parameters.SearchTerm)));
             }
 
-            // Apply sorting
-            // Sort by created date
-            query = parameters.SortOrderAsc ?? true
-               ? query.OrderBy(p => p.CreatedDate)
-               : query.OrderByDescending(p => p.CreatedDate);
-            return await query.ToListAsync();
+            if (!string.IsNullOrWhiteSpace(parameters.CardNumber))
+            {
+                query = query.Where(u =>
+                    (u.IdentityCardNumber != null && u.IdentityCardNumber.Contains(parameters.CardNumber)));
+            }
+
+            // Áp dụng sắp xếp
+            var orderedQuery = parameters.SortOrderAsc ?? true
+                ? query.OrderBy(p => p.CreatedDate)
+                : query.OrderByDescending(p => p.CreatedDate);
+
+            return await orderedQuery.ToListAsync();
         }
 
     }

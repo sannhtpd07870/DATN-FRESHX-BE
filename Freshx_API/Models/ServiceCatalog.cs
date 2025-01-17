@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Freshx_API.Models;
 
@@ -22,8 +23,7 @@ public partial class ServiceCatalog
     [Column(TypeName = "decimal(18, 2)")]
     public decimal? Price { get; set; } // Giá dịch vụ
 
-    [StringLength(20)]
-    public string? UnitOfMeasure { get; set; } // Đơn vị đo lường
+    public int? UnitOfMeasureId { get; set; } // Đơn vị đo lường
 
     public bool? ServiceStandardValueId { get; set; } // id giá trị chuẩn
 
@@ -32,8 +32,6 @@ public partial class ServiceCatalog
     public bool? IsParentService { get; set; } // có phải dịch vụ cha không?
 
     public int? ParentServiceId { get; set; } // ID dịch vụ cha (nếu  là dịch vụ con của?)
-
-    [ForeignKey("ServiceGroup")]
     public int? ServiceGroupId { get; set; } // ID nhóm dịch vụ
     public int? ServiceTypeId { get; set; } // Id loại dịch vụ 
     public int IsSuspended { get; set; } // Trạng thái tạm ngưng (default = false)
@@ -51,14 +49,17 @@ public partial class ServiceCatalog
     [ForeignKey("ParentServiceId")]
     public virtual ServiceCatalog? ParentService { get; set; } // Dịch vụ cha
 
-    public virtual ServiceGroup? ServiceGroup { get; set; } // Nhóm dịch vụ
-
+    [InverseProperty("ParentService")]
     public virtual ICollection<ServiceCatalog> ChildServices { get; set; } = new HashSet<ServiceCatalog>(); // Dịch vụ con
 
     public virtual ICollection<ServiceStandardValue> ServiceStandardValues { get; set; } = new HashSet<ServiceStandardValue>(); // Giá trị tiêu chuẩn dịch vụ
-
+    //[ForeignKey("ServiceGroupId")]
+    public virtual ServiceGroup? ServiceGroup { get; set; } // Nhóm dịch vụ
+    
     [ForeignKey("ServiceTypeId")]
     public virtual ServiceTypes? ServiceTypes { get; set; }
+    [ForeignKey("UnitOfMeasureId")]
+    public virtual UnitOfMeasure UnitOfMeasure { get; set; }
     // giải thích: public virtual ICollection<ServiceCatalog> ChildServices
         // Mục đích:
         //Đại diện cho mối quan hệ Đệ quy Một-Nhiều(self-referencing).

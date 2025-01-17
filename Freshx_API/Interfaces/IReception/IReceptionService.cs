@@ -8,10 +8,10 @@ namespace Freshx_API.Interfaces.IReception
         Task<ReceptionDto?> GetByIdAsync(int id);
         Task<IEnumerable<ReceptionDto>> GetAllAsync();
         Task<ReceptionDto> AddAsync(CreateReceptionDto dto);
-        Task UpdateAsync(CreateReceptionDto dto);
+        Task<ReceptionDto> UpdateAsync(int Id, UpdateReceptionDto dto);
         Task DeleteAsync(int id);
         Task<ExamineHistoryDto> GetPatientHistory(int receptionId);
         Task<List<ListReceptionDto>> GetListLabResult(string? searchKey, bool isHistory);
-        Task<List<ListReceptionDto>> GetListExamine(string? searchKey, bool isHistory);
+        Task<List<ExamineHistoryDto>> GetListExamine(string? searchKey, bool isHistory);
     }
 }

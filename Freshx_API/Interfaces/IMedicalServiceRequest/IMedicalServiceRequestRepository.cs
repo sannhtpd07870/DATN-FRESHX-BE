@@ -9,6 +9,7 @@ namespace Freshx_API.Interfaces
         Task<MedicalServiceRequest> AddAsync(MedicalServiceRequest medicalServiceRequest);
         Task<MedicalServiceRequest> UpdateAsync(MedicalServiceRequest medicalServiceRequest);
         Task DeleteAsync(int id);
+        Task<List<MedicalServiceRequest>> GetAllByReceptionIdAsync(int id);
     }
 
 }

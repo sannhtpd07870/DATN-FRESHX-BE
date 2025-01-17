@@ -65,16 +65,17 @@ namespace Freshx_API.Services
         {
             var entity = _mapper.Map<ServiceCatalog>(dto);
             // Thiết lập giá trị mặc định
-            if (dto.ServiceTypeId != null) 
-                {
-                var type = await _serviceTypeRepository.GetByIdAsync(dto.ServiceTypeId ?? 0);
-                var Getid = _context.ServiceCatalogs
-            .OrderByDescending(s => s.ServiceCatalogId)
-            .FirstOrDefault(); // Lấy bản ghi mới nhất
-                var newId = (Getid?.ServiceCatalogId ?? 0) + 1; // ID tiếp theo
-                entity.Code = $"{type.Code}00{newId:D3}";
-                }
-
+            //if (dto.ServiceTypeId != null) 
+            //    {
+            //    var type = await _serviceTypeRepository.GetByIdAsync(dto.ServiceTypeId ?? 0);
+            //    var Getid = _context.ServiceCatalogs
+            //.OrderByDescending(s => s.ServiceCatalogId)
+            //.FirstOrDefault(); // Lấy bản ghi mới nhất
+            //    var newId = (Getid?.ServiceCatalogId ?? 0) + 1; // ID tiếp theo
+            //    entity.Code = $"{type.Code}00{newId:D3}";
+            //    }
+ 
+            entity.ServiceCatalogId = 0;
             entity.IsDeleted = 0;
             entity.CreatedDate = DateTime.UtcNow;
             entity.CreatedBy = _tokenRepository.GetUserIdFromToken();
@@ -84,6 +85,12 @@ namespace Freshx_API.Services
                 entity.Name += " (Tạm ngưng hoạt động)";
             }
 
+            var properties = entity.GetType().GetProperties();
+            foreach (var property in properties)
+            {
+                var value = property.GetValue(entity); // Lấy giá trị của thuộc tính
+                Console.WriteLine($"{property.Name}: {value}");
+            }
             var createdEntity = await _repository.CreateAsync(entity);
             return _mapper.Map<ServiceCatalogDto>(createdEntity);
         }
@@ -100,8 +107,8 @@ namespace Freshx_API.Services
             if (existingEntity.Code != dto.Code)
             {
                 // Kiểm tra xem có nhà thuốc nào có mã code giống nhau không
-                var existingPharmacyWithCode = await _context.ServiceCatalogs.Where(p => p.Code == dto.Code && p.IsDeleted == 0).FirstOrDefaultAsync();
-                if (existingPharmacyWithCode != null && existingPharmacyWithCode.IsDeleted == 0)  // Nếu nhà thuốc trùng mã và chưa bị xóa
+                var existingPharmacyWithCode = await _context.ServiceCatalogs.Where(p => p.Code == dto.Code && p.IsDeleted == 0 || p.IsDeleted == null).FirstOrDefaultAsync();
+                if (existingPharmacyWithCode != null && existingPharmacyWithCode.IsDeleted != 1)  // Nếu nhà thuốc trùng mã và chưa bị xóa
                 {
                     throw new InvalidOperationException("Mã thuốc đã tồn tại."); // Ném ra exception InvalidOperationException
                 }

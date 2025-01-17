@@ -19,6 +19,24 @@ namespace Freshx_API.Dtos
         public List<CreateMedicalServiceRequestDto>? MedicalServiceRequest { get; set; } = new List<CreateMedicalServiceRequestDto>();
     }
 
+    public class UpdateReceptionDto
+    {
+      //  public UpdatingPatientRequest UpdatePatient { get; set; }
+        //public int ReceptionId { get; set; }
+        public int? SequenceNumber { get; set; }
+        public bool? IsPriority { get; set; }
+        public int? PatientId { get; set; }
+        public int? ReceptionLocationId { get; set; }
+        public int? ReceptionistId { get; set; }
+        public string? Note { get; set; }
+        public int? AssignedDoctorId { get; set; }
+        public List<int>? MedicalServiceRequestId { get; set; }
+        public string? ReasonForVisit { get; set; }
+
+        public List<UpdateMedicalServiceRequestDto>? MedicalServiceRequest { get; set; } = new List<UpdateMedicalServiceRequestDto>();
+    }
+
+
     public class ReceptionDto
     {
         public int ReceptionId { get; set; }
@@ -38,8 +56,7 @@ namespace Freshx_API.Dtos
         public DateTime? CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public ExamineOnly Examine { get; set; }
-        public LabResult LabResult { get; set; }
+
     }
 
     public class ListReceptionDto

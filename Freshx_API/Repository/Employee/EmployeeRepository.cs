@@ -206,6 +206,25 @@ namespace Freshx_API.Repository
             }
         }
 
+        public async Task<Employee?> GetEmployeeByAcountIdAsync(string? id)
+        {
+            try
+            {
+                var employee = await _context.Employees.Include(d => d.Position).Include(d => d.Department).FirstOrDefaultAsync(d => d.AccountId == id);
+                if (employee == null || employee.IsDeleted == 1)
+                {
+                    return null;
+                }
+                return employee;
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An exception occured while getting employee");
+                throw;
+            }
+        }
+
         public async Task<Employee?> UpdateEmployeeByIdAsync(int id, EmployeeRequest request)
         {
             try

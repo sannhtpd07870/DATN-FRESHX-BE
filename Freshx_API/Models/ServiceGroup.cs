@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Freshx_API.Models;
 
 public partial class ServiceGroup
 {
+    [Key]
     public int ServiceGroupId { get; set; } 
 
     public string? Code { get; set; } // Mã nhóm dịch vụ - ktra trùng lặp

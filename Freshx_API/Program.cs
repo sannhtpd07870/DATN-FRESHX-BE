@@ -4,6 +4,11 @@ using DotNetEnv;
 using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.Auth;
+using Freshx_API.Interfaces.IPrescription;
+using Freshx_API.Interfaces.IReception;
+using Freshx_API.Interfaces.Payments;
+using Freshx_API.Interfaces.Services;
+using Freshx_API.Interfaces.ServiceType;
 using Freshx_API.Interfaces.UserAccount;
 using Freshx_API.Mappers;
 using Freshx_API.Models;
@@ -13,31 +18,26 @@ using Freshx_API.Repository.Auth.AccountRepositories;
 using Freshx_API.Repository.Auth.RoleRepositories;
 using Freshx_API.Repository.Auth.TokenRepositories;
 using Freshx_API.Repository.Drugs;
+using Freshx_API.Repository.LabResults;
+using Freshx_API.Repository.Payments;
 using Freshx_API.Repository.UserAccount;
 using Freshx_API.Services;
-using Freshx_API.Services.SignalR;
+using Freshx_API.Services.BackupData;
 using Freshx_API.Services.CommonServices;
 using Freshx_API.Services.Drugs;
+using Freshx_API.Services.SignalR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Polly;
+using System.Reflection;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.SignalR;
-using Freshx_API.Interfaces.Payments;
-using Freshx_API.Repository.Payments;
-using Freshx_API.Repository.Payments;
-using Freshx_API.Interfaces.IReception;
-using Freshx_API.Repository.LabResults;
-using Freshx_API.Interfaces.Services;
-using Org.BouncyCastle.Math.EC.Multiplier;
-using Freshx_API.Interfaces.IPrescription;
-using Freshx_API.Interfaces.ServiceType;
-using System.Net;
-using System.Reflection;
+
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -112,15 +112,84 @@ builder.Configuration.AddConfiguration(
         .Add(new EncryptedConfigurationSource(password, salt))
         .Build());
 
-var connectionString = builder.Configuration["ConnectionStrings:DBFreshx"];
+var primaryConnection = builder.Configuration["ConnectionStrings:DBFreshx"];
 var jwtKey = builder.Configuration["Jwt:Key"];
 var blobConnectionString = builder.Configuration["AzureBlobStorage:ConnectionString"];
 var containerName = builder.Configuration["AzureBlobStorage:ContainerName"];
-Console.WriteLine("jkds" + builder.Configuration["FileSettings:DevicePath"]);
+var backupConnection = builder.Configuration["ConnectionStrings:DBFreshx_bk"];
 // Add services to the container.
-builder.Services.AddDbContext<FreshxDBContext>(options =>
+builder.Services.AddDbContext<FreshxDBContext>((serviceProvider, options) =>
 {
-    options.UseSqlServer(connectionString);
+    // Tạo policy kiểm tra kết nối
+    var connectionTestPolicy = Policy<bool>
+        .Handle<SqlException>()
+        .Or<TimeoutException>()
+        .WaitAndRetryAsync(3, retryAttempt =>
+            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)), // Exponential backoff
+            async (exception, timeSpan, retryCount, context) =>
+            {
+                Console.WriteLine($"Lần thử kết nối {retryCount}: Không thể kết nối đến server chính. Thử lại sau {timeSpan.TotalSeconds}s.");
+            }
+        );
+
+    async Task<bool> TestConnection(string connectionString)
+    {
+        try
+        {
+            using var connection = new SqlConnection(connectionString);
+            await connection.OpenAsync();
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
+    }
+
+    // Kiểm tra và thiết lập kết nối
+    async Task ConfigureDbContext()
+    {
+        // Thử kết nối server chính
+        var primaryConnectionWorks = await connectionTestPolicy.ExecuteAsync(
+            async () => await TestConnection(primaryConnection)
+        );
+
+        if (primaryConnectionWorks)
+        {
+            options.UseSqlServer(primaryConnection, sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null
+                );
+            });
+            Console.WriteLine("Đã kết nối thành công đến server chính.");
+            return;
+        }
+
+        // Thử kết nối server dự phòng
+        var backupConnectionWorks = await TestConnection(backupConnection);
+        if (backupConnectionWorks)
+        {
+            options.UseSqlServer(backupConnection, sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(
+                    maxRetryCount: 5,
+                    maxRetryDelay: TimeSpan.FromSeconds(30),
+                    errorNumbersToAdd: null
+                );
+            });
+            Console.WriteLine("Đã chuyển sang sử dụng server dự phòng.");
+            return;
+        }
+
+        // Nếu cả hai server đều không kết nối được
+        throw new Exception("Không thể kết nối đến cả server chính và server dự phòng.");
+    }
+
+    // Thực thi cấu hình
+    ConfigureDbContext().GetAwaiter().GetResult();
 });
 //configure Identity Service
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
@@ -157,7 +226,7 @@ builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
         {
             Status = false,
             Path = context.HttpContext.Request.Path,
-            Message ="Dữ liệu đầu vào không hợp lệ",
+            Message = "Dữ liệu đầu vào không hợp lệ",
             StatusCode = StatusCodes.Status400BadRequest,
             Data = errors,
             Timestamp = DateTime.UtcNow
@@ -181,7 +250,7 @@ builder.WebHost.ConfigureKestrel((context, options) =>
     }
     else
     {
-        
+
     }
     //options.Listen(System.Net.IPAddress.Any,5000); // Lắng nghe trên tất cả các IP
 });
@@ -314,6 +383,9 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+//backupdata
+builder.Services.AddDatabaseBackupService();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -347,11 +419,11 @@ builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
 builder.Services.AddScoped<NumberGeneratorService>();
 builder.Services.AddScoped<IFixDoctorRepository, FixDoctorRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<ITechnicianRepository,TechnicianRepository>();
-builder.Services.AddScoped<IUserAccountManagementRepository,UserAccountManagementRepository>();
+builder.Services.AddScoped<ITechnicianRepository, TechnicianRepository>();
+builder.Services.AddScoped<IUserAccountManagementRepository, UserAccountManagementRepository>();
 builder.Services.AddScoped<IFixDepartmentTypeRepository, FixDepartmentTypeRepository>();
 builder.Services.AddScoped<IFixDepartmentRepository, FixDepartmentRepositiory>();
-builder.Services.AddScoped<IOnlineAppointmentRepository,OnlineAppointmentRepository>();
+builder.Services.AddScoped<IOnlineAppointmentRepository, OnlineAppointmentRepository>();
 // Thêm AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -373,7 +445,7 @@ builder.Services.AddScoped<DepartmentTypeService>();
 builder.Services.AddScoped<IDrugTypeRepository, DrugTypeRepository>();
 builder.Services.AddScoped<IDrugTypeService, DrugTypeService>();
 
-builder.Services.AddScoped<IPharmacyRepository,PharmacyRepository>();
+builder.Services.AddScoped<IPharmacyRepository, PharmacyRepository>();
 builder.Services.AddScoped<PharmacyService>();
 
 
@@ -444,7 +516,7 @@ builder.Services.AddScoped<ILabResultRepository, LabResultRepository>();
 builder.Services.AddScoped<ILabResultService, LabResultService>();
 
 //Đăng kí Prescription - toa thuốc - toa thuốc chi tiết
-builder.Services.AddScoped<IPrescriptionService,PrescriptionService>();
+builder.Services.AddScoped<IPrescriptionService, PrescriptionService>();
 builder.Services.AddScoped<IPrescriptionRepository, PrescriptionRepository>();
 builder.Services.AddScoped<IPrescriptionDetailRepository, PrescriptionDetailRepository>();
 builder.Services.AddScoped<IPrescriptionDetailService, PrescriptionDetailService>();
@@ -462,10 +534,10 @@ builder.Services.AddScoped<RepositoryCheck>();
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
-        // Thêm DefaultAzureCredential
-        builder.Services.AddSingleton<DefaultAzureCredential>();
-        // Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
-        builder.Services.AddHttpContextAccessor();
+// Thêm DefaultAzureCredential
+builder.Services.AddSingleton<DefaultAzureCredential>();
+// Đăng ký IHttpContextAccessor để có thể truy cập HttpContext
+builder.Services.AddHttpContextAccessor();
 // Thêm DefaultAzureCredential
 builder.Services.AddSingleton<DefaultAzureCredential>();
 
@@ -490,7 +562,7 @@ app.UseCors(builder =>
            .AllowAnyMethod()
            .AllowAnyHeader()
            .AllowAnyMethod();
-           
+
 });
 
 app.MapHub<ChatHub>("/chathub").RequireCors(policy =>

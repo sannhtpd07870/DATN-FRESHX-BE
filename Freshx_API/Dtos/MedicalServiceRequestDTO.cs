@@ -51,7 +51,7 @@
 
     public class CreateMedicalServiceRequestDto
     {
-        public DateTime? RequestTime { get; set; }
+      //  public DateTime? RequestTime { get; set; }
         public int? ServiceId { get; set; }
         public int? ReceptionId { get; set; }
         public int? Quantity { get; set; }
@@ -68,7 +68,8 @@
 
     public class UpdateMedicalServiceRequestDto
     {
-        public DateTime? RequestTime { get; set; }
+        public int MedicalServiceRequestId { get; set; } // ID của yêu cầu dịch vụ y tế
+     //   public DateTime? RequestTime { get; set; }
         public int? ServiceId { get; set; }
         public string? Results { get; set; } // kết quả
         public int? ReceptionId { get; set; }

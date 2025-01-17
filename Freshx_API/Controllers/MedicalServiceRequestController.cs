@@ -47,9 +47,9 @@ namespace Freshx_API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<MedicalServiceRequestDto>> Update(int id, CreateMedicalServiceRequestDto dto)
+        public async Task<ActionResult<MedicalServiceRequestDto>> Update(int id, UpdateMedicalServiceRequestDto dto)
         {
-            var result = await _service.UpdateAsync(dto);
+            var result = await _service.UpdateAsync(id,dto);
             return Ok(result);
         }
 

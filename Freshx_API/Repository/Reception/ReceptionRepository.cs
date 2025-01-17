@@ -34,26 +34,23 @@ namespace Freshx_API.Repository
         {
             return await _context.Receptions
                 .Include(r => r.MedicalServiceRequest) // Bao gồm các yêu cầu dịch vụ y tế
-                .Include(r => r.AssignedDoctor) // Bao gồm thông tin bác sĩ được chỉ định
-                .Include(r => r.Patient) // Bao gồm thông tin bệnh nhân
-                .Include(r => r.Receptionist) // Bao gồm thông tin lễ tân
-                .Include(r => r.Examine)
-                .Include (r => r.LabResult)
                 .ToListAsync();
         }
 
-        public async Task<List<ListReceptionDto>> GetListExamine(string? searchKey, bool isHistory)
+        public async Task<List<ExamineHistoryDto>> GetListExamine(string? searchKey, bool isHistory)
         {
             var today = DateTime.Today;
             var query = _context.Receptions
-                .Include(r => r.Patient) // Bao gồm thông tin bệnh nhân
-                .Include(r => r.Examine) // Bao gồm thông tin khám
-                .Where(r => r.Examine != null && r.Examine.IsDeleted == 0); // Điều kiện lọc Examine
+                .Include(r => r.Patient)
+                .Include(r => r.Examine)
+                .Where(r => r.Examine != null && r.Examine.IsDeleted == 0 && r.IsDeleted == 0);
 
             // Lọc lịch sử hoặc hôm nay
             if (!isHistory)
             {
-                query = query.Where(r => r.Examine != null && r.Examine.IsPaid == false && r.Examine.UpdatedDate.HasValue && r.Examine.UpdatedDate.Value.Date == today);
+                query = query.Where(r => r.Examine != null && r.Examine.IsPaid == false
+                                        && r.Examine.UpdatedDate.HasValue
+                                        && r.Examine.UpdatedDate.Value.Date == today);
             }
 
             // Tìm kiếm theo tên hoặc lý do khám
@@ -63,29 +60,40 @@ namespace Freshx_API.Repository
                                         || (r.ReasonForVisit != null && r.ReasonForVisit.Contains(searchKey)));
             }
 
-            // lọc theo ưu tiên
+            // Lọc theo ưu tiên
             var receptions = await query
-                .OrderByDescending(r => r.IsPriority) // Ưu tiên trước
-                .ThenByDescending(r => r.Examine != null ? r.Examine.UpdatedDate : (DateTime?)null) // Muộn nhất trước
+                .OrderByDescending(r => r.IsPriority)
+                .ThenByDescending(r => r.Examine != null ? r.Examine.UpdatedDate : (DateTime?)null)
                 .ToListAsync();
 
+            // Ánh xạ dữ liệu sang ExamineHistoryDto
+            var result = new List<ExamineHistoryDto>();
 
-            // Ánh xạ dữ liệu sang ListReceptionDto
-            var result = receptions.Select(r => new ListReceptionDto
+            foreach (var r in receptions)
             {
-                ReceptionId = r.ReceptionId,
-                PatientId = r.PatientId,
-                Name = r.Patient?.Name,
-                Age = CalculateAge(r.Patient.DateOfBirth),
-                Gender = r.Patient?.Gender,
-                type = "Examine",
-                time = r.Examine?.UpdatedDate,
-                ReasonForVisit = r.ReasonForVisit,
-                ExamineId = r.Examine?.ExamineId
-            }).ToList();
+                var patient = r.Patient;
+                if (patient == null) continue;
+
+                // Lấy lịch sử bệnh nhân
+                var history = await GetMedicalHistory(patient.PatientId);
+
+                result.Add(new ExamineHistoryDto
+                {
+                    ReceptionId = r.ReceptionId,
+                    ExamineId = r.Examine?.ExamineId,
+                    PatientId = patient.PatientId,
+                    PatientName = patient.Name ?? "Không rõ",
+                    MedicalRecordNumber = patient.MedicalRecordNumber ?? "Không rõ",
+                    Age = CalculateAge(patient.DateOfBirth),
+                    Gender = patient.Gender ?? "Không rõ",
+                    AdmissionDate = r.ReceptionDate?.ToString("dd/MM/yyyy HH:mm") ?? "Không rõ",
+                    MedicalHistory = history,
+                    LastExamine = history.FirstOrDefault()
+                });
+            }
 
             return result;
-        }   
+        }
 
         public async Task<List<ListReceptionDto>> GetListLabResult(string? searchKey, bool isHistory)
         {
@@ -138,11 +146,6 @@ namespace Freshx_API.Repository
                 Age = CalculateAge(patient.DateOfBirth),
                 Gender = patient.Gender ?? "Không rõ",
                 AdmissionDate = reception.ReceptionDate?.ToString("dd/MM/yyyy HH:mm") ?? "Không rõ",
-                ContactInfo = new ContactInfoDto
-                {
-                    PhoneNumber = patient.PhoneNumber ?? "Không rõ",
-                    Address = patient.FormattedAddress ?? "Không rõ"
-                },
                 MedicalHistory = history,
                 LastExamine = history[0]
                 //DoctorName = examine?.AssignedDoctor?.Name ?? "Không rõ"

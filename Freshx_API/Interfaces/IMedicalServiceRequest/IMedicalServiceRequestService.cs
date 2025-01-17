@@ -8,7 +8,7 @@ namespace Freshx_API.Interfaces
         Task<MedicalServiceRequestDto> GetByIdAsync(int id);
         Task<IEnumerable<MedicalServiceRequestDto>> GetAllAsync();
         Task<MedicalServiceRequestDto> AddAsync(CreateMedicalServiceRequestDto medicalServiceRequestDto);
-        Task<MedicalServiceRequestDto> UpdateAsync(CreateMedicalServiceRequestDto medicalServiceRequestDto);
+        Task<MedicalServiceRequestDto> UpdateAsync(int Id, UpdateMedicalServiceRequestDto medicalServiceRequestDto);
         Task DeleteAsync(int id);
     }
 

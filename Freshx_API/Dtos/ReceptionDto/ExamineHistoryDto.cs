@@ -13,18 +13,13 @@
         public string? PhoneNumber { get; set; } // Số điện thoại bệnh nhân
         public string? Address { get; set; } // Địa chỉ bệnh nhân
         public string? AdmissionDate { get; set; }
+        public string? ReasonForVisit { get; set; } //lý do khám
         public List<MedicalHistory>? MedicalHistory { get; set; } // Tiền sử bệnh
         public MedicalHistory? LastExamine { get; set; } //lần khám gần nhất
         public string? DoctorName { get; set; } // Bác sĩ khám
-        public ContactInfoDto? ContactInfo { get; set; }
-    }
-
-    public class ContactInfoDto
-    {
-        public string? PhoneNumber { get; set; }
-        public string? Address { get; set; }
 
     }
+
     public class MedicalHistory
     {
         public string? Diagnosis { get; set; } // Chẩn đoán

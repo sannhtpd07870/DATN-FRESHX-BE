@@ -56,7 +56,7 @@ namespace Freshx_API.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Xảy ra lỗi khi lấy dữ liệu");
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<IEnumerable<ReceptionDto>>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn:"+ e.Message));
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<IEnumerable<ReceptionDto>>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn:" + e.Message));
             }
         }
 
@@ -65,7 +65,7 @@ namespace Freshx_API.Controllers
         {
             try
             {
-                var receptions = await _service.GetListExamine(searchKey, isHistory) ;
+                var receptions = await _service.GetListExamine(searchKey, isHistory);
                 return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success(Request.Path, receptions));
             }
             catch (Exception e)
@@ -120,22 +120,22 @@ namespace Freshx_API.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "");
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<ReceptionDto>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<ReceptionDto>(Request.Path, "Đã xảy ra lỗi:" + e.Message));
             }
         }
 
-        [HttpPut]
-        public async Task<ActionResult<ApiResponse<object>>> Update([FromForm] CreateReceptionDto dto)
+        [HttpPut("{Id}")]
+        public async Task<ActionResult<ApiResponse<object>>> Update(int Id,[FromForm] UpdateReceptionDto dto)
         {
             try
             {
-                await _service.UpdateAsync(dto);
+                await _service.UpdateAsync(Id, dto);
                 return StatusCode(StatusCodes.Status204NoContent, ResponseFactory.Success<object>(Request.Path, null, "Cập nhật thành công"));
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Xảy ra lỗi khi cập nhật tiếp nhận");
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn"));
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn:" +e.Message));
             }
         }
 

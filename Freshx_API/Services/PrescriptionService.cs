@@ -21,7 +21,8 @@ namespace Freshx_API.Services
         public async Task<List<PrescriptionDto>> GetAllAsync(string? searchKey)
         {
             var prescriptions = await _repository.GetAllAsync(searchKey);
-            return _mapper.Map<List<PrescriptionDto>>(prescriptions);
+            var data = _mapper.Map<List<PrescriptionDto>>(prescriptions);
+            return data;
         }
 
         public async Task<PrescriptionDto?> GetByIdAsync(int id)

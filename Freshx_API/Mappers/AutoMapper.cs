@@ -94,10 +94,12 @@ namespace Freshx_API.Mappers
             CreateMap<ServiceCatalog, ServiceCatalogDto>().ReverseMap();
             CreateMap<ServiceCatalog, ServiceCatalogDetailDto>().ReverseMap();
             CreateMap<ServiceCatalogCreateUpdateDto, ServiceCatalog>()
-                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+              //   .ForMember(dest => dest.ChildServices, opt => opt.Ignore())
+            .ReverseMap();
+            //.ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
 
 
-           
+
 
             // Map UnitOfMeasure -> UnitOfMeasureDetailDto
             CreateMap<UnitOfMeasure, UnitOfMeasureDetailDto>().ReverseMap();
@@ -147,11 +149,12 @@ namespace Freshx_API.Mappers
             //medical service reqest
             CreateMap<MedicalServiceRequest, MedicalServiceRequestDto>().ReverseMap();
             CreateMap<MedicalServiceRequest, CreateMedicalServiceRequestDto>().ReverseMap();
+            CreateMap<MedicalServiceRequest, UpdateMedicalServiceRequestDto>().ReverseMap();
             // tiếp nhận
             //CreateMap<Patient, PatientDto>();
             CreateMap<Reception, CreateReceptionDto>().ReverseMap();
             CreateMap<ReceptionDto, Reception>().ReverseMap();
-
+            CreateMap<Reception, UpdateReceptionDto>().ReverseMap();
             //create-update patient
             CreateMap<AddingPatientRequest, UpdatingPatientRequest>().ReverseMap();
 
@@ -195,7 +198,7 @@ namespace Freshx_API.Mappers
             CreateMap<LabResult, CreateLabResultDto>().ReverseMap();
             CreateMap<LabResult, UpdateLabResultDto>().ReverseMap();
             // Prescription - toa thuốc - toa thuốc chi tiết
-            CreateMap<Prescription, PrescriptionDto>().ReverseMap();
+            CreateMap<Prescription, PrescriptionDto>().ForMember(dest => dest.Details, opt => opt.MapFrom(src => src.PrescriptionDetails)).ReverseMap();
             CreateMap<Prescription, CreatePrescriptionDto>().ReverseMap();
             CreateMap<Prescription, UpdatePrescriptionDto>().ReverseMap();
 

@@ -64,8 +64,8 @@ namespace Freshx_API.Controllers
         {
             try
             {
-                var patients = await _patientRepository.GetPatientsAsync(parameters);
-                var data = _mapper.Map<List<PatientResponseDto?>>(patients);
+                var data = await _patientRepository.GetPatientsAsync(parameters);
+                //var data = _mapper.Map<List<PatientResponseDto?>>(patients);
                 return StatusCode(StatusCodes.Status200OK, ResponseFactory.Success<Object>(Request.Path, data));
             }
             catch (Exception e)

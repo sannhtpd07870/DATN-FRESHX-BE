@@ -40,5 +40,6 @@ public partial class Prescription
                                           //.Include(p => p.PrescriptionDetails)
                                           //.ThenInclude(d => d.DrugCatalog)
                                           //.FirstOrDefault(p => p.PrescriptionId == id);
-
+    [ForeignKey("ExamineId")] // Xác định khóa ngoại mà không cần thay đổi tên
+    public virtual Examine Examine { get; set; }
 }

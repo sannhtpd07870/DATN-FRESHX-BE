@@ -72,7 +72,7 @@ namespace Freshx_API.Dtos.Patient
     public class PrescriptionExamineHistory
     {
         public int PrescriptionId { get; set; } // ID đơn thuốc
-        public List<Freshx_API.Models.PrescriptionDetail> Details { get; set; }
+        public List<Freshx_API.Dtos.Prescription.DetailDto> Details { get; set; }
     }
 
   

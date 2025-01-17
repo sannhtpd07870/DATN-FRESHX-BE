@@ -61,15 +61,11 @@ public partial class MedicalServiceRequest
 
     // Yêu cầu dịch vụ y tế cha
     public virtual MedicalServiceRequest? ParentMedicalServiceRequest { get; set; }
-
     // Bệnh nhân
     public virtual Patient? Patient { get; set; }
-
     // Lễ tân
     public virtual Reception? Reception { get; set; }
-
     public virtual Department? Department { get; set; }
-
     // Mối quan hệ 1 MedicalServiceRequest có thể có nhiều dịch vụ
     public virtual ServiceCatalog? Service { get; set; }
 }

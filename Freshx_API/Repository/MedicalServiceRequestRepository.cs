@@ -15,7 +15,16 @@ namespace Freshx_API.Repository
         {
             _context = context;
         }
+        public async Task<List<MedicalServiceRequest>> GetAllByReceptionIdAsync(int id)
+        {
+            var data = await _context.MedicalServiceRequests
+                             .AsNoTracking()
+                            .Include(r => r.Service)
+                            .ThenInclude(s => s.ServiceTypes)
+                            .Where(msr => msr.ReceptionId == id).ToListAsync();
 
+            return data;
+        }
         public async Task<MedicalServiceRequest> GetByIdAsync(int id)
         {
             return await _context.MedicalServiceRequests

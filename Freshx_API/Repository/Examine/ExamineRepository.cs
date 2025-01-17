@@ -34,7 +34,7 @@ namespace Freshx_API.Repository
         public async Task<IEnumerable<Examine>> GetAllAsync()
         {
             return await _context.Examines
-                .Include(e => e.Reception) // Lấy thông tin tiếp nhận
+                //.Include(e => e.Reception) // Lấy thông tin tiếp nhận
                 .Include(e => e.Prescription) // Lấy thông tin đơn thuốc
                 .ThenInclude(p => p.PrescriptionDetails) // Lấy chi tiết của đơn thuốc
                 .ThenInclude(d => d.DrugCatalog) // Lấy thông tin thuốc trong chi tiết

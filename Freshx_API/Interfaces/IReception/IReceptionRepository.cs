@@ -11,7 +11,7 @@ namespace Freshx_API.Interfaces.IReception
         Task UpdateAsync(Reception reception);
         Task DeleteAsync(int id);
         Task<ExamineHistoryDto> GetPatientHistory(int receptionId);
-        Task<List<ListReceptionDto>> GetListExamine(string? searchKey, bool isHistory);
+        Task<List<ExamineHistoryDto>> GetListExamine(string? searchKey, bool isHistory);
         Task<List<ListReceptionDto>> GetListLabResult(string? searchKey, bool isHistory);
     }
 

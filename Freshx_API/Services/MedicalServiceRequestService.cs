@@ -40,15 +40,22 @@ namespace Freshx_API.Services
         public async Task<MedicalServiceRequestDto> AddAsync(CreateMedicalServiceRequestDto medicalServiceRequestDto)
         {
             var entity = _mapper.Map<MedicalServiceRequest>(medicalServiceRequestDto);
-
+            entity.RequestTime = DateTime.Now;
+            entity.CreatedDate = DateTime.Now;
+            entity.IsDeleted = 0;
+            entity.IsApproved = true;
+            entity.Status = false;
             var result = await _repository.AddAsync(entity);
             return _mapper.Map<MedicalServiceRequestDto>(result);
         }
 
-        public async Task<MedicalServiceRequestDto> UpdateAsync(CreateMedicalServiceRequestDto medicalServiceRequestDto)
+        public async Task<MedicalServiceRequestDto> UpdateAsync(int Id, UpdateMedicalServiceRequestDto medicalServiceRequestDto)
         {
-            var entity = _mapper.Map<MedicalServiceRequest>(medicalServiceRequestDto);
-
+            var existingRequest = await _repository.GetByIdAsync(Id) ?? 
+                throw new FileNotFoundException($"Mã yêu cầu {Id} không tồn tại");
+            existingRequest.UpdatedDate = DateTime.Now;
+            existingRequest.RequestTime = DateTime.Now;
+            var entity = _mapper.Map(medicalServiceRequestDto, existingRequest);
             var result = await _repository.UpdateAsync(entity);
             return _mapper.Map<MedicalServiceRequestDto>(result);
         }

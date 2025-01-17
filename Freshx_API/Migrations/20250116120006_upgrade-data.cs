@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Freshx_API.Migrations
 {
     /// <inheritdoc />
-    public partial class Createdatabase : Migration
+    public partial class upgradedata : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -80,31 +80,6 @@ namespace Freshx_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_DepartmentTypes", x => x.DepartmentTypeId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DiagnosisDictionaries",
-                columns: table => new
-                {
-                    DiagnosisDictionaryId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SequenceNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Diagnosis = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CalculateDueDate = table.Column<bool>(type: "bit", nullable: true),
-                    MedicalAdvice = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsSuspended = table.Column<int>(type: "int", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    IsDeleted = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DiagnosisDictionaries", x => x.DiagnosisDictionaryId);
                 });
 
             migrationBuilder.CreateTable(
@@ -204,20 +179,6 @@ namespace Freshx_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "InventoryTypes",
-                columns: table => new
-                {
-                    InventoryTypeId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_InventoryTypes", x => x.InventoryTypeId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "MenuPermissions",
                 columns: table => new
                 {
@@ -231,24 +192,39 @@ namespace Freshx_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Prescriptions",
+                name: "Pharmacies",
                 columns: table => new
                 {
-                    PrescriptionId = table.Column<int>(type: "int", nullable: false)
+                    PharmacyId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MedicalExaminationId = table.Column<int>(type: "int", nullable: true),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    IsPaid = table.Column<bool>(type: "bit", nullable: true),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DepartmentId = table.Column<int>(type: "int", nullable: true),
+                    InventoryTypeId = table.Column<int>(type: "int", nullable: true),
+                    IsSuspended = table.Column<bool>(type: "bit", nullable: true),
+                    NameUnaccented = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<int>(type: "int", nullable: true),
-                    Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Prescriptions", x => x.PrescriptionId);
+                    table.PrimaryKey("PK_Pharmacies", x => x.PharmacyId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Positions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Positions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -310,30 +286,12 @@ namespace Freshx_API.Migrations
                 {
                     ServiceTypeId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ServiceTypes", x => x.ServiceTypeId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Technicians",
-                columns: table => new
-                {
-                    TechnicianId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsSuspended = table.Column<int>(type: "int", nullable: true),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Technicians", x => x.TechnicianId);
                 });
 
             migrationBuilder.CreateTable(
@@ -344,17 +302,33 @@ namespace Freshx_API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DrugCatalogId = table.Column<int>(type: "int", nullable: false),
-                    IsSuspended = table.Column<int>(type: "int", nullable: true),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    DiagnosisDictionaryId = table.Column<int>(type: "int", nullable: true),
+                    CreatedBy = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<int>(type: "int", nullable: true)
+                    IsDeleted = table.Column<int>(type: "int", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TemplatePrescriptions", x => x.TemplatePrescriptionId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TimeSlots",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    EndTime = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TimeSlots", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -404,7 +378,7 @@ namespace Freshx_API.Migrations
                 name: "ChatMessages",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    ChatMessageId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ConversationId = table.Column<int>(type: "int", nullable: false),
                     User = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -413,39 +387,13 @@ namespace Freshx_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ChatMessages", x => x.Id);
+                    table.PrimaryKey("PK_ChatMessages", x => x.ChatMessageId);
                     table.ForeignKey(
                         name: "FK_ChatMessages_Conversations_ConversationId",
                         column: x => x.ConversationId,
                         principalTable: "Conversations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Departments",
-                columns: table => new
-                {
-                    DepartmentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DepartmentTypeId = table.Column<int>(type: "int", nullable: true),
-                    IsSuspended = table.Column<int>(type: "int", nullable: true),
-                    IsDeleted = table.Column<int>(type: "int", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Departments", x => x.DepartmentId);
-                    table.ForeignKey(
-                        name: "FK_Departments_DepartmentTypes_DepartmentTypeId",
-                        column: x => x.DepartmentTypeId,
-                        principalTable: "DepartmentTypes",
-                        principalColumn: "DepartmentTypeId");
                 });
 
             migrationBuilder.CreateTable(
@@ -475,6 +423,56 @@ namespace Freshx_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Departments",
+                columns: table => new
+                {
+                    DepartmentId = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DepartmentTypeId = table.Column<int>(type: "int", nullable: true),
+                    IsSuspended = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<int>(type: "int", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Departments", x => x.DepartmentId);
+                    table.ForeignKey(
+                        name: "FK_Departments_DepartmentTypes_DepartmentTypeId",
+                        column: x => x.DepartmentTypeId,
+                        principalTable: "DepartmentTypes",
+                        principalColumn: "DepartmentTypeId");
+                    table.ForeignKey(
+                        name: "FK_Departments_Pharmacies_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Pharmacies",
+                        principalColumn: "PharmacyId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "InventoryTypes",
+                columns: table => new
+                {
+                    InventoryTypeId = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InventoryTypes", x => x.InventoryTypeId);
+                    table.ForeignKey(
+                        name: "FK_InventoryTypes_Pharmacies_InventoryTypeId",
+                        column: x => x.InventoryTypeId,
+                        principalTable: "Pharmacies",
+                        principalColumn: "PharmacyId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Districts",
                 columns: table => new
                 {
@@ -500,33 +498,34 @@ namespace Freshx_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Doctors",
+                name: "DiagnosisDictionaries",
                 columns: table => new
                 {
-                    DoctorId = table.Column<int>(type: "int", nullable: false)
+                    DiagnosisDictionaryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Specialty = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    AvataId = table.Column<int>(type: "int", nullable: true),
+                    SequenceNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Diagnosis = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CalculateDueDate = table.Column<bool>(type: "bit", nullable: true),
+                    MedicalAdvice = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsSuspended = table.Column<int>(type: "int", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<int>(type: "int", nullable: true)
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<int>(type: "int", nullable: true),
+                    TemplatePrescriptionId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Doctors", x => x.DoctorId);
+                    table.PrimaryKey("PK_DiagnosisDictionaries", x => x.DiagnosisDictionaryId);
                     table.ForeignKey(
-                        name: "FK_Doctors_Savefiles_AvataId",
-                        column: x => x.AvataId,
-                        principalTable: "Savefiles",
-                        principalColumn: "Id");
+                        name: "FK_DiagnosisDictionaries_TemplatePrescriptions_TemplatePrescriptionId",
+                        column: x => x.TemplatePrescriptionId,
+                        principalTable: "TemplatePrescriptions",
+                        principalColumn: "TemplatePrescriptionId");
                 });
 
             migrationBuilder.CreateTable(
@@ -538,21 +537,19 @@ namespace Freshx_API.Migrations
                     Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    UnitOfMeasure = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    HasStandardValue = table.Column<bool>(type: "bit", nullable: true),
+                    UnitOfMeasureId = table.Column<int>(type: "int", nullable: true),
+                    ServiceStandardValueId = table.Column<bool>(type: "bit", nullable: true),
                     Level = table.Column<int>(type: "int", nullable: true),
                     IsParentService = table.Column<bool>(type: "bit", nullable: true),
                     ParentServiceId = table.Column<int>(type: "int", nullable: true),
                     ServiceGroupId = table.Column<int>(type: "int", nullable: true),
+                    ServiceTypeId = table.Column<int>(type: "int", nullable: true),
                     IsSuspended = table.Column<int>(type: "int", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<int>(type: "int", nullable: true),
-                    ServiceTypeId = table.Column<int>(type: "int", nullable: true),
-                    ServiceCatalogId1 = table.Column<int>(type: "int", nullable: true),
-                    ServiceGroupId1 = table.Column<int>(type: "int", nullable: true)
+                    IsDeleted = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -561,62 +558,23 @@ namespace Freshx_API.Migrations
                         name: "FK_ServiceCatalogs_ServiceCatalogs_ParentServiceId",
                         column: x => x.ParentServiceId,
                         principalTable: "ServiceCatalogs",
-                        principalColumn: "ServiceCatalogId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ServiceCatalogs_ServiceCatalogs_ServiceCatalogId1",
-                        column: x => x.ServiceCatalogId1,
-                        principalTable: "ServiceCatalogs",
                         principalColumn: "ServiceCatalogId");
                     table.ForeignKey(
                         name: "FK_ServiceCatalogs_ServiceGroups_ServiceGroupId",
                         column: x => x.ServiceGroupId,
                         principalTable: "ServiceGroups",
                         principalColumn: "ServiceGroupId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ServiceCatalogs_ServiceGroups_ServiceGroupId1",
-                        column: x => x.ServiceGroupId1,
-                        principalTable: "ServiceGroups",
-                        principalColumn: "ServiceGroupId");
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_ServiceCatalogs_ServiceTypes_ServiceTypeId",
                         column: x => x.ServiceTypeId,
                         principalTable: "ServiceTypes",
                         principalColumn: "ServiceTypeId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Pharmacies",
-                columns: table => new
-                {
-                    PharmacyId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DepartmentId = table.Column<int>(type: "int", nullable: true),
-                    InventoryTypeId = table.Column<int>(type: "int", nullable: true),
-                    IsSuspended = table.Column<bool>(type: "bit", nullable: true),
-                    NameUnaccented = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDeleted = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pharmacies", x => x.PharmacyId);
                     table.ForeignKey(
-                        name: "FK_Pharmacies_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "Departments",
-                        principalColumn: "DepartmentId");
-                    table.ForeignKey(
-                        name: "FK_Pharmacies_InventoryTypes_InventoryTypeId",
-                        column: x => x.InventoryTypeId,
-                        principalTable: "InventoryTypes",
-                        principalColumn: "InventoryTypeId");
+                        name: "FK_ServiceCatalogs_UnitOfMeasures_UnitOfMeasureId",
+                        column: x => x.UnitOfMeasureId,
+                        principalTable: "UnitOfMeasures",
+                        principalColumn: "UnitOfMeasureId");
                 });
 
             migrationBuilder.CreateTable(
@@ -675,8 +633,7 @@ namespace Freshx_API.Migrations
                         name: "FK_ConclusionDictionaries_ServiceCatalogs_ServiceCatalogId",
                         column: x => x.ServiceCatalogId,
                         principalTable: "ServiceCatalogs",
-                        principalColumn: "ServiceCatalogId",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "ServiceCatalogId");
                 });
 
             migrationBuilder.CreateTable(
@@ -713,56 +670,55 @@ namespace Freshx_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Employees",
+                name: "AspNetUsers",
                 columns: table => new
                 {
-                    EmployeeId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    EmployeeCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AvataId = table.Column<int>(type: "int", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ExpiredTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IdentityCardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AvatarId = table.Column<int>(type: "int", nullable: true),
+                    WardId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    DistrictId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ProvinceId = table.Column<string>(type: "nvarchar(20)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WardId = table.Column<int>(type: "int", nullable: true),
-                    DistrictId = table.Column<int>(type: "int", nullable: true),
-                    ProvinceId = table.Column<int>(type: "int", nullable: true),
-                    DepartmentId = table.Column<int>(type: "int", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ProfessionalCertificate = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IssuanceDate = table.Column<DateOnly>(type: "date", nullable: true),
-                    IssuancePlace = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DistrictCode = table.Column<string>(type: "nvarchar(20)", nullable: true),
-                    ProvinceCode = table.Column<string>(type: "nvarchar(20)", nullable: true),
-                    WardCode = table.Column<string>(type: "nvarchar(20)", nullable: true)
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employees", x => x.EmployeeId);
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Employees_Departments_DepartmentId",
-                        column: x => x.DepartmentId,
-                        principalTable: "Departments",
-                        principalColumn: "DepartmentId");
-                    table.ForeignKey(
-                        name: "FK_Employees_Districts_DistrictCode",
-                        column: x => x.DistrictCode,
+                        name: "FK_AspNetUsers_Districts_DistrictId",
+                        column: x => x.DistrictId,
                         principalTable: "Districts",
                         principalColumn: "Code");
                     table.ForeignKey(
-                        name: "FK_Employees_Provinces_ProvinceCode",
-                        column: x => x.ProvinceCode,
+                        name: "FK_AspNetUsers_Provinces_ProvinceId",
+                        column: x => x.ProvinceId,
                         principalTable: "Provinces",
                         principalColumn: "Code");
                     table.ForeignKey(
-                        name: "FK_Employees_Savefiles_AvataId",
-                        column: x => x.AvataId,
-                        principalTable: "Savefiles",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Employees_Wards_WardCode",
-                        column: x => x.WardCode,
+                        name: "FK_AspNetUsers_Wards_WardId",
+                        column: x => x.WardId,
                         principalTable: "Wards",
                         principalColumn: "Code");
                 });
@@ -807,59 +763,6 @@ namespace Freshx_API.Migrations
                         principalColumn: "Code");
                     table.ForeignKey(
                         name: "FK_Hospitals_Wards_WardCode",
-                        column: x => x.WardCode,
-                        principalTable: "Wards",
-                        principalColumn: "Code");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Patients",
-                columns: table => new
-                {
-                    PatientId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    MedicalRecordNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdentityCardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AdmissionNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "date", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    WardId = table.Column<int>(type: "int", nullable: true),
-                    DistrictId = table.Column<int>(type: "int", nullable: true),
-                    ProvinceId = table.Column<int>(type: "int", nullable: true),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<int>(type: "int", nullable: true),
-                    ImageId = table.Column<int>(type: "int", nullable: true),
-                    Ethnicity = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DistrictCode = table.Column<string>(type: "nvarchar(20)", nullable: true),
-                    ProvinceCode = table.Column<string>(type: "nvarchar(20)", nullable: true),
-                    WardCode = table.Column<string>(type: "nvarchar(20)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Patients", x => x.PatientId);
-                    table.ForeignKey(
-                        name: "FK_Patients_Districts_DistrictCode",
-                        column: x => x.DistrictCode,
-                        principalTable: "Districts",
-                        principalColumn: "Code");
-                    table.ForeignKey(
-                        name: "FK_Patients_Provinces_ProvinceCode",
-                        column: x => x.ProvinceCode,
-                        principalTable: "Provinces",
-                        principalColumn: "Code");
-                    table.ForeignKey(
-                        name: "FK_Patients_Savefiles_ImageId",
-                        column: x => x.ImageId,
-                        principalTable: "Savefiles",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Patients_Wards_WardCode",
                         column: x => x.WardCode,
                         principalTable: "Wards",
                         principalColumn: "Code");
@@ -919,216 +822,6 @@ namespace Freshx_API.Migrations
                         column: x => x.WardCode,
                         principalTable: "Wards",
                         principalColumn: "Code");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "EmailContents",
-                columns: table => new
-                {
-                    EmailContentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    SenderId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_EmailContents", x => x.EmailContentId);
-                    table.ForeignKey(
-                        name: "FK_EmailContents_Employees_SenderId",
-                        column: x => x.SenderId,
-                        principalTable: "Employees",
-                        principalColumn: "EmployeeId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ExpiredTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    DoctorId = table.Column<int>(type: "int", nullable: true),
-                    EmployeeId = table.Column<int>(type: "int", nullable: true),
-                    PatientId = table.Column<int>(type: "int", nullable: true),
-                    IdentityCardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Age = table.Column<int>(type: "int", nullable: true),
-                    AvatarId = table.Column<int>(type: "int", nullable: true),
-                    PositionId = table.Column<int>(type: "int", nullable: true),
-                    WardId = table.Column<string>(type: "nvarchar(20)", nullable: true),
-                    DistrictId = table.Column<string>(type: "nvarchar(20)", nullable: true),
-                    ProvinceId = table.Column<string>(type: "nvarchar(20)", nullable: true),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Districts_DistrictId",
-                        column: x => x.DistrictId,
-                        principalTable: "Districts",
-                        principalColumn: "Code");
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Doctors_DoctorId",
-                        column: x => x.DoctorId,
-                        principalTable: "Doctors",
-                        principalColumn: "DoctorId");
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Employees_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "Employees",
-                        principalColumn: "EmployeeId");
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
-                        principalColumn: "PatientId");
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Provinces_ProvinceId",
-                        column: x => x.ProvinceId,
-                        principalTable: "Provinces",
-                        principalColumn: "Code");
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Wards_WardId",
-                        column: x => x.WardId,
-                        principalTable: "Wards",
-                        principalColumn: "Code");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Receptions",
-                columns: table => new
-                {
-                    ReceptionId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SequenceNumber = table.Column<int>(type: "int", nullable: true),
-                    IsPriority = table.Column<bool>(type: "bit", nullable: true),
-                    PatientId = table.Column<int>(type: "int", nullable: true),
-                    ReceptionLocationId = table.Column<int>(type: "int", nullable: true),
-                    ReceptionistId = table.Column<int>(type: "int", nullable: true),
-                    ReceptionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AssignedDoctorId = table.Column<int>(type: "int", nullable: true),
-                    MedicalServiceRequestId = table.Column<int>(type: "int", nullable: true),
-                    ServiceTotalAmount = table.Column<int>(type: "int", nullable: true),
-                    CreatedBy = table.Column<int>(type: "int", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IsDeleted = table.Column<int>(type: "int", nullable: true),
-                    ReasonForVisit = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Receptions", x => x.ReceptionId);
-                    table.ForeignKey(
-                        name: "FK_Receptions_Doctors_AssignedDoctorId",
-                        column: x => x.AssignedDoctorId,
-                        principalTable: "Doctors",
-                        principalColumn: "DoctorId");
-                    table.ForeignKey(
-                        name: "FK_Receptions_Employees_ReceptionistId",
-                        column: x => x.ReceptionistId,
-                        principalTable: "Employees",
-                        principalColumn: "EmployeeId");
-                    table.ForeignKey(
-                        name: "FK_Receptions_Patients_PatientId",
-                        column: x => x.PatientId,
-                        principalTable: "Patients",
-                        principalColumn: "PatientId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DrugCatalogs",
-                columns: table => new
-                {
-                    DrugCatalogId = table.Column<int>(type: "int", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UnitOfMeasureId = table.Column<int>(type: "int", nullable: true),
-                    ManufacturerId = table.Column<int>(type: "int", nullable: true),
-                    CountryId = table.Column<int>(type: "int", nullable: true),
-                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NameUnaccented = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ActiveIngredient = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Usage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Dosage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Effect = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DrugTypeId = table.Column<int>(type: "int", nullable: true),
-                    DrugClassification = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RouteOfAdministration = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsSuspended = table.Column<int>(type: "int", nullable: true),
-                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ReferenceNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Note1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Note2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Note3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDeleted = table.Column<int>(type: "int", nullable: true),
-                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    QuantityImported = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    QuantityInStock = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    CostPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    DepartmentPharmacyId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DrugCatalogs", x => x.DrugCatalogId);
-                    table.ForeignKey(
-                        name: "FK_DrugCatalogs_Countries_CountryId",
-                        column: x => x.CountryId,
-                        principalTable: "Countries",
-                        principalColumn: "CountryId");
-                    table.ForeignKey(
-                        name: "FK_DrugCatalogs_DrugTypes_DrugTypeId",
-                        column: x => x.DrugTypeId,
-                        principalTable: "DrugTypes",
-                        principalColumn: "DrugTypeId");
-                    table.ForeignKey(
-                        name: "FK_DrugCatalogs_Pharmacies_DepartmentPharmacyId",
-                        column: x => x.DepartmentPharmacyId,
-                        principalTable: "Pharmacies",
-                        principalColumn: "PharmacyId");
-                    table.ForeignKey(
-                        name: "FK_DrugCatalogs_Suppliers_ManufacturerId",
-                        column: x => x.ManufacturerId,
-                        principalTable: "Suppliers",
-                        principalColumn: "SupplierId");
-                    table.ForeignKey(
-                        name: "FK_DrugCatalogs_TemplatePrescriptions_DrugCatalogId",
-                        column: x => x.DrugCatalogId,
-                        principalTable: "TemplatePrescriptions",
-                        principalColumn: "TemplatePrescriptionId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DrugCatalogs_UnitOfMeasures_UnitOfMeasureId",
-                        column: x => x.UnitOfMeasureId,
-                        principalTable: "UnitOfMeasures",
-                        principalColumn: "UnitOfMeasureId");
                 });
 
             migrationBuilder.CreateTable(
@@ -1217,12 +910,443 @@ namespace Freshx_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Doctors",
+                columns: table => new
+                {
+                    DoctorId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdentityCardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Specialty = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    AvataId = table.Column<int>(type: "int", nullable: true),
+                    IsSuspended = table.Column<int>(type: "int", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<int>(type: "int", nullable: true),
+                    WardId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    DistrictId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ProvinceId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    DepartmentId = table.Column<int>(type: "int", nullable: true),
+                    AccountId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PositionId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Doctors", x => x.DoctorId);
+                    table.ForeignKey(
+                        name: "FK_Doctors_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Doctors_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentId");
+                    table.ForeignKey(
+                        name: "FK_Doctors_Districts_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "Districts",
+                        principalColumn: "Code");
+                    table.ForeignKey(
+                        name: "FK_Doctors_Positions_PositionId",
+                        column: x => x.PositionId,
+                        principalTable: "Positions",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Doctors_Provinces_ProvinceId",
+                        column: x => x.ProvinceId,
+                        principalTable: "Provinces",
+                        principalColumn: "Code");
+                    table.ForeignKey(
+                        name: "FK_Doctors_Savefiles_AvataId",
+                        column: x => x.AvataId,
+                        principalTable: "Savefiles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Doctors_Wards_WardId",
+                        column: x => x.WardId,
+                        principalTable: "Wards",
+                        principalColumn: "Code");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    EmployeeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmployeeCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdentityCardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AvataId = table.Column<int>(type: "int", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WardId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    DistrictId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ProvinceId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    DepartmentId = table.Column<int>(type: "int", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AccountId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PositionId = table.Column<int>(type: "int", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsSuspended = table.Column<int>(type: "int", nullable: true),
+                    IsDeleted = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.EmployeeId);
+                    table.ForeignKey(
+                        name: "FK_Employees_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Employees_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentId");
+                    table.ForeignKey(
+                        name: "FK_Employees_Districts_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "Districts",
+                        principalColumn: "Code");
+                    table.ForeignKey(
+                        name: "FK_Employees_Positions_PositionId",
+                        column: x => x.PositionId,
+                        principalTable: "Positions",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Employees_Provinces_ProvinceId",
+                        column: x => x.ProvinceId,
+                        principalTable: "Provinces",
+                        principalColumn: "Code");
+                    table.ForeignKey(
+                        name: "FK_Employees_Savefiles_AvataId",
+                        column: x => x.AvataId,
+                        principalTable: "Savefiles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Employees_Wards_WardId",
+                        column: x => x.WardId,
+                        principalTable: "Wards",
+                        principalColumn: "Code");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Patients",
+                columns: table => new
+                {
+                    PatientId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MedicalRecordNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdentityCardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AdmissionNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "date", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    WardId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    DistrictId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ProvinceId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<int>(type: "int", nullable: true),
+                    IsSuspended = table.Column<int>(type: "int", nullable: true),
+                    ImageId = table.Column<int>(type: "int", nullable: true),
+                    Ethnicity = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AccountId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patients", x => x.PatientId);
+                    table.ForeignKey(
+                        name: "FK_Patients_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Patients_Districts_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "Districts",
+                        principalColumn: "Code");
+                    table.ForeignKey(
+                        name: "FK_Patients_Provinces_ProvinceId",
+                        column: x => x.ProvinceId,
+                        principalTable: "Provinces",
+                        principalColumn: "Code");
+                    table.ForeignKey(
+                        name: "FK_Patients_Savefiles_ImageId",
+                        column: x => x.ImageId,
+                        principalTable: "Savefiles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Patients_Wards_WardId",
+                        column: x => x.WardId,
+                        principalTable: "Wards",
+                        principalColumn: "Code");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Technicians",
+                columns: table => new
+                {
+                    TechnicianId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IdentityCardNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AvataId = table.Column<int>(type: "int", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsSuspended = table.Column<int>(type: "int", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<int>(type: "int", nullable: true),
+                    WardId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    DistrictId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    ProvinceId = table.Column<string>(type: "nvarchar(20)", nullable: true),
+                    DepartmentId = table.Column<int>(type: "int", nullable: true),
+                    AccountId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PositionId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Technicians", x => x.TechnicianId);
+                    table.ForeignKey(
+                        name: "FK_Technicians_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Technicians_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentId");
+                    table.ForeignKey(
+                        name: "FK_Technicians_Districts_DistrictId",
+                        column: x => x.DistrictId,
+                        principalTable: "Districts",
+                        principalColumn: "Code");
+                    table.ForeignKey(
+                        name: "FK_Technicians_Positions_PositionId",
+                        column: x => x.PositionId,
+                        principalTable: "Positions",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Technicians_Provinces_ProvinceId",
+                        column: x => x.ProvinceId,
+                        principalTable: "Provinces",
+                        principalColumn: "Code");
+                    table.ForeignKey(
+                        name: "FK_Technicians_Savefiles_AvataId",
+                        column: x => x.AvataId,
+                        principalTable: "Savefiles",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Technicians_Wards_WardId",
+                        column: x => x.WardId,
+                        principalTable: "Wards",
+                        principalColumn: "Code");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DrugCatalogs",
+                columns: table => new
+                {
+                    DrugCatalogId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UnitOfMeasureId = table.Column<int>(type: "int", nullable: true),
+                    ManufacturerId = table.Column<int>(type: "int", nullable: true),
+                    CountryId = table.Column<int>(type: "int", nullable: true),
+                    FullName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    NameUnaccented = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ActiveIngredient = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Usage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Dosage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Effect = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DrugTypeId = table.Column<int>(type: "int", nullable: true),
+                    DrugClassification = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RouteOfAdministration = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsSuspended = table.Column<int>(type: "int", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ReferenceNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Note1 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Note2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Note3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsDeleted = table.Column<int>(type: "int", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    QuantityImported = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    QuantityInStock = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    CostPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DrugCatalogs", x => x.DrugCatalogId);
+                    table.ForeignKey(
+                        name: "FK_DrugCatalogs_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "CountryId");
+                    table.ForeignKey(
+                        name: "FK_DrugCatalogs_DrugTypes_DrugTypeId",
+                        column: x => x.DrugTypeId,
+                        principalTable: "DrugTypes",
+                        principalColumn: "DrugTypeId");
+                    table.ForeignKey(
+                        name: "FK_DrugCatalogs_Suppliers_ManufacturerId",
+                        column: x => x.ManufacturerId,
+                        principalTable: "Suppliers",
+                        principalColumn: "SupplierId");
+                    table.ForeignKey(
+                        name: "FK_DrugCatalogs_UnitOfMeasures_UnitOfMeasureId",
+                        column: x => x.UnitOfMeasureId,
+                        principalTable: "UnitOfMeasures",
+                        principalColumn: "UnitOfMeasureId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OnlineAppointments",
+                columns: table => new
+                {
+                    OnlineAppointmentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DoctorId = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    TimeSlotId = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReasonForVisit = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OnlineAppointments", x => x.OnlineAppointmentId);
+                    table.ForeignKey(
+                        name: "FK_OnlineAppointments_AspNetUsers_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OnlineAppointments_Doctors_DoctorId",
+                        column: x => x.DoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "DoctorId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_OnlineAppointments_TimeSlots_TimeSlotId",
+                        column: x => x.TimeSlotId,
+                        principalTable: "TimeSlots",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmailContents",
+                columns: table => new
+                {
+                    EmailContentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Subject = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SentDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    SenderId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailContents", x => x.EmailContentId);
+                    table.ForeignKey(
+                        name: "FK_EmailContents_Employees_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "Employees",
+                        principalColumn: "EmployeeId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Receptions",
+                columns: table => new
+                {
+                    ReceptionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SequenceNumber = table.Column<int>(type: "int", nullable: true),
+                    IsPriority = table.Column<bool>(type: "bit", nullable: true),
+                    PatientId = table.Column<int>(type: "int", nullable: true),
+                    ReceptionLocationId = table.Column<int>(type: "int", nullable: true),
+                    ReceptionistId = table.Column<int>(type: "int", nullable: true),
+                    ReceptionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AssignedDoctorId = table.Column<int>(type: "int", nullable: true),
+                    MedicalServiceRequestId = table.Column<int>(type: "int", nullable: true),
+                    ServiceTotalAmount = table.Column<int>(type: "int", nullable: true),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<int>(type: "int", nullable: true),
+                    ReasonForVisit = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Receptions", x => x.ReceptionId);
+                    table.ForeignKey(
+                        name: "FK_Receptions_Doctors_AssignedDoctorId",
+                        column: x => x.AssignedDoctorId,
+                        principalTable: "Doctors",
+                        principalColumn: "DoctorId");
+                    table.ForeignKey(
+                        name: "FK_Receptions_Employees_ReceptionistId",
+                        column: x => x.ReceptionistId,
+                        principalTable: "Employees",
+                        principalColumn: "EmployeeId");
+                    table.ForeignKey(
+                        name: "FK_Receptions_Patients_PatientId",
+                        column: x => x.PatientId,
+                        principalTable: "Patients",
+                        principalColumn: "PatientId");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Bills",
                 columns: table => new
                 {
                     BillId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ReceptionId = table.Column<int>(type: "int", nullable: false),
+                    CashierId = table.Column<int>(type: "int", nullable: true),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PaymentStatus = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -1231,6 +1355,11 @@ namespace Freshx_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Bills", x => x.BillId);
+                    table.ForeignKey(
+                        name: "FK_Bills_Employees_CashierId",
+                        column: x => x.CashierId,
+                        principalTable: "Employees",
+                        principalColumn: "EmployeeId");
                     table.ForeignKey(
                         name: "FK_Bills_Receptions_ReceptionId",
                         column: x => x.ReceptionId,
@@ -1275,16 +1404,22 @@ namespace Freshx_API.Migrations
                     IsPaid = table.Column<bool>(type: "bit", nullable: false),
                     ExaminationNote = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsDeleted = table.Column<int>(type: "int", nullable: true),
+                    Temperature = table.Column<double>(type: "float", nullable: true),
+                    Height = table.Column<double>(type: "float", nullable: true),
+                    Weight = table.Column<double>(type: "float", nullable: true),
+                    BloodPressureSystolic = table.Column<double>(type: "float", nullable: true),
+                    BloodPressureDiastolic = table.Column<double>(type: "float", nullable: true),
+                    HeartRate = table.Column<double>(type: "float", nullable: true),
+                    OxygenSaturation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VisionLeft = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VisionRight = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SkinCondition = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    OtherPhysicalFindings = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PatientId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Examines", x => x.ExamineId);
-                    table.ForeignKey(
-                        name: "FK_Examines_DiagnosisDictionaries_DiagnosisDictionaryId",
-                        column: x => x.DiagnosisDictionaryId,
-                        principalTable: "DiagnosisDictionaries",
-                        principalColumn: "DiagnosisDictionaryId");
                     table.ForeignKey(
                         name: "FK_Examines_ICDcatalogs_ICDCatalogId",
                         column: x => x.ICDCatalogId,
@@ -1296,20 +1431,10 @@ namespace Freshx_API.Migrations
                         principalTable: "Patients",
                         principalColumn: "PatientId");
                     table.ForeignKey(
-                        name: "FK_Examines_Prescriptions_PrescriptionId",
-                        column: x => x.PrescriptionId,
-                        principalTable: "Prescriptions",
-                        principalColumn: "PrescriptionId");
-                    table.ForeignKey(
                         name: "FK_Examines_Receptions_ReceptionId",
                         column: x => x.ReceptionId,
                         principalTable: "Receptions",
                         principalColumn: "ReceptionId");
-                    table.ForeignKey(
-                        name: "FK_Examines_TemplatePrescriptions_TemplatePrescriptionId",
-                        column: x => x.TemplatePrescriptionId,
-                        principalTable: "TemplatePrescriptions",
-                        principalColumn: "TemplatePrescriptionId");
                 });
 
             migrationBuilder.CreateTable(
@@ -1321,31 +1446,23 @@ namespace Freshx_API.Migrations
                     ExecutionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ExecutionTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ReceptionId = table.Column<int>(type: "int", nullable: true),
-                    PatientId = table.Column<int>(type: "int", nullable: true),
                     TechnicianId = table.Column<int>(type: "int", nullable: true),
                     ConcludingDoctorId = table.Column<int>(type: "int", nullable: true),
                     Conclusion = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Result = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Instruction = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Diagnosis = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ResultTypeId = table.Column<int>(type: "int", nullable: true),
-                    SampleReceivedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     SampleTypeId = table.Column<int>(type: "int", nullable: true),
-                    SampleQualityId = table.Column<int>(type: "int", nullable: true),
+                    SampleQuality = table.Column<int>(type: "int", nullable: true),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdatedBy = table.Column<int>(type: "int", nullable: true),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
                     IsDeleted = table.Column<int>(type: "int", nullable: true),
-                    SpouseName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SpouseYearOfBirth = table.Column<int>(type: "int", nullable: true),
-                    SampleCollectionLocationMedicalFacilityId = table.Column<int>(type: "int", nullable: true),
-                    IsSampleCollectedAtHome = table.Column<int>(type: "int", nullable: true),
-                    SampleReceivedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    SampleCollectionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    SampleCollectionTime = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    SampleCollectionLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SampleReceivedTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    SampleCollectionTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PatientId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -1370,40 +1487,6 @@ namespace Freshx_API.Migrations
                         column: x => x.TechnicianId,
                         principalTable: "Technicians",
                         principalColumn: "TechnicianId");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PrescriptionDetail",
-                columns: table => new
-                {
-                    PrescriptionDetailId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PrescriptionId = table.Column<int>(type: "int", nullable: false),
-                    DrugCatalogId = table.Column<int>(type: "int", nullable: false),
-                    MorningDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    NoonDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    AfternoonDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    EveningDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    DaysOfSupply = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PrescriptionDetail", x => x.PrescriptionDetailId);
-                    table.ForeignKey(
-                        name: "FK_PrescriptionDetail_DrugCatalogs_DrugCatalogId",
-                        column: x => x.DrugCatalogId,
-                        principalTable: "DrugCatalogs",
-                        principalColumn: "DrugCatalogId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PrescriptionDetail_Prescriptions_PrescriptionId",
-                        column: x => x.PrescriptionId,
-                        principalTable: "Prescriptions",
-                        principalColumn: "PrescriptionId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1490,47 +1573,6 @@ namespace Freshx_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DrugBookings",
-                columns: table => new
-                {
-                    DrugBookingId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ExamineId = table.Column<int>(type: "int", nullable: true),
-                    PrescriptionId = table.Column<int>(type: "int", nullable: true),
-                    DrugCatalogId = table.Column<int>(type: "int", nullable: true),
-                    MorningDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    NoonDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    AfternoonDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    EveningDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    DaysOfSupply = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
-                    Action = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: true),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DrugBookings", x => x.DrugBookingId);
-                    table.ForeignKey(
-                        name: "FK_DrugBookings_DrugCatalogs_DrugCatalogId",
-                        column: x => x.DrugCatalogId,
-                        principalTable: "DrugCatalogs",
-                        principalColumn: "DrugCatalogId");
-                    table.ForeignKey(
-                        name: "FK_DrugBookings_Examines_ExamineId",
-                        column: x => x.ExamineId,
-                        principalTable: "Examines",
-                        principalColumn: "ExamineId");
-                    table.ForeignKey(
-                        name: "FK_DrugBookings_Prescriptions_PrescriptionId",
-                        column: x => x.PrescriptionId,
-                        principalTable: "Prescriptions",
-                        principalColumn: "PrescriptionId");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "MedicalServiceRequests",
                 columns: table => new
                 {
@@ -1538,10 +1580,13 @@ namespace Freshx_API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RequestTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ReceptionId = table.Column<int>(type: "int", nullable: true),
-                    ServiceId = table.Column<int>(type: "int", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: true),
+                    ServiceId = table.Column<int>(type: "int", nullable: true),
+                    Results = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ServiceTotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    discount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
                     IsApproved = table.Column<bool>(type: "bit", nullable: true),
+                    DepartmentId = table.Column<int>(type: "int", nullable: true),
                     Status = table.Column<bool>(type: "bit", nullable: true),
                     AssignedById = table.Column<int>(type: "int", nullable: true),
                     CreatedBy = table.Column<int>(type: "int", nullable: true),
@@ -1558,6 +1603,11 @@ namespace Freshx_API.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_MedicalServiceRequests", x => x.MedicalServiceRequestId);
+                    table.ForeignKey(
+                        name: "FK_MedicalServiceRequests_Departments_DepartmentId",
+                        column: x => x.DepartmentId,
+                        principalTable: "Departments",
+                        principalColumn: "DepartmentId");
                     table.ForeignKey(
                         name: "FK_MedicalServiceRequests_Doctors_AssignedByDoctorDoctorId",
                         column: x => x.AssignedByDoctorDoctorId,
@@ -1593,6 +1643,33 @@ namespace Freshx_API.Migrations
                         column: x => x.ServiceId,
                         principalTable: "ServiceCatalogs",
                         principalColumn: "ServiceCatalogId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Prescriptions",
+                columns: table => new
+                {
+                    PrescriptionId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ExamineId = table.Column<int>(type: "int", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: true),
+                    CreatedBy = table.Column<int>(type: "int", nullable: true),
+                    CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<int>(type: "int", nullable: true),
+                    UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsDeleted = table.Column<int>(type: "int", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Prescriptions", x => x.PrescriptionId);
+                    table.ForeignKey(
+                        name: "FK_Prescriptions_Examines_ExamineId",
+                        column: x => x.ExamineId,
+                        principalTable: "Examines",
+                        principalColumn: "ExamineId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -1677,6 +1754,127 @@ namespace Freshx_API.Migrations
                         principalColumn: "TechnicianId");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "DrugBookings",
+                columns: table => new
+                {
+                    DrugBookingId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ExamineId = table.Column<int>(type: "int", nullable: true),
+                    PrescriptionId = table.Column<int>(type: "int", nullable: true),
+                    DrugCatalogId = table.Column<int>(type: "int", nullable: true),
+                    MorningDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    NoonDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    AfternoonDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    EveningDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    DaysOfSupply = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Action = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DrugBookings", x => x.DrugBookingId);
+                    table.ForeignKey(
+                        name: "FK_DrugBookings_DrugCatalogs_DrugCatalogId",
+                        column: x => x.DrugCatalogId,
+                        principalTable: "DrugCatalogs",
+                        principalColumn: "DrugCatalogId");
+                    table.ForeignKey(
+                        name: "FK_DrugBookings_Examines_ExamineId",
+                        column: x => x.ExamineId,
+                        principalTable: "Examines",
+                        principalColumn: "ExamineId");
+                    table.ForeignKey(
+                        name: "FK_DrugBookings_Prescriptions_PrescriptionId",
+                        column: x => x.PrescriptionId,
+                        principalTable: "Prescriptions",
+                        principalColumn: "PrescriptionId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PrescriptionDetail",
+                columns: table => new
+                {
+                    PrescriptionDetailId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PrescriptionId = table.Column<int>(type: "int", nullable: false),
+                    DrugCatalogId = table.Column<int>(type: "int", nullable: false),
+                    MorningDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    NoonDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    AfternoonDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    EveningDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    DaysOfSupply = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    TemplatePrescriptionId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PrescriptionDetail", x => x.PrescriptionDetailId);
+                    table.ForeignKey(
+                        name: "FK_PrescriptionDetail_DrugCatalogs_DrugCatalogId",
+                        column: x => x.DrugCatalogId,
+                        principalTable: "DrugCatalogs",
+                        principalColumn: "DrugCatalogId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PrescriptionDetail_Prescriptions_PrescriptionId",
+                        column: x => x.PrescriptionId,
+                        principalTable: "Prescriptions",
+                        principalColumn: "PrescriptionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PrescriptionDetail_TemplatePrescriptions_TemplatePrescriptionId",
+                        column: x => x.TemplatePrescriptionId,
+                        principalTable: "TemplatePrescriptions",
+                        principalColumn: "TemplatePrescriptionId");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TemplatePrescriptionDetails",
+                columns: table => new
+                {
+                    PrescriptionDetailId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TemplatePrescriptionId = table.Column<int>(type: "int", nullable: false),
+                    DrugCatalogId = table.Column<int>(type: "int", nullable: false),
+                    MorningDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    NoonDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    AfternoonDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    EveningDose = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    DaysOfSupply = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Quantity = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    TemplatePrescriptionId1 = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TemplatePrescriptionDetails", x => x.PrescriptionDetailId);
+                    table.ForeignKey(
+                        name: "FK_TemplatePrescriptionDetails_DrugCatalogs_DrugCatalogId",
+                        column: x => x.DrugCatalogId,
+                        principalTable: "DrugCatalogs",
+                        principalColumn: "DrugCatalogId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TemplatePrescriptionDetails_Prescriptions_TemplatePrescriptionId",
+                        column: x => x.TemplatePrescriptionId,
+                        principalTable: "Prescriptions",
+                        principalColumn: "PrescriptionId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TemplatePrescriptionDetails_TemplatePrescriptions_TemplatePrescriptionId1",
+                        column: x => x.TemplatePrescriptionId1,
+                        principalTable: "TemplatePrescriptions",
+                        principalColumn: "TemplatePrescriptionId");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_ExaminationId",
                 table: "Appointments",
@@ -1730,21 +1928,6 @@ namespace Freshx_API.Migrations
                 column: "DistrictId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_DoctorId",
-                table: "AspNetUsers",
-                column: "DoctorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_EmployeeId",
-                table: "AspNetUsers",
-                column: "EmployeeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_PatientId",
-                table: "AspNetUsers",
-                column: "PatientId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_ProvinceId",
                 table: "AspNetUsers",
                 column: "ProvinceId");
@@ -1772,6 +1955,11 @@ namespace Freshx_API.Migrations
                 column: "ServiceCatalogId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bills_CashierId",
+                table: "Bills",
+                column: "CashierId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Bills_ReceptionId",
                 table: "Bills",
                 column: "ReceptionId");
@@ -1790,6 +1978,11 @@ namespace Freshx_API.Migrations
                 name: "IX_Departments_DepartmentTypeId",
                 table: "Departments",
                 column: "DepartmentTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DiagnosisDictionaries_TemplatePrescriptionId",
+                table: "DiagnosisDictionaries",
+                column: "TemplatePrescriptionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DiagnosticImagingResults_ConcludingDoctorId",
@@ -1832,9 +2025,41 @@ namespace Freshx_API.Migrations
                 column: "ProvinceCode");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Doctors_AccountId",
+                table: "Doctors",
+                column: "AccountId",
+                unique: true,
+                filter: "[AccountId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Doctors_AvataId",
                 table: "Doctors",
                 column: "AvataId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doctors_DepartmentId",
+                table: "Doctors",
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doctors_DistrictId",
+                table: "Doctors",
+                column: "DistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doctors_PositionId",
+                table: "Doctors",
+                column: "PositionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doctors_ProvinceId",
+                table: "Doctors",
+                column: "ProvinceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doctors_WardId",
+                table: "Doctors",
+                column: "WardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DrugBookings_DrugCatalogId",
@@ -1857,11 +2082,6 @@ namespace Freshx_API.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_DrugCatalogs_DepartmentPharmacyId",
-                table: "DrugCatalogs",
-                column: "DepartmentPharmacyId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DrugCatalogs_DrugTypeId",
                 table: "DrugCatalogs",
                 column: "DrugTypeId");
@@ -1882,6 +2102,13 @@ namespace Freshx_API.Migrations
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Employees_AccountId",
+                table: "Employees",
+                column: "AccountId",
+                unique: true,
+                filter: "[AccountId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Employees_AvataId",
                 table: "Employees",
                 column: "AvataId");
@@ -1892,24 +2119,24 @@ namespace Freshx_API.Migrations
                 column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_DistrictCode",
+                name: "IX_Employees_DistrictId",
                 table: "Employees",
-                column: "DistrictCode");
+                column: "DistrictId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_ProvinceCode",
+                name: "IX_Employees_PositionId",
                 table: "Employees",
-                column: "ProvinceCode");
+                column: "PositionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_WardCode",
+                name: "IX_Employees_ProvinceId",
                 table: "Employees",
-                column: "WardCode");
+                column: "ProvinceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Examines_DiagnosisDictionaryId",
-                table: "Examines",
-                column: "DiagnosisDictionaryId");
+                name: "IX_Employees_WardId",
+                table: "Employees",
+                column: "WardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Examines_ICDCatalogId",
@@ -1922,19 +2149,11 @@ namespace Freshx_API.Migrations
                 column: "PatientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Examines_PrescriptionId",
-                table: "Examines",
-                column: "PrescriptionId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Examines_ReceptionId",
                 table: "Examines",
-                column: "ReceptionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Examines_TemplatePrescriptionId",
-                table: "Examines",
-                column: "TemplatePrescriptionId");
+                column: "ReceptionId",
+                unique: true,
+                filter: "[ReceptionId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Hospitals_DistrictCode",
@@ -1969,7 +2188,9 @@ namespace Freshx_API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_LabResults_ReceptionId",
                 table: "LabResults",
-                column: "ReceptionId");
+                column: "ReceptionId",
+                unique: true,
+                filter: "[ReceptionId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_LabResults_TechnicianId",
@@ -1985,6 +2206,11 @@ namespace Freshx_API.Migrations
                 name: "IX_MedicalServiceRequests_AssignedByEmployeeEmployeeId",
                 table: "MedicalServiceRequests",
                 column: "AssignedByEmployeeEmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MedicalServiceRequests_DepartmentId",
+                table: "MedicalServiceRequests",
+                column: "DepartmentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MedicalServiceRequests_ExamineId",
@@ -2017,9 +2243,31 @@ namespace Freshx_API.Migrations
                 column: "ParentMenuId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Patients_DistrictCode",
+                name: "IX_OnlineAppointments_AccountId",
+                table: "OnlineAppointments",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OnlineAppointments_DoctorId",
+                table: "OnlineAppointments",
+                column: "DoctorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OnlineAppointments_TimeSlotId",
+                table: "OnlineAppointments",
+                column: "TimeSlotId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_AccountId",
                 table: "Patients",
-                column: "DistrictCode");
+                column: "AccountId",
+                unique: true,
+                filter: "[AccountId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_DistrictId",
+                table: "Patients",
+                column: "DistrictId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Patients_ImageId",
@@ -2027,29 +2275,19 @@ namespace Freshx_API.Migrations
                 column: "ImageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Patients_ProvinceCode",
+                name: "IX_Patients_ProvinceId",
                 table: "Patients",
-                column: "ProvinceCode");
+                column: "ProvinceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Patients_WardCode",
+                name: "IX_Patients_WardId",
                 table: "Patients",
-                column: "WardCode");
+                column: "WardId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Payments_BillId",
                 table: "Payments",
                 column: "BillId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Pharmacies_DepartmentId",
-                table: "Pharmacies",
-                column: "DepartmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Pharmacies_InventoryTypeId",
-                table: "Pharmacies",
-                column: "InventoryTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PrescriptionDetail_DrugCatalogId",
@@ -2062,6 +2300,17 @@ namespace Freshx_API.Migrations
                 column: "PrescriptionId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_PrescriptionDetail_TemplatePrescriptionId",
+                table: "PrescriptionDetail",
+                column: "TemplatePrescriptionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Prescriptions_ExamineId",
+                table: "Prescriptions",
+                column: "ExamineId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Receptions_AssignedDoctorId",
                 table: "Receptions",
                 column: "AssignedDoctorId");
@@ -2069,7 +2318,9 @@ namespace Freshx_API.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Receptions_PatientId",
                 table: "Receptions",
-                column: "PatientId");
+                column: "PatientId",
+                unique: true,
+                filter: "[PatientId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Receptions_ReceptionistId",
@@ -2082,24 +2333,19 @@ namespace Freshx_API.Migrations
                 column: "ParentServiceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceCatalogs_ServiceCatalogId1",
-                table: "ServiceCatalogs",
-                column: "ServiceCatalogId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ServiceCatalogs_ServiceGroupId",
                 table: "ServiceCatalogs",
                 column: "ServiceGroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServiceCatalogs_ServiceGroupId1",
-                table: "ServiceCatalogs",
-                column: "ServiceGroupId1");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ServiceCatalogs_ServiceTypeId",
                 table: "ServiceCatalogs",
                 column: "ServiceTypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServiceCatalogs_UnitOfMeasureId",
+                table: "ServiceCatalogs",
+                column: "UnitOfMeasureId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServiceStandardValues_ServiceCatalogId",
@@ -2120,6 +2366,58 @@ namespace Freshx_API.Migrations
                 name: "IX_Suppliers_WardCode",
                 table: "Suppliers",
                 column: "WardCode");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Technicians_AccountId",
+                table: "Technicians",
+                column: "AccountId",
+                unique: true,
+                filter: "[AccountId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Technicians_AvataId",
+                table: "Technicians",
+                column: "AvataId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Technicians_DepartmentId",
+                table: "Technicians",
+                column: "DepartmentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Technicians_DistrictId",
+                table: "Technicians",
+                column: "DistrictId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Technicians_PositionId",
+                table: "Technicians",
+                column: "PositionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Technicians_ProvinceId",
+                table: "Technicians",
+                column: "ProvinceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Technicians_WardId",
+                table: "Technicians",
+                column: "WardId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TemplatePrescriptionDetails_DrugCatalogId",
+                table: "TemplatePrescriptionDetails",
+                column: "DrugCatalogId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TemplatePrescriptionDetails_TemplatePrescriptionId",
+                table: "TemplatePrescriptionDetails",
+                column: "TemplatePrescriptionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TemplatePrescriptionDetails_TemplatePrescriptionId1",
+                table: "TemplatePrescriptionDetails",
+                column: "TemplatePrescriptionId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Wards_DistrictCode",
@@ -2155,6 +2453,9 @@ namespace Freshx_API.Migrations
                 name: "ChatMessages");
 
             migrationBuilder.DropTable(
+                name: "DiagnosisDictionaries");
+
+            migrationBuilder.DropTable(
                 name: "DiagnosticImagingResults");
 
             migrationBuilder.DropTable(
@@ -2173,10 +2474,16 @@ namespace Freshx_API.Migrations
                 name: "Icdchapters");
 
             migrationBuilder.DropTable(
+                name: "InventoryTypes");
+
+            migrationBuilder.DropTable(
                 name: "LabResults");
 
             migrationBuilder.DropTable(
                 name: "Menus");
+
+            migrationBuilder.DropTable(
+                name: "OnlineAppointments");
 
             migrationBuilder.DropTable(
                 name: "Payments");
@@ -2188,10 +2495,10 @@ namespace Freshx_API.Migrations
                 name: "ServiceStandardValues");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "TemplatePrescriptionDetails");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "Conversations");
@@ -2209,13 +2516,19 @@ namespace Freshx_API.Migrations
                 name: "MenuPermissions");
 
             migrationBuilder.DropTable(
+                name: "TimeSlots");
+
+            migrationBuilder.DropTable(
                 name: "Bills");
 
             migrationBuilder.DropTable(
                 name: "DrugCatalogs");
 
             migrationBuilder.DropTable(
-                name: "Examines");
+                name: "Prescriptions");
+
+            migrationBuilder.DropTable(
+                name: "TemplatePrescriptions");
 
             migrationBuilder.DropTable(
                 name: "ServiceCatalogs");
@@ -2227,28 +2540,10 @@ namespace Freshx_API.Migrations
                 name: "DrugTypes");
 
             migrationBuilder.DropTable(
-                name: "Pharmacies");
-
-            migrationBuilder.DropTable(
                 name: "Suppliers");
 
             migrationBuilder.DropTable(
-                name: "UnitOfMeasures");
-
-            migrationBuilder.DropTable(
-                name: "DiagnosisDictionaries");
-
-            migrationBuilder.DropTable(
-                name: "ICDcatalogs");
-
-            migrationBuilder.DropTable(
-                name: "Prescriptions");
-
-            migrationBuilder.DropTable(
-                name: "Receptions");
-
-            migrationBuilder.DropTable(
-                name: "TemplatePrescriptions");
+                name: "Examines");
 
             migrationBuilder.DropTable(
                 name: "ServiceGroups");
@@ -2257,7 +2552,13 @@ namespace Freshx_API.Migrations
                 name: "ServiceTypes");
 
             migrationBuilder.DropTable(
-                name: "InventoryTypes");
+                name: "UnitOfMeasures");
+
+            migrationBuilder.DropTable(
+                name: "ICDcatalogs");
+
+            migrationBuilder.DropTable(
+                name: "Receptions");
 
             migrationBuilder.DropTable(
                 name: "Doctors");
@@ -2272,13 +2573,22 @@ namespace Freshx_API.Migrations
                 name: "Departments");
 
             migrationBuilder.DropTable(
+                name: "Positions");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
                 name: "Savefiles");
 
             migrationBuilder.DropTable(
-                name: "Wards");
+                name: "DepartmentTypes");
 
             migrationBuilder.DropTable(
-                name: "DepartmentTypes");
+                name: "Pharmacies");
+
+            migrationBuilder.DropTable(
+                name: "Wards");
 
             migrationBuilder.DropTable(
                 name: "Districts");

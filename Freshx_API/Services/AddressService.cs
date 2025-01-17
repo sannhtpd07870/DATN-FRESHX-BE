@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Freshx_API.Dtos;
+using Freshx_API.Dtos.CommonDtos;
 using Freshx_API.Interfaces;
 
 namespace Freshx_API.Services
@@ -27,7 +28,7 @@ namespace Freshx_API.Services
             return _mapper.Map<ProvinceDto>(province);
         }
 
-        public async Task<List<DistrictDto>> GetDistrictsByProvinceCodeAsync(string provinceCode)
+        public async Task<List<DistrictDto>> GetDistrictsByProvinceCodeAsync(string? provinceCode)
         {
             var districts = await _repository.GetDistrictsByProvinceCodeAsync(provinceCode);
             return _mapper.Map<List<DistrictDto>>(districts);
@@ -39,7 +40,7 @@ namespace Freshx_API.Services
             return _mapper.Map<DistrictDto>(district);
         }
 
-        public async Task<List<WardDto>> GetWardsByDistrictCodeAsync(string districtCode)
+        public async Task<List<WardDto>> GetWardsByDistrictCodeAsync(string? districtCode)
         {
             var wards = await _repository.GetWardsByDistrictCodeAsync(districtCode);
             return _mapper.Map<List<WardDto>>(wards);
@@ -49,6 +50,10 @@ namespace Freshx_API.Services
         {
             var ward = await _repository.GetWardByCodeAsync(code);
             return _mapper.Map<WardDto>(ward);
+        }
+        public async Task<List<AddressSearchResult>> SearchAddress(Parameters request)
+        {
+            return await _repository.SearchAddress(request); 
         }
     }
 

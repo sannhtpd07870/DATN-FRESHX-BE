@@ -80,10 +80,10 @@ namespace Freshx_API.Controllers
             {
                 // Kiểm tra tính duy nhất của trường 'Code' trong bảng ServiceTypes
                 var isUnique = await _check.IsUniqueAsync<ServiceCatalog>("Code", dto.Code);
-                if (!isUnique)
+                if (isUnique)
                 {
-                    return StatusCode(StatusCodes.Status400BadRequest,
-                        ResponseFactory.Error<ServiceTypes>(Request.Path, "Mã danh mục đã tồn tại.", StatusCodes.Status400BadRequest));
+                    return StatusCode(StatusCodes.Status422UnprocessableEntity,
+                        ResponseFactory.Error<ServiceTypes>(Request.Path, "Mã dịch vụ đã tồn tại.", StatusCodes.Status400BadRequest));
                 }
                 if( dto.Level > 3)
                 {
@@ -107,6 +107,7 @@ namespace Freshx_API.Controllers
         {
             try
             {
+             
                 if (dto.Level > 3)
                 {
                     return StatusCode(StatusCodes.Status400BadRequest,

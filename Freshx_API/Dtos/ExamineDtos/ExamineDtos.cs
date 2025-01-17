@@ -162,7 +162,7 @@ namespace Freshx_API.Dtos.ExamineDtos
         public string? SkinCondition { get; set; } // Tình trạng da
         public string? OtherPhysicalFindings { get; set; } // Các phát hiện thể chất khác
                                                            // Thông tin liên kết
-        public ReceptionDto? Reception { get; set; } // Thông tin tiếp nhận
+        //public ReceptionDto? Reception { get; set; } // Thông tin tiếp nhận
         public PrescriptionDto? Prescriptions { get; set; } // Danh sách đơn thuốc
 
     }
