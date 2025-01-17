@@ -49,8 +49,8 @@ namespace Freshx_API.Repository
             if (!isHistory)
             {
                 query = query.Where(r => r.Examine != null && r.Examine.IsPaid == false
-                                        && r.Examine.UpdatedDate.HasValue
-                                        && r.Examine.UpdatedDate.Value.Date == today);
+                                        && r.Examine.CreatedDate.HasValue
+                                        && r.Examine.CreatedDate.Value.Date == today);
             }
 
             // Tìm kiếm theo tên hoặc lý do khám
@@ -146,7 +146,7 @@ namespace Freshx_API.Repository
                 Age = CalculateAge(patient.DateOfBirth),
                 Gender = patient.Gender ?? "Không rõ",
                 AdmissionDate = reception.ReceptionDate?.ToString("dd/MM/yyyy HH:mm") ?? "Không rõ",
-                MedicalHistory = history,
+                MedicalHistory = history ,
                 LastExamine = history[0]
                 //DoctorName = examine?.AssignedDoctor?.Name ?? "Không rõ"
             };
@@ -187,7 +187,7 @@ namespace Freshx_API.Repository
                     if(reception.Examine.UpdatedBy != null)
                     {
                         var getdoctor = await _doctorrepository.GetByIdAsync(reception.Examine.UpdatedBy ?? 1);
-                        doctor = getdoctor.Name;
+                        doctor = getdoctor?.Name ?? "Không rõ";
                     }
                     medicalHistory.Add(new MedicalHistory
                     {
@@ -205,14 +205,14 @@ namespace Freshx_API.Repository
                     if (reception.Examine.UpdatedBy != null)
                     {
                         var getdoctor = await _doctorrepository.GetByIdAsync(reception.Examine.UpdatedBy ?? 1);
-                        doctor = getdoctor.Name;
+                        doctor = getdoctor?.Name ?? "Không rõ";
                     }
                     medicalHistory.Add(new MedicalHistory
                     {
-                        Diagnosis = reception.LabResult.Description,
-                        Conclusion = reception.LabResult.Conclusion,
-                        Date = reception.LabResult.UpdatedDate, // Lấy ngày cập nhật của LabResult
-                        Doctorexamine = doctor
+                        Diagnosis = reception.LabResult.Description ?? "Không rõ",
+                        Conclusion = reception.LabResult.Conclusion ?? "không rõ",
+                        Date = reception.LabResult.UpdatedDate ?? DateTime.Now, // Lấy ngày cập nhật của LabResult
+                        Doctorexamine = doctor ?? "không rõ"
                     });
                 }
             }

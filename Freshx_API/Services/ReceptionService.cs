@@ -2,6 +2,7 @@
 using Freshx_API.Dtos;
 using Freshx_API.Dtos.ExamineDtos;
 using Freshx_API.Dtos.Patient;
+using Freshx_API.Dtos.Payments;
 using Freshx_API.Interfaces;
 using Freshx_API.Interfaces.Auth;
 using Freshx_API.Interfaces.IReception;
@@ -84,7 +85,6 @@ namespace Freshx_API.Services
 
         public async Task<ReceptionDto> AddAsync(CreateReceptionDto dto)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
             try
             {
                 var reception = _mapper.Map<Reception>(dto);
@@ -117,6 +117,7 @@ namespace Freshx_API.Services
                     reception.MedicalServiceRequest = dto.MedicalServiceRequest
                         .Select(request => _mapper.Map<MedicalServiceRequest>(request))
                         .ToList();
+                  
                 }
                 var adderReception = await _repository.AddAsync(reception);
                 //_context.Receptions.Add(reception);
@@ -125,10 +126,16 @@ namespace Freshx_API.Services
                     .Include(m => m.Service)
                     .ThenInclude(s => s.ServiceTypes)
                     .Where(m => m.ReceptionId == adderReception.ReceptionId)
-                    .Select(m => m.Service.ServiceTypes.Code)
+                    .Select(m => new
+                    {
+                        Code = m.Service.ServiceTypes.Code,
+                        ServiceId = m.ServiceId,
+                        UnitPrice = m.Service.Price,
+                        TotalAmount = m.ServiceTotalAmount
+                    })
                    .ToListAsync();
 
-                if (types.Contains("KB"))
+                if (types.Any(t => t.Code == "KB"))
                 {
                     var examDto = new CreateExamDto
                     {
@@ -140,7 +147,7 @@ namespace Freshx_API.Services
                     };
                     await _examineService.AddAsync(examDto);
                 }
-                if (types.Contains("XN"))
+                if (types.Any(t => t.Code == "XN"))
                 {
                     var examDto = new CreateLabResultDto
                     {
@@ -150,26 +157,48 @@ namespace Freshx_API.Services
                     await _labResultService.AddAsync(examDto);
                 }
 
-                await transaction.CommitAsync();
+
+                // Tạo danh sách BillDetailDto từ các dịch vụ
+                var billDetails = types.Select(type => new BillDetailDto
+                {
+                    ServiceCatalogId = type.ServiceId,
+                    Quantity = 1, // Có thể thay đổi nếu cần
+                    UnitPrice = type.UnitPrice,
+                    Subtotal = type.UnitPrice * 1 // Tính subtotal dựa trên quantity (ở đây mặc định là 1)
+                }).ToList();
+
+                // Tạo BillDto
+                var bill = new BillDto
+                {
+                    ReceptionId = reception.ReceptionId,
+                   TotalAmount = dto.ServiceTotalAmount,
+                    BillDetails = billDetails, // Gán danh sách BillDetail vào BillDto
+                    
+                };
+
+                // Lưu hóa đơn
+                await _billingService.CreateBillAsync(bill);
+
+
+
                 return _mapper.Map<ReceptionDto>(reception);
             }
             catch
             {
-                await transaction.RollbackAsync();
                 throw;
             }
         }
 
-        public async Task<ReceptionDto> UpdateAsync(int Id, [FromForm] UpdateReceptionDto dto)
+        public async Task<ReceptionDto> UpdateAsync(int Id, UpdateReceptionDto dto)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
+          
             try
             {
-                // Get current reception
+                // Lấy tiếp nhận hiện tại
                 var existingReception = await _repository.GetByIdAsync(Id)
-                    ?? throw new FileNotFoundException($"Tiếp nhận không tồn tại {Id} not found");
+                    ?? throw new FileNotFoundException($"Tiếp nhận không tồn tại {Id}");
 
-                // Update reception info
+                // Cập nhật thông tin tiếp nhận
                 _mapper.Map(dto, existingReception);
                 existingReception.UpdatedDate = DateTime.UtcNow;
 
@@ -180,81 +209,104 @@ namespace Freshx_API.Services
                     existingReception.UpdatedBy = updateUser.EmployeeId;
                 }
 
-                // Handle medical service requests
+                // Xử lý danh sách MedicalServiceRequest
                 if (dto.MedicalServiceRequest != null)
                 {
-                    // Get existing requests using AsNoTracking to avoid tracking conflicts
+                    // Lấy danh sách yêu cầu hiện tại
                     var existingRequests = await _requestRepository
                         .GetAllByReceptionIdAsync(Id);
 
-                    // Find requests to delete
+                    // Tìm yêu cầu cần xóa
                     var requestsToDelete = existingRequests
                         .Where(er => !dto.MedicalServiceRequest
-                            .Any(nr => nr.MedicalServiceRequestId == er.MedicalServiceRequestId));
+                            .Any(nr => nr.MedicalServiceRequestId == er.MedicalServiceRequestId))
+                        .ToList();
 
-                    // Delete old requests
+                    // Thực hiện xóa
                     foreach (var request in requestsToDelete)
                     {
                         await _requestRepository.DeleteAsync(request.MedicalServiceRequestId);
                     }
 
-                    // Update or add new requests
+                    // Tìm yêu cầu cần cập nhật hoặc thêm mới
                     foreach (var newRequest in dto.MedicalServiceRequest)
                     {
                         if (newRequest.MedicalServiceRequestId > 0)
                         {
-                            await _requestService.UpdateAsync(newRequest.MedicalServiceRequestId, newRequest);
+                            // Cập nhật yêu cầu hiện tại
+                            var existingRequest = existingRequests
+                                .FirstOrDefault(er => er.MedicalServiceRequestId == newRequest.MedicalServiceRequestId);
+
+                            if (existingRequest != null)
+                            {
+                                _mapper.Map(newRequest, existingRequest);
+                                await _requestRepository.UpdateAsync(existingRequest);
+                            }
                         }
                         else
                         {
-                            // Add new request
+                            // Thêm mới yêu cầu
                             newRequest.ReceptionId = Id;
                             var serviceRequest = _mapper.Map<MedicalServiceRequest>(newRequest);
                             var savedService = await _requestRepository.AddAsync(serviceRequest);
 
-                            // Handle medical examination service for new request
-                            var medical = await _requestRepository.GetByIdAsync(savedService.MedicalServiceRequestId);
-
+                            // Xử lý bổ sung nếu là dịch vụ "KB" hoặc "XN"
                             var types = await _context.MedicalServiceRequests
-                                  .Include(m => m.Service)
-                                  .ThenInclude(s => s.ServiceTypes)
-                                  .Where(m => m.ReceptionId == newRequest.ReceptionId)
-                                  .Select(m => m.Service.ServiceTypes.Code)
-                                 .ToListAsync();
+                                .Include(m => m.Service)
+                                .ThenInclude(s => s.ServiceTypes)
+                                .Where(m => m.ReceptionId == Id)
+                                .Select(m => m.Service.ServiceTypes.Code)
+                                .ToListAsync();
+
+                            // Kiểm tra và thêm Examine
                             if (types.Contains("KB"))
                             {
-                                var examDto = new CreateExamDto
+                                var existingExamine = await _context.Examines
+                                    .FirstOrDefaultAsync(e => e.ReceptionId == Id);
+
+                                if (existingExamine == null)
                                 {
-                                    ReceptionId = newRequest.ReceptionId,
-                                    ReasonForVisit = dto.ReasonForVisit,
-                                    CreatedTime = DateTime.Now,
-                                    IsDeleted = 0,
-                                    IsPaid = false
-                                };
-                                await _examineService.AddAsync(examDto);
+                                    var examDto = new CreateExamDto
+                                    {
+                                        ReceptionId = Id,
+                                        ReasonForVisit = dto.ReasonForVisit,
+                                        CreatedTime = DateTime.UtcNow,
+                                        IsDeleted = 0,
+                                        IsPaid = false
+                                    };
+                                    await _examineService.AddAsync(examDto);
+                                }
                             }
+
+                            // Kiểm tra và thêm LabResult
                             if (types.Contains("XN"))
                             {
-                                var examDto = new CreateLabResultDto
-                                {
-                                    ReceptionId = newRequest.ReceptionId,
+                                var existingLabResult = await _context.LabResults
+                                    .FirstOrDefaultAsync(l => l.ReceptionId == Id);
 
-                                };
-                                await _labResultService.AddAsync(examDto);
+                                if (existingLabResult == null)
+                                {
+                                    var labResultDto = new CreateLabResultDto
+                                    {
+                                        ReceptionId = Id,
+                                    };
+                                    await _labResultService.AddAsync(labResultDto);
+                                }
                             }
                         }
                     }
                 }
 
-                await transaction.CommitAsync();
+            
                 return _mapper.Map<ReceptionDto>(existingReception);
             }
             catch
             {
-                await transaction.RollbackAsync();
+             
                 throw;
             }
         }
+
         public async Task DeleteAsync(int id)
         {
             await _repository.DeleteAsync(id);

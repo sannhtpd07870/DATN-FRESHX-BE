@@ -56,12 +56,13 @@ namespace Freshx_API.Controllers
             }
             else
             {
-                return StatusCode(StatusCodes.Status200OK, bill);
+                return StatusCode(StatusCodes.Status200OK,
+                     ResponseFactory.Success(Request.Path, bill, "Dữ liệu lấy thành công.", StatusCodes.Status200OK));
             }
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllBills()
+        public async Task<ActionResult<ApiResponse<BillDto>>> GetAllBills()
         {
             var bills = await _service.GetAllBillsAsync();
             if (bills == null)
@@ -69,7 +70,8 @@ namespace Freshx_API.Controllers
             return StatusCode(StatusCodes.Status404NotFound,
             ResponseFactory.Error<BillDto>(Request.Path, "Không tìm thấy hóa đơn.", StatusCodes.Status404NotFound));
             }
-            return StatusCode(StatusCodes.Status200OK, bills);
+            return StatusCode(StatusCodes.Status200OK,
+                     ResponseFactory.Success(Request.Path, bills, "Dữ liệu lấy thành công.", StatusCodes.Status200OK));
         }
 
         [HttpPost("payment")]

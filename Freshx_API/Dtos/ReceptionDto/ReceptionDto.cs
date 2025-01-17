@@ -14,6 +14,7 @@ namespace Freshx_API.Dtos
         public int? ReceptionistId { get; set; }
         public string? Note { get; set; }
         public int? AssignedDoctorId { get; set; }
+        public decimal? ServiceTotalAmount { get; set; } // tổng tiền dịch vụ
         public List<int>? MedicalServiceRequestId { get; set; }
         public string? ReasonForVisit { get; set; }
         public List<CreateMedicalServiceRequestDto>? MedicalServiceRequest { get; set; } = new List<CreateMedicalServiceRequestDto>();
@@ -30,6 +31,7 @@ namespace Freshx_API.Dtos
         public int? ReceptionistId { get; set; }
         public string? Note { get; set; }
         public int? AssignedDoctorId { get; set; }
+        public decimal? ServiceTotalAmount { get; set; } // tổng tiền dịch vụ
         public List<int>? MedicalServiceRequestId { get; set; }
         public string? ReasonForVisit { get; set; }
 

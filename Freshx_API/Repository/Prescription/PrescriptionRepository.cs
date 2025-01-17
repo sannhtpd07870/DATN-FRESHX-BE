@@ -25,9 +25,10 @@ namespace Freshx_API.Repository
         public async Task<Prescription?> GetByIdAsync(int id)
         {
             return await _context.Prescriptions
-                .Include(p => p.PrescriptionDetails)
-                .ThenInclude(d => d.DrugCatalog)
-                .FirstOrDefaultAsync(p => p.PrescriptionId == id);
+        .Include(p => p.PrescriptionDetails)
+        .ThenInclude(d => d.DrugCatalog)
+        .FirstOrDefaultAsync(p => p.ExamineId == id);
+            //.FirstOrDefaultAsync(p => p.PrescriptionId == id);
         }
 
         public async Task<Prescription> AddAsync(Prescription prescription)

@@ -167,7 +167,8 @@ builder.Services.AddDbContext<FreshxDBContext>((serviceProvider, options) =>
         var primaryConnectionWorks = await connectionTestPolicy.ExecuteAsync(
             async () => await TestConnection(primaryConnection)
         );
-
+        // Thử kết nối server dự phòng
+        var backupConnectionWorks = await TestConnection(backupConnection);
         if (primaryConnectionWorks)
         {
             options.UseSqlServer(primaryConnection, sqlOptions =>
@@ -181,10 +182,7 @@ builder.Services.AddDbContext<FreshxDBContext>((serviceProvider, options) =>
             Console.WriteLine("Đã kết nối thành công đến server chính.");
             return;
         }
-
-        // Thử kết nối server dự phòng
-        var backupConnectionWorks = await TestConnection(backupConnection);
-        if (backupConnectionWorks)
+        else if (backupConnectionWorks)
         {
             options.UseSqlServer(backupConnection, sqlOptions =>
             {
@@ -210,7 +208,7 @@ builder.Services.AddHangfire(configuration => configuration
     .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
     .UseSimpleAssemblyNameTypeSerializer()
     .UseRecommendedSerializerSettings()
-    .UseSqlServerStorage(connectionString, new SqlServerStorageOptions  // Sửa chỗ này
+    .UseSqlServerStorage(primaryConnection, new SqlServerStorageOptions  // Sửa chỗ này
     {
         CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
         SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),

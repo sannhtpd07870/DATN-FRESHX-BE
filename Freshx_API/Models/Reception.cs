@@ -16,7 +16,7 @@ public partial class Reception
     public string? Note { get; set; }
     public int? AssignedDoctorId { get; set; } // bác sĩ chỉ định
     public int? MedicalServiceRequestId { get; set; } // dịch vụ chỉ định
-    public int? ServiceTotalAmount { get; set; } // tổng tiền dịch vụ
+    public decimal? ServiceTotalAmount { get; set; } // tổng tiền dịch vụ
     public string? CreatedBy { get; set; }
     public DateTime? CreatedDate { get; set; }
     public int? UpdatedBy { get; set; }

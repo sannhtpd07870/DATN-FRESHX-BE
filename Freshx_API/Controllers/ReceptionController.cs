@@ -130,13 +130,14 @@ namespace Freshx_API.Controllers
             try
             {
                 await _service.UpdateAsync(Id, dto);
-                return StatusCode(StatusCodes.Status204NoContent, ResponseFactory.Success<object>(Request.Path, null, "Cập nhật thành công"));
+                return Ok(ResponseFactory.Success<object>(Request.Path, null, "Cập nhật thành công"));
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Xảy ra lỗi khi cập nhật tiếp nhận");
-                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn:" +e.Message));
+                return StatusCode(StatusCodes.Status500InternalServerError, ResponseFactory.Error<object>(Request.Path, "Đã xảy ra lỗi khi xử lý yêu cầu của bạn:" + e.Message));
             }
+            //return Ok(ResponseFactory.Success<object>(Request.Path, null, "Cập nhật thành công"));
         }
 
         [HttpDelete("{id}")]

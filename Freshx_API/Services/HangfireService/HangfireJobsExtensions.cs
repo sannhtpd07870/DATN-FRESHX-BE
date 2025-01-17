@@ -10,13 +10,13 @@ namespace Freshx_API.Services.HangfireService
             RecurringJob.AddOrUpdate<AppointmentJobService>(
                 "cleanup-appointments",
                 job => job.CleanupAppointments(),
-               Cron.Minutely());
+                "0 1 * * *"); // Runs at 1 AM daily
 
             // Email reminder job - runs every day at 6 AM
             RecurringJob.AddOrUpdate<AppointmentJobService>(
                 "appointment-reminders",
                 job => job.SendAppointmentReminders(),
-                Cron.Minutely());
+                "0 6 * * *"); // Runs at 6 AM daily
         }
     }
 }

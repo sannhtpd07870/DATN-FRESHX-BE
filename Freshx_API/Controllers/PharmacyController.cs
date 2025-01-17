@@ -45,7 +45,6 @@ namespace Freshx_API.Controllers
             }
         }
 
-
         [HttpGet("detail")]
         public async Task<ActionResult<ApiResponse<IEnumerable<PharmacyDetailDto>>>> GetDetailAll(string? searchKeyword, DateTime? createdDate, DateTime? updatedDate, bool? isSuspended, int? inventoryTypeId, int? specialtyId)
         {
