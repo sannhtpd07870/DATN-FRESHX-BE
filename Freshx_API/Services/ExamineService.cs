@@ -26,6 +26,7 @@ namespace Freshx_API.Services
             var examine = _mapper.Map<Examine>(dto);
 
             examine.CreatedDate = DateTime.UtcNow;
+
             var createdExamine = await _repository.AddAsync(examine);
             return _mapper.Map<ExamineResponseDto>(createdExamine);
         }
@@ -45,6 +46,7 @@ namespace Freshx_API.Services
         public async Task UpdateAsync(int id, ExamineRequestDto dto)
         {
             var examine = await _repository.GetByIdAsync(id);
+            dto.UpdatedDate = DateTime.Now;
             if (dto.Prescription != null)
             {
                 if(dto.PrescriptionId != null)

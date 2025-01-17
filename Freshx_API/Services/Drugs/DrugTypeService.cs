@@ -39,6 +39,7 @@ public class DrugTypeService : IDrugTypeService
 
     public async Task<DrugTypeDto?> UpdateDrugTypeAsync(int id, DrugTypeUpdateDto updateDto)
     {
+
         var drugType = await _drugTypeRepository.GetDrugTypeByIdAsync(id);
         if (drugType == null)
         {

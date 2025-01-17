@@ -202,7 +202,7 @@ namespace Freshx_API.Repository
         {
             try
             { // Start transaction to ensure both doctor and account updates succeed or fail together
-                using var transaction = await _context.Database.BeginTransactionAsync();
+                //using var transaction = await _context.Database.BeginTransactionAsync();
 
                 var doctor = await _context.Doctors
                     .Include(d => d.AppUser).Include(d => d.Position).Include(d => d.Department) // Include the associated account
@@ -302,7 +302,7 @@ namespace Freshx_API.Repository
                     await _userManager.AddToRoleAsync(doctor.AppUser, roleName);
                 }
                 await _context.SaveChangesAsync();
-                await transaction.CommitAsync();
+                //await transaction.CommitAsync();
 
                 return doctor;           
             }

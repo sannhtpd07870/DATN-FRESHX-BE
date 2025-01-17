@@ -97,17 +97,21 @@ namespace Freshx_API.Repository
 
         public async Task<List<ListReceptionDto>> GetListLabResult(string? searchKey, bool isHistory)
         {
-            var receptions = await _context.Receptions
+            var receptions = await  _context.Receptions
                 .Include(r => r.Patient) // Bao gồm thông tin bệnh nhân
                 .Include(r => r.LabResult) // Bao gồm thông tin xét nghiệm
-                .Where(r => r.LabResult != null && r.LabResult.IsPaid == true && r.LabResult.IsDeleted == 0) // Điều kiện lọc LabResult
-                .ToListAsync();
+                .Where(r => r.LabResult != null && r.LabResult.IsDeleted == 0).ToListAsync(); // Điều kiện lọc LabResult
+                
+
+            if (receptions == null)
+            {
+                return null;
+            } 
 
             var result = receptions.Select(r => new ListReceptionDto
             {
                 ReceptionId = r.ReceptionId,
                 PatientId = r.PatientId,
-                Name = r.Patient?.Name,
                 Age = CalculateAge(r.Patient.DateOfBirth),
                 Gender = r.Patient?.Gender,
                 type = "LabResult", // Loại là xét nghiệm

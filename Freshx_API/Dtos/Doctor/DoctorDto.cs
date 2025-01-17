@@ -13,6 +13,8 @@
         public int? AvataId { get; set; } // ảnh
         public string? Address { get; set; }
         public string? PositionName { get; set; }
-        public string? DepartmentName { get; set; }    
+        public int? PositionId { get; set; }
+        public string? DepartmentName { get; set; }   
+        public string? DepartmentId { get; set; }
     }
 }

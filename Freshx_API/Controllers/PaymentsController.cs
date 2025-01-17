@@ -76,7 +76,7 @@ namespace Freshx_API.Controllers
 
         [HttpPost("payment")]
         public async Task<ActionResult<ApiResponse<BillDto>>> ProcessPayment([FromBody] PaymentDto paymentDto)
-        {
+            {
             try
             {
                 var bill = await _service.GetBillByIdAsync(paymentDto.BillId.Value);

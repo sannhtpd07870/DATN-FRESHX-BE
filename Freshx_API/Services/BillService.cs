@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿    using AutoMapper;
 using Freshx_API.Dtos.Payments;
 using Freshx_API.Interfaces.Payments;
 using Freshx_API.Models;
@@ -19,8 +19,20 @@ namespace Freshx_API.Services
 
         public async Task<BillDto> CreateBillAsync(BillDto billDto)
         {
+            // Tính tổng tiền từ danh sách chi tiết hóa đơn
+            if (billDto.BillDetails != null && billDto.BillDetails.Any())
+            {
+                billDto.TotalAmount = billDto.BillDetails
+                    .Sum(detail => (detail.Quantity ?? 0) * (detail.UnitPrice ?? 0));
+            }
+            else
+            {
+                billDto.TotalAmount = 0; // Nếu không có chi tiết hóa đơn, đặt TotalAmount là 0
+            }
+
             var bill = _mapper.Map<Bill>(billDto);
-            bill.PaymentStatus = "Pending";
+            bill.PaymentStatus = "Chưa thanh toán";
+            
             var createdBill = await _repository.AddBillAsync(bill);
             return _mapper.Map<BillDto>(createdBill);
         }
@@ -39,29 +51,42 @@ namespace Freshx_API.Services
 
         public async Task<PaymentDto> ProcessPaymentAsync(PaymentDto paymentDto)
         {
+            // Kiểm tra giá trị âm
+            if (paymentDto.AmountPaid <= 0)
+            {
+                throw new ArgumentException("Số tiền thanh toán phải lớn hơn 0.", nameof(paymentDto.AmountPaid));
+            }
+
             var payment = _mapper.Map<Payment>(paymentDto);
             await _repository.AddPaymentAsync(payment);
+
             var bill = await _repository.GetBillByIdAsync(payment.BillId);
             if (bill != null)
             {
+                // Kiểm tra số tiền thanh toán có vượt quá tổng tiền cần thanh toán không
+                if (payment.AmountPaid > bill.TotalAmount)
+                {
+                    throw new InvalidOperationException("Số tiền thanh toán vượt quá tổng số tiền hóa đơn.");
+                }
                 bill.TotalAmount -= payment.AmountPaid;
-                if (bill.TotalAmount >= payment.AmountPaid)
+
+                // Cập nhật trạng thái thanh toán
+                if (bill.TotalAmount > 0)
                 {
-                    bill.PaymentStatus = "Paid";
-                    bill.TotalAmount = 0;
+                    bill.PaymentStatus = "Đã thanh toán một phần";
                 }
-                else 
+                else
                 {
-                    bill.PaymentStatus = "Partially Paid";
+                    bill.PaymentStatus = "Đã thanh toán";
+                    bill.TotalAmount = 0; // Đảm bảo không có giá trị âm
                 }
-                if(bill.TotalAmount == 0)
-                {
-                    bill.PaymentStatus = "Paid";
-                }
+
                 await _repository.UpdateAsync(bill);
             }
+
             return _mapper.Map<PaymentDto>(payment);
         }
+
 
         public async Task<BillDto> UpdateBillAsync(int billId, BillDtoUpdate billDtoUpdate)
         {
