@@ -37,7 +37,21 @@ using Polly;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
-
+using Microsoft.AspNetCore.SignalR;
+using Freshx_API.Interfaces.Payments;
+using Freshx_API.Repository.Payments;
+using Freshx_API.Repository.Payments;
+using Freshx_API.Interfaces.IReception;
+using Freshx_API.Repository.LabResults;
+using Freshx_API.Interfaces.Services;
+using Org.BouncyCastle.Math.EC.Multiplier;
+using Freshx_API.Interfaces.IPrescription;
+using Freshx_API.Interfaces.ServiceType;
+using System.Net;
+using System.Reflection;
+using Hangfire;
+using Hangfire.SqlServer;
+using Freshx_API.Services.HangfireService;
 // Tải biến môi trường từ tệp .env
 Env.Load();
 var builder = WebApplication.CreateBuilder(args);
@@ -191,6 +205,21 @@ builder.Services.AddDbContext<FreshxDBContext>((serviceProvider, options) =>
     // Thực thi cấu hình
     ConfigureDbContext().GetAwaiter().GetResult();
 });
+// Add hangfire service
+builder.Services.AddHangfire(configuration => configuration
+    .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+    .UseSimpleAssemblyNameTypeSerializer()
+    .UseRecommendedSerializerSettings()
+    .UseSqlServerStorage(connectionString, new SqlServerStorageOptions  // Sửa chỗ này
+    {
+        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+        QueuePollInterval = TimeSpan.Zero,
+        UseRecommendedIsolationLevel = true,
+        DisableGlobalLocks = true
+    }));
+
+builder.Services.AddHangfireServer();
 //configure Identity Service
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
@@ -553,7 +582,13 @@ builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
 
-
+// 5. Configure Hangfire Dashboard
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    DashboardTitle = "FreshX",
+    DisplayStorageConnectionString = false
+});
+app.ConfigureAppointmentJobs();
 // Cấu hình CORS để cho phép truy cập từ mọi nguồn
 // Enable CORS
 app.UseCors(builder =>
